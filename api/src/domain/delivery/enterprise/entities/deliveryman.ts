@@ -4,6 +4,7 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 export interface DeliveryManProps {
   name: string;
   cpf: number;
+  email: string;
   password: string;
 }
 
@@ -14,6 +15,10 @@ export class DeliveryMan extends Entity<DeliveryManProps> {
 
   get cpf() {
     return this.props.cpf;
+  }
+
+  get email() {
+    return this.props.email;
   }
 
   get password() {
