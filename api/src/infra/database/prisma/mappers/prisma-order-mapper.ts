@@ -1,13 +1,18 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
-import { Order, Role } from '@/domain/delivery/enterprise/entities/order';
+import {
+  Order,
+  Role,
+  Status,
+} from '@/domain/delivery/enterprise/entities/order';
 import { Prisma, Order as PrismaOrder, Shipping } from '@prisma/client';
 
 export class PrismaOrderMapper {
   static toDomain(raw: PrismaOrder, client: Shipping): Order {
     return Order.create(
       {
-        title: raw.title,
         recipientId: new UniqueEntityID(raw.clientId),
+        title: raw.title,
+        status: raw.status as Status,
         deliverymanId: raw.deliverymanId
           ? new UniqueEntityID(raw.deliverymanId)
           : null,
