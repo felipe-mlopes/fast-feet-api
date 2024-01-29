@@ -3,6 +3,7 @@ import { OrdersRepository } from '@/domain/delivery/application/repositories/ord
 import { Order, Status } from '@/domain/delivery/enterprise/entities/order';
 import { PrismaService } from '../prisma.service';
 import { PrismaOrderMapper } from '../mappers/prisma-order-mapper';
+import { $Enums } from '@prisma/client';
 
 export class PrismaOrdersRepository implements OrdersRepository {
   constructor(private prisma: PrismaService) {}
@@ -36,11 +37,11 @@ export class PrismaOrdersRepository implements OrdersRepository {
     deliverymanId: string,
     { page }: PaginationParams,
   ): Promise<Order[]> {
-    /*
-    
     const orders = await this.prisma.order.findMany({
       where: {
-        status,
+        status: {
+          equals: status as unknown as $Enums.Status,
+        },
         deliverymanId,
       },
       orderBy: {
@@ -48,28 +49,62 @@ export class PrismaOrdersRepository implements OrdersRepository {
       },
       take: 20,
       skip: (page - 1) * 20,
-    });
-
-    const client = await this.prisma.shipping.findUnique({
-      where: {
-        id: orders.find((order) => order.clientId),
+      include: {
+        shipping: {
+          select: {
+            id: true,
+            clientName: true,
+            clientCity: true,
+            clientNeighborhood: true,
+            clientAddress: true,
+            clientZipcode: true,
+          },
+        },
       },
     });
 
-    return orders.map((order) => PrismaOrderMapper.toDomain(order, client)); 
-    
-    */
-
-    throw new Error('Method not implemented.');
+    return orders.map((order) =>
+      PrismaOrderMapper.toDomain(order, order.shipping),
+    );
   }
 
   async findManyRecentNearby(
     status: Status,
     city: string,
     neighborhood: string,
-    params: PaginationParams,
+    { page }: PaginationParams,
   ): Promise<Order[] | null> {
-    throw new Error('Method not implemented.');
+    const orders = await this.prisma.order.findMany({
+      where: {
+        status: {
+          equals: status as unknown as $Enums.Status,
+        },
+        shipping: {
+          clientCity: city,
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 20,
+      skip: (page - 1) * 20,
+      include: {
+        shipping: {
+          select: {
+            id: true,
+            clientName: true,
+            clientCity: true,
+            clientNeighborhood: true,
+            clientAddress: true,
+            clientZipcode: true,
+          },
+        },
+      },
+    });
+
+    return orders.map((order) =>
+      PrismaOrderMapper.toDomain(order, order.shipping),
+    );
   }
 
   async create(order: Order): Promise<void> {
