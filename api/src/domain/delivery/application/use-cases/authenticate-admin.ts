@@ -3,6 +3,7 @@ import { AdminRepository } from '../repositories/admin-repository';
 import { HashComparer } from '../../cryptography/hash-comparer';
 import { Encrypter } from '../../cryptography/encrypter';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
+import { Injectable } from '@nestjs/common';
 
 interface AuthenticateAdminUseCaseRequest {
   email: string;
@@ -16,6 +17,7 @@ type AuthenticateAdminUseCaseResponse = Either<
   }
 >;
 
+@Injectable()
 export class AuthenticateAdminUseCase {
   constructor(
     private adminRepository: AdminRepository,

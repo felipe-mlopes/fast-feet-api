@@ -6,6 +6,7 @@ import { Order, Role } from '@/domain/delivery/enterprise/entities/order';
 import { Either, left, right } from '@/core/either';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
+import { Injectable } from '@nestjs/common';
 
 interface CreateOrderUseCaseRequest {
   role: Role;
@@ -20,6 +21,7 @@ type CreateOrderUseCaseResponse = Either<
   }
 >;
 
+@Injectable()
 export class CreateOrderUseCase {
   constructor(
     private ordersRepository: OrdersRepository,
