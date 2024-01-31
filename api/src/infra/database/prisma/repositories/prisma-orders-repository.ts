@@ -1,10 +1,14 @@
+import { Injectable } from '@nestjs/common';
+import { $Enums } from '@prisma/client';
+
+import { PrismaService } from '../prisma.service';
+import { PrismaOrderMapper } from '../mappers/prisma-order-mapper';
+
 import { PaginationParams } from '@/core/repositories/pagination-params';
 import { OrdersRepository } from '@/domain/delivery/application/repositories/orders-repository';
 import { Order, Status } from '@/domain/delivery/enterprise/entities/order';
-import { PrismaService } from '../prisma.service';
-import { PrismaOrderMapper } from '../mappers/prisma-order-mapper';
-import { $Enums } from '@prisma/client';
 
+@Injectable()
 export class PrismaOrdersRepository implements OrdersRepository {
   constructor(private prisma: PrismaService) {}
 
