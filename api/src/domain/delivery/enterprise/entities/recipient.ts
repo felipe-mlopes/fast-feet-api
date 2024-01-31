@@ -4,7 +4,7 @@ import { Optional } from '@/core/types/optional';
 
 export interface RecipientProps {
   name: string;
-  zipcode: string;
+  zipcode: number;
   address: string;
   city: string;
   neighborhood: string;
@@ -24,7 +24,7 @@ export class Recipient extends Entity<RecipientProps> {
     return this.props.zipcode;
   }
 
-  set zipcode(zipcode: string) {
+  set zipcode(zipcode: number) {
     this.props.zipcode = zipcode;
   }
 
