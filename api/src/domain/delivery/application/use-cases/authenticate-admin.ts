@@ -1,9 +1,12 @@
-import { Either, left, right } from '@/core/either';
-import { AdminRepository } from '../repositories/admin-repository';
-import { HashComparer } from '../../cryptography/hash-comparer';
-import { Encrypter } from '../../cryptography/encrypter';
-import { WrongCredentialsError } from './errors/wrong-credentials-error';
 import { Injectable } from '@nestjs/common';
+
+import { AdminRepository } from '../repositories/admin-repository';
+import { Encrypter } from '../../cryptography/encrypter';
+import { HashComparer } from '../../cryptography/hash-comparer';
+
+import { Either, left, right } from '@/core/either';
+import { WrongCredentialsError } from './errors/wrong-credentials-error';
+import { HashGenerator } from '../../cryptography/hash-generator';
 
 interface AuthenticateAdminUseCaseRequest {
   email: string;
@@ -21,6 +24,7 @@ type AuthenticateAdminUseCaseResponse = Either<
 export class AuthenticateAdminUseCase {
   constructor(
     private adminRepository: AdminRepository,
+    private hashGenerator: HashGenerator,
     private hashComparer: HashComparer,
     private encrypter: Encrypter,
   ) {}
@@ -32,15 +36,17 @@ export class AuthenticateAdminUseCase {
     const admin = await this.adminRepository.findByEmail(email);
 
     if (!admin) {
-      return left(new Error());
+      return left(new WrongCredentialsError());
     }
 
+    const hashedPassword = await this.hashGenerator.hash(password);
+
     const isPasswordValid = await this.hashComparer.compare(
-      password,
+      hashedPassword,
       admin.password,
     );
 
-    if (!isPasswordValid) {
+    if (isPasswordValid) {
       return left(new WrongCredentialsError());
     }
 
