@@ -4,6 +4,16 @@ import { AdminUser } from '@/domain/delivery/enterprise/entities/admin-user';
 export class InMemoryAdminRepository implements AdminRepository {
   public items: AdminUser[] = [];
 
+  async findById(id: string) {
+    const admin = this.items.find((item) => item.id.toString() === id);
+
+    if (!admin) {
+      return null;
+    }
+
+    return admin;
+  }
+
   async findByEmail(email: string) {
     const admin = this.items.find((item) => item.email === email);
 
