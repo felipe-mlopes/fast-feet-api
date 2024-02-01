@@ -1,8 +1,8 @@
 import { AdminRepository } from '@/domain/delivery/application/repositories/admin-repository';
-import { Admin } from '@/domain/delivery/enterprise/entities/admin';
+import { AdminUser } from '@/domain/delivery/enterprise/entities/admin-user';
 
 export class InMemoryAdminRepository implements AdminRepository {
-  public items: Admin[] = [];
+  public items: AdminUser[] = [];
 
   async findByEmail(email: string) {
     const admin = this.items.find((item) => item.email === email);
@@ -14,7 +14,17 @@ export class InMemoryAdminRepository implements AdminRepository {
     return admin;
   }
 
-  async create(admin: Admin) {
+  async findByCPF(cpf: string) {
+    const admin = this.items.find((item) => item.cpf === cpf);
+
+    if (!admin) {
+      return null;
+    }
+
+    return admin;
+  }
+
+  async create(admin: AdminUser) {
     this.items.push(admin);
   }
 }
