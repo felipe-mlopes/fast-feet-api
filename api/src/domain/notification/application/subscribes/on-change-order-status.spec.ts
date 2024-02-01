@@ -45,7 +45,7 @@ describe('On Change Order Status', () => {
   it('should be able to send a notification when order status is change', async () => {
     const recipient = Recipient.create({
       name: 'Jonh Doe',
-      zipcode: '1234567',
+      zipcode: 12345678,
       address: 'Somewhere st',
       neighborhood: 'Downtown',
       city: 'Somewhere City',
