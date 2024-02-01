@@ -1,10 +1,18 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  HttpCode,
+  Post,
+} from '@nestjs/common';
 import { z } from 'zod';
-import { UserRole } from '@prisma/client';
+
+import { CreateOrderUseCase } from '@/domain/delivery/application/use-cases/create-order';
 
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
-import { CreateOrderUseCase } from '@/domain/delivery/application/use-cases/create-order';
-import { Role } from '@/domain/delivery/enterprise/entities/order';
+
+import { CurrentUser } from '@/infra/auth/current-user.decorator';
+import { UserPayload } from '@/infra/auth/jwt.strategy';
 
 const createOrderBodySchema = z.object({
   title: z.string(),
@@ -20,13 +28,18 @@ export class CreateOrderController {
   constructor(private createOrder: CreateOrderUseCase) {}
 
   @Post()
-  async handle(@Body(bodyValidationProps) body: CreateOrderBodySchema) {
+  @HttpCode(201)
+  async handle(
+    @Body(bodyValidationProps) body: CreateOrderBodySchema,
+    @CurrentUser() user: UserPayload,
+  ) {
     const { title, recipientId } = body;
+    const userId = user.sub;
 
     const result = await this.createOrder.execute({
-      title,
-      role: UserRole.ADMIN as Role,
+      adminId: userId,
       recipientId,
+      title,
     });
 
     if (result.isLeft()) {
