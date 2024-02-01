@@ -9,7 +9,7 @@ import { NotAllowedError } from '@/core/errors/not-allowed-error';
 interface RegisterRecipientUseCaseRequest {
   role: Role;
   name: string;
-  zipcode: string;
+  zipcode: number;
   address: string;
   city: string;
   neighborhood: string;
