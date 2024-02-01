@@ -21,8 +21,8 @@ enum Status {
 model User {
   id       String   @id @default(uuid())
   name     String
-  cpf      Int      @unique
-  email    String
+  cpf      String   @unique
+  email    String   @unique
   password String
   role     UserRole @default(DELIVERYMAN)
 
