@@ -7,9 +7,10 @@ import { Either, left, right } from '@/core/either';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 import { Injectable } from '@nestjs/common';
+import { AdminRepository } from '../repositories/admin-repository';
 
 interface CreateOrderUseCaseRequest {
-  role: Role;
+  adminId: string;
   recipientId: string;
   title: string;
 }
@@ -24,16 +25,23 @@ type CreateOrderUseCaseResponse = Either<
 @Injectable()
 export class CreateOrderUseCase {
   constructor(
+    private adminRepository: AdminRepository,
     private ordersRepository: OrdersRepository,
     private recipientsRepository: RecipentsRepository,
   ) {}
 
   async execute({
-    role,
+    adminId,
     recipientId,
     title,
   }: CreateOrderUseCaseRequest): Promise<CreateOrderUseCaseResponse> {
-    if (role !== Role.ADMIN) {
+    const admin = await this.adminRepository.findById(adminId);
+
+    if (!admin) {
+      return left(new NotAllowedError());
+    }
+
+    if (admin?.role !== Role.ADMIN) {
       return left(new NotAllowedError());
     }
 
