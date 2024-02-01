@@ -1,21 +1,23 @@
 import { DeliveryMenRepository } from '../repositories/deliverymen-repository';
 
-import { DeliveryMan } from '@/domain/delivery/enterprise/entities/deliveryman';
 import { HashGenerator } from '@/domain/delivery/cryptography/hash-generator';
 
 import { Either, left, right } from '@/core/either';
 import { DeliveryManAlreadyExistsError } from './errors/deliveryman-already-exists-error';
+import { DeliveryManUser } from '../../enterprise/entities/deliveryman-user';
+import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 
 interface RegisterDeliverymanUseCaseRequest {
   name: string;
-  cpf: number;
+  cpf: string;
+  email: string;
   password: string;
 }
 
 type RegisterDeliverymanUseCaseResponse = Either<
   DeliveryManAlreadyExistsError,
   {
-    deliveryman: DeliveryMan;
+    deliveryman: DeliveryManUser;
   }
 >;
 
@@ -28,6 +30,7 @@ export class RegisterDeliverymanUseCase {
   async execute({
     name,
     cpf,
+    email,
     password,
   }: RegisterDeliverymanUseCaseRequest): Promise<RegisterDeliverymanUseCaseResponse> {
     const deliverymanSameWithCPF =
@@ -39,9 +42,11 @@ export class RegisterDeliverymanUseCase {
 
     const hashedPassword = await this.hashGenerator.hash(password);
 
-    const deliveryman = DeliveryMan.create({
+    const deliveryman = DeliveryManUser.create({
+      deliveryManId: new UniqueEntityID(),
       name,
       cpf,
+      email,
       password: hashedPassword,
     });
 
