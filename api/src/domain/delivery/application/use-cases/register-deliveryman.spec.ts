@@ -23,7 +23,8 @@ describe('Register Deliveryman', () => {
   it('should be able to register a new deliveryman', async () => {
     const result = await sut.execute({
       name: 'John Doe',
-      cpf: 99999999999,
+      cpf: '99999999999',
+      email: 'johndoe@example.com',
       password: '123456',
     });
 
@@ -36,7 +37,8 @@ describe('Register Deliveryman', () => {
   it('should hash deliveryman password upon registration', async () => {
     const result = await sut.execute({
       name: 'John Doe',
-      cpf: 99999999999,
+      cpf: '99999999999',
+      email: 'johndoe@example.com',
       password: '123456',
     });
 
@@ -51,13 +53,15 @@ describe('Register Deliveryman', () => {
   it('should not be able to register a new deliveryman with CPF exists', async () => {
     await sut.execute({
       name: 'John Doe',
-      cpf: 99999999999,
+      cpf: '99999999999',
+      email: 'johndoe@example.com',
       password: '123456',
     });
 
     const result = await sut.execute({
       name: 'Max',
-      cpf: 99999999999,
+      cpf: '99999999999',
+      email: 'johndoe@example.com',
       password: '123456',
     });
 
