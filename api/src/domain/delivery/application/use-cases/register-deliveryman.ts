@@ -1,11 +1,14 @@
+import { Injectable } from '@nestjs/common';
+
 import { DeliveryMenRepository } from '../repositories/deliverymen-repository';
 
 import { HashGenerator } from '@/domain/delivery/cryptography/hash-generator';
 
+import { DeliveryManUser } from '../../enterprise/entities/deliveryman-user';
+
+import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { Either, left, right } from '@/core/either';
 import { DeliveryManAlreadyExistsError } from './errors/deliveryman-already-exists-error';
-import { DeliveryManUser } from '../../enterprise/entities/deliveryman-user';
-import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 
 interface RegisterDeliverymanUseCaseRequest {
   name: string;
@@ -21,6 +24,7 @@ type RegisterDeliverymanUseCaseResponse = Either<
   }
 >;
 
+@Injectable()
 export class RegisterDeliverymanUseCase {
   constructor(
     private deliverymanRepository: DeliveryMenRepository,
