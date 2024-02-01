@@ -1,8 +1,9 @@
-import { DeliveryMan } from '@/domain/delivery/enterprise/entities/deliveryman';
+import { DeliveryManUser } from '../../enterprise/entities/deliveryman-user';
 
 export abstract class DeliveryMenRepository {
-  abstract findById(id: string): Promise<DeliveryMan | null>;
-  abstract findByCPF(cpf: number): Promise<DeliveryMan | null>;
-  abstract create(deliveryman: DeliveryMan): Promise<void>;
-  abstract save(deliveryman: DeliveryMan): Promise<void>;
+  abstract findById(id: string): Promise<DeliveryManUser | null>;
+  abstract findByCPF(cpf: string): Promise<DeliveryManUser | null>;
+  abstract findByEmail(email: string): Promise<DeliveryManUser | null>;
+  abstract create(deliveryman: DeliveryManUser): Promise<void>;
+  abstract save(deliveryman: DeliveryManUser): Promise<void>;
 }
