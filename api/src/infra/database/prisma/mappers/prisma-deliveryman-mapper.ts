@@ -1,11 +1,13 @@
 import { Prisma, User as PrismaUser } from '@prisma/client';
-import { DeliveryMan } from '@/domain/delivery/enterprise/entities/deliveryman';
+
+import { DeliveryManUser } from '@/domain/delivery/enterprise/entities/deliveryman-user';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 
 export class PrismaDeliverymanMapper {
-  static toDomain(raw: PrismaUser): DeliveryMan {
-    return DeliveryMan.create(
+  static toDomain(raw: PrismaUser): DeliveryManUser {
+    return DeliveryManUser.create(
       {
+        deliveryManId: new UniqueEntityID(raw.id),
         name: raw.name,
         cpf: raw.cpf,
         email: raw.email,
@@ -15,7 +17,9 @@ export class PrismaDeliverymanMapper {
     );
   }
 
-  static toPrisma(deliveryman: DeliveryMan): Prisma.UserUncheckedCreateInput {
+  static toPrisma(
+    deliveryman: DeliveryManUser,
+  ): Prisma.UserUncheckedCreateInput {
     return {
       id: deliveryman.id.toString(),
       name: deliveryman.name,
