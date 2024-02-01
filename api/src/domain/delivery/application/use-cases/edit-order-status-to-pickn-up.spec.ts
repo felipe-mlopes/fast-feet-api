@@ -2,7 +2,7 @@ import { EditOrderStatusToPicknUpUseCase } from './edit-order-status-to-pickn-up
 
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders-repository';
 
-import { makeOrder } from 'test/factories/makeOrders';
+import { makeOrder } from 'test/factories/make-orders';
 
 import { Status } from '@/domain/delivery/enterprise/entities/order';
 

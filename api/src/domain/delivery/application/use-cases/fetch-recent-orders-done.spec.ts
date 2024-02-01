@@ -2,7 +2,7 @@ import { FetchRecentOrdersDoneUseCase } from './fetch-recent-orders-done';
 
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders-repository';
 
-import { makeOrder } from 'test/factories/makeOrders';
+import { makeOrder } from 'test/factories/make-orders';
 
 import { Status } from '@/domain/delivery/enterprise/entities/order';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';

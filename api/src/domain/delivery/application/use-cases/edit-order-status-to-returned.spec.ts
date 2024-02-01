@@ -3,7 +3,7 @@ import { EditOrderStatusToReturnedUseCase } from './edit-order-status-to-returne
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders-repository';
 import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-deliverymen-repository';
 
-import { makeOrder } from 'test/factories/makeOrders';
+import { makeOrder } from 'test/factories/make-orders';
 
 import { Status } from '@/domain/delivery/enterprise/entities/order';
 

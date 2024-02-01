@@ -1,9 +1,12 @@
+import { FetchNearbyOrdersToPicknUpUseCase } from './fetch-nearby-orders-to-pickn-up';
+
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders-repository';
 import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-deliverymen-repository';
+
+import { makeOrder } from 'test/factories/make-orders';
+import { makeDeliverymen } from 'test/factories/make-deliverymen';
+
 import { Status } from '@/domain/delivery/enterprise/entities/order';
-import { makeOrder } from 'test/factories/makeOrders';
-import { FetchNearbyOrdersToPicknUpUseCase } from './fetch-nearby-orders-to-pickn-up';
-import { makeDeliverymen } from 'test/factories/makeDeliverymen';
 
 let inMemoryOrdersRepository: InMemoryOrdersRepository;
 let inMemoryDeliverymenRepository: InMemoryDeliveryMenRepository;

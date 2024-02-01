@@ -4,9 +4,9 @@ import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders-rep
 import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-deliverymen-repository';
 import { InMemoryAttachmentRepository } from 'test/repositories/in-memory-attachment-repository';
 
-import { makeOrder } from 'test/factories/makeOrders';
-import { makeDeliverymen } from 'test/factories/makeDeliverymen';
-import { makeAttachment } from 'test/factories/makeAttachment';
+import { makeOrder } from 'test/factories/make-orders';
+import { makeDeliverymen } from 'test/factories/make-deliverymen';
+import { makeAttachment } from 'test/factories/make-attachment';
 
 import { Status } from '@/domain/delivery/enterprise/entities/order';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
