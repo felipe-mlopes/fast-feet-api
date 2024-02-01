@@ -1,18 +1,13 @@
 import { Module } from '@nestjs/common';
 
-import { Encrypter } from '@/domain/delivery/cryptography/encrypter';
+import { BcryptHasher } from './bcrypt-hasher';
+import { JwtEncrypter } from './jwt-encrypter';
+
 import { HashGenerator } from '@/domain/delivery/cryptography/hash-generator';
 import { HashComparer } from '@/domain/delivery/cryptography/hash-comparer';
-
-import { JwtEncrypter } from './jwt-encrypter';
-import { BcryptHasher } from './bcrypt-hasher';
+import { Encrypter } from '@/domain/delivery/cryptography/encrypter';
 
 @Module({
-  /*   imports: [
-    JwtModule.register({
-      global: true,
-    }),
-  ], */
   providers: [
     {
       provide: Encrypter,
