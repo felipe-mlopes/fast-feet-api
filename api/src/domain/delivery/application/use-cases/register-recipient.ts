@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common';
+
 import { RecipentsRepository } from '../repositories/recipients-repository';
 
 import { Recipient } from '@/domain/delivery/enterprise/entities/recipient';
@@ -5,9 +7,10 @@ import { Role } from '@/domain/delivery/enterprise/entities/order';
 
 import { Either, left, right } from '@/core/either';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
+import { AdminRepository } from '../repositories/admin-repository';
 
 interface RegisterRecipientUseCaseRequest {
-  role: Role;
+  adminId: string;
   name: string;
   zipcode: number;
   address: string;
@@ -22,20 +25,32 @@ type RegisterRecipientUseCaseResponse = Either<
   }
 >;
 
+@Injectable()
 export class RegisterRecipientUseCase {
-  constructor(private recipientRepository: RecipentsRepository) {}
+  constructor(
+    private adminRepository: AdminRepository,
+    private recipientRepository: RecipentsRepository,
+  ) {}
 
   async execute({
-    role,
+    adminId,
     name,
     zipcode,
     address,
     city,
     neighborhood,
   }: RegisterRecipientUseCaseRequest): Promise<RegisterRecipientUseCaseResponse> {
-    if (role !== Role.ADMIN) {
+    const admin = await this.adminRepository.findById(adminId);
+
+    if (!admin) {
       return left(new NotAllowedError());
     }
+
+    if (admin?.role !== Role.ADMIN) {
+      return left(new NotAllowedError());
+    }
+
+    console.log(admin);
 
     const recipient = Recipient.create({
       name,
