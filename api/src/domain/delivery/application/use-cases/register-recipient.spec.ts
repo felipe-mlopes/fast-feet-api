@@ -24,7 +24,7 @@ describe('Register Recipient', () => {
       address: 'Somewhere st',
       city: 'Somewhere city',
       neighborhood: 'downtown',
-      zipcode: '12345678',
+      zipcode: 12345678,
     });
 
     expect(result.isRight()).toBe(true);
@@ -39,7 +39,7 @@ describe('Register Recipient', () => {
       address: 'Somewhere st',
       city: 'Somewhere city',
       neighborhood: 'downtown',
-      zipcode: '12345678',
+      zipcode: 12345678,
     });
 
     expect(result.isLeft()).toBe(true);

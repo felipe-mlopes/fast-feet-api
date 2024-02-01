@@ -27,7 +27,7 @@ describe('Create Order', () => {
   it('should be able to create a new order', async () => {
     const recipient = Recipient.create({
       name: 'John Doe',
-      zipcode: '12345678',
+      zipcode: 12345678,
       address: 'Somewhere St',
       city: 'Somewhere city',
       neighborhood: 'downtown',
@@ -52,7 +52,7 @@ describe('Create Order', () => {
   it('should not be possible to create an order without being an administrator', async () => {
     const recipient = Recipient.create({
       name: 'John Doe',
-      zipcode: '12345678',
+      zipcode: 12345678,
       address: 'Somewhere St',
       city: 'Somewhere city',
       neighborhood: 'downtown',
