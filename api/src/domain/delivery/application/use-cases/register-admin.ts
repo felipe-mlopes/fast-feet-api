@@ -1,34 +1,46 @@
-import { Either, right } from '@/core/either';
-import { Admin } from '../../enterprise/entities/admin';
+import { Either, left, right } from '@/core/either';
 import { AdminRepository } from '../repositories/admin-repository';
-import { Role } from '../../enterprise/entities/order';
+import { AdminAlreadyExistsError } from './errors/admin-already-exists-error';
+import { Injectable } from '@nestjs/common';
+import { AdminUser } from '../../enterprise/entities/admin-user';
+import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 
 interface RegisterAdminUseCaseRequest {
   name: string;
   email: string;
+  cpf: string;
   password: string;
 }
 
 type RegisterAdminUseCaseResponse = Either<
-  null,
+  AdminAlreadyExistsError,
   {
-    admin: Admin;
+    admin: AdminUser;
   }
 >;
 
+@Injectable()
 export class RegisterAdminUseCase {
   constructor(private adminRepository: AdminRepository) {}
 
   async execute({
     name,
-    password,
     email,
+    cpf,
+    password,
   }: RegisterAdminUseCaseRequest): Promise<RegisterAdminUseCaseResponse> {
-    const admin = Admin.create({
+    const adminSameWithEmail = await this.adminRepository.findByEmail(email);
+
+    if (adminSameWithEmail) {
+      return left(new AdminAlreadyExistsError(email));
+    }
+
+    const admin = AdminUser.create({
+      adminId: new UniqueEntityID(),
       name,
-      password,
       email,
-      role: Role.ADMIN,
+      cpf,
+      password,
     });
 
     await this.adminRepository.create(admin);
