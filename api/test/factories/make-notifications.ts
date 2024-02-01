@@ -13,7 +13,6 @@ export function makeNotifications(
     {
       recipientId: new UniqueEntityID(),
       title: faker.lorem.sentence({ min: 3, max: 5 }),
-      content: faker.lorem.sentences({ min: 1, max: 3 }),
       ...override,
     },
     id,
