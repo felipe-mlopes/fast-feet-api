@@ -1,9 +1,10 @@
 import { InMemoryAdminRepository } from 'test/repositories/in-memory-admin-repository';
+
 import { AuthenticateAdminUseCase } from './authenticate-admin';
+
 import { FakeHasher } from 'test/cryptography/fake-hasher';
 import { FakeEncrypter } from 'test/cryptography/fake-encrypter';
-import { Admin } from '../../enterprise/entities/admin';
-import { Role } from '../../enterprise/entities/order';
+import { makeAdminUser } from 'test/factories/make-admin-user';
 
 let inMemoryAdminRepository: InMemoryAdminRepository;
 let fakeHasher: FakeHasher;
@@ -23,11 +24,9 @@ describe('Register Recipient', () => {
   });
 
   it('should be able to authenticate a admin user', async () => {
-    const admin = Admin.create({
-      name: 'John Doe',
+    const admin = makeAdminUser({
       email: 'johndoe@example.com',
       password: await fakeHasher.hash('123456'),
-      role: Role.ADMIN,
     });
 
     inMemoryAdminRepository.create(admin);
