@@ -1,6 +1,7 @@
-import { Admin } from '../../enterprise/entities/admin';
+import { AdminUser } from '../../enterprise/entities/admin-user';
 
 export abstract class AdminRepository {
-  abstract findByEmail(email: string): Promise<Admin | null>;
-  abstract create(admin: Admin): Promise<void>;
+  abstract findByEmail(email: string): Promise<AdminUser | null>;
+  abstract findByCPF(cpf: string): Promise<AdminUser | null>;
+  abstract create(admin: AdminUser): Promise<void>;
 }
