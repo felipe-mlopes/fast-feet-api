@@ -6,7 +6,6 @@ import { HashComparer } from '../../cryptography/hash-comparer';
 
 import { Either, left, right } from '@/core/either';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
-import { HashGenerator } from '../../cryptography/hash-generator';
 
 interface AuthenticateAdminUseCaseRequest {
   email: string;
@@ -24,7 +23,6 @@ type AuthenticateAdminUseCaseResponse = Either<
 export class AuthenticateAdminUseCase {
   constructor(
     private adminRepository: AdminRepository,
-    private hashGenerator: HashGenerator,
     private hashComparer: HashComparer,
     private encrypter: Encrypter,
   ) {}
@@ -39,20 +37,17 @@ export class AuthenticateAdminUseCase {
       return left(new WrongCredentialsError());
     }
 
-    const hashedPassword = await this.hashGenerator.hash(password);
-
     const isPasswordValid = await this.hashComparer.compare(
-      hashedPassword,
+      password,
       admin.password,
     );
 
-    if (isPasswordValid) {
+    if (!isPasswordValid) {
       return left(new WrongCredentialsError());
     }
 
     const accessToken = await this.encrypter.encrypt({
       sub: admin.id.toString(),
-      role: admin.role,
     });
 
     return right({
