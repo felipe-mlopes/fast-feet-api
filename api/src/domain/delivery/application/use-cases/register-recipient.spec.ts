@@ -1,25 +1,32 @@
 import { RegisterRecipientUseCase } from './register-recipient';
 
 import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipients-repository';
-
-import { Role } from '@/domain/delivery/enterprise/entities/order';
+import { InMemoryAdminRepository } from 'test/repositories/in-memory-admin-repository';
 
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
+import { makeAdminUser } from 'test/factories/make-admin-user';
 
 let inMemoryRecipientsRepository: InMemoryRecipientsRepository;
+let inMemoryAdminRepository: InMemoryAdminRepository;
 let sut: RegisterRecipientUseCase;
 
 describe('Register Recipient', () => {
   beforeEach(() => {
+    inMemoryAdminRepository = new InMemoryAdminRepository();
     inMemoryRecipientsRepository = new InMemoryRecipientsRepository();
-    sut = new RegisterRecipientUseCase(inMemoryRecipientsRepository);
+    sut = new RegisterRecipientUseCase(
+      inMemoryAdminRepository,
+      inMemoryRecipientsRepository,
+    );
   });
 
   it('should be able to register a new recipient', async () => {
-    const role = Role.ADMIN;
+    const admin = makeAdminUser();
+
+    await inMemoryAdminRepository.create(admin);
 
     const result = await sut.execute({
-      role,
+      adminId: admin.id.toString(),
       name: 'John Doe',
       address: 'Somewhere st',
       city: 'Somewhere city',
@@ -31,15 +38,13 @@ describe('Register Recipient', () => {
   });
 
   it('should not be possible to register a new recipient without being an administrator', async () => {
-    const role = Role.USER;
-
     const result = await sut.execute({
-      role,
       name: 'John Doe',
       address: 'Somewhere st',
       city: 'Somewhere city',
       neighborhood: 'downtown',
       zipcode: 12345678,
+      adminId: 'user-01',
     });
 
     expect(result.isLeft()).toBe(true);
