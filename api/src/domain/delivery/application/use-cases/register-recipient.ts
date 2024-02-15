@@ -50,8 +50,6 @@ export class RegisterRecipientUseCase {
       return left(new NotAllowedError());
     }
 
-    console.log(admin);
-
     const recipient = Recipient.create({
       name,
       address,
