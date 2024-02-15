@@ -1,30 +1,39 @@
 import { CreateOrderUseCase } from './create-order';
 
+import { InMemoryAdminRepository } from 'test/repositories/in-memory-admin-repository';
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders-repository';
 import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipients-repository';
 
-import { Role } from '@/domain/delivery/enterprise/entities/order';
+import { makeAdminUser } from 'test/factories/make-admin-user';
+
 import { Recipient } from '@/domain/delivery/enterprise/entities/recipient';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 
+let inMemoryAdminRepository: InMemoryAdminRepository;
 let inMemoryOrdersRepository: InMemoryOrdersRepository;
 let inMemoryRecipientsRepository: InMemoryRecipientsRepository;
 let sut: CreateOrderUseCase;
 
 describe('Create Order', () => {
   beforeEach(() => {
+    inMemoryAdminRepository = new InMemoryAdminRepository();
     inMemoryOrdersRepository = new InMemoryOrdersRepository();
     inMemoryRecipientsRepository = new InMemoryRecipientsRepository();
     sut = new CreateOrderUseCase(
+      inMemoryAdminRepository,
       inMemoryOrdersRepository,
       inMemoryRecipientsRepository,
     );
   });
 
   it('should be able to create a new order', async () => {
+    const admin = makeAdminUser();
+
+    await inMemoryAdminRepository.create(admin);
+
     const recipient = Recipient.create({
       name: 'John Doe',
       zipcode: 12345678,
@@ -35,10 +44,8 @@ describe('Create Order', () => {
 
     await inMemoryRecipientsRepository.create(recipient);
 
-    const role = Role.ADMIN;
-
     const result = await sut.execute({
-      role,
+      adminId: admin.id.toString(),
       recipientId: recipient.id.toString(),
       title: 'Order 01',
     });
@@ -60,10 +67,8 @@ describe('Create Order', () => {
 
     await inMemoryRecipientsRepository.create(recipient);
 
-    const role = Role.USER;
-
     const result = await sut.execute({
-      role,
+      adminId: 'user-01',
       recipientId: recipient.id.toString(),
       title: 'Order-01',
     });
@@ -74,10 +79,13 @@ describe('Create Order', () => {
 
   it('should not be possible to create an order without registered recipient', async () => {
     const id = new UniqueEntityID();
-    const role = Role.ADMIN;
+
+    const admin = makeAdminUser();
+
+    await inMemoryAdminRepository.create(admin);
 
     const result = await sut.execute({
-      role,
+      adminId: admin.id.toString(),
       recipientId: id.toString(),
       title: 'Order-01',
     });
