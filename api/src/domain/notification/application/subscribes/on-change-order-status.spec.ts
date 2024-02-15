@@ -12,7 +12,7 @@ import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipi
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders-repository';
 import { InMemoryNotificationsRepository } from 'test/repositories/in-memory-notifications-repository';
 
-import { makeOrder } from 'test/factories/makeOrders';
+import { makeOrder } from 'test/factories/make-orders';
 import { waitFor } from 'test/utils/wait-for';
 
 import { Recipient } from '@/domain/delivery/enterprise/entities/recipient';

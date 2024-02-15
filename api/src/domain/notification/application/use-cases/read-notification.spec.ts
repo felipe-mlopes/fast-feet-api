@@ -2,7 +2,7 @@ import { ReadNotificationUseCase } from './read-notification';
 
 import { InMemoryNotificationsRepository } from 'test/repositories/in-memory-notifications-repository';
 
-import { makeNotifications } from 'test/factories/makeNotifications';
+import { makeNotifications } from 'test/factories/make-notifications';
 
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
