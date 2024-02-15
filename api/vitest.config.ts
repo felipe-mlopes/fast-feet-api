@@ -1,13 +1,12 @@
 import swc from 'unplugin-swc';
-import { defineConfig } from 'vite';
+import { configDefaults, defineConfig } from 'vitest/config';
 import tsConfigPaths from 'vite-tsconfig-paths';
-import { configDefaults } from 'vitest/config';
 
 export default defineConfig({
   test: {
     globals: true,
-    root: '/',
-    exclude: [...configDefaults.exclude, '**/data/pg/**'],
+    root: './',
+    exclude: [...configDefaults.exclude, '**/data/**'],
   },
   plugins: [
     tsConfigPaths(),
