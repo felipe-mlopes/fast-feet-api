@@ -23,7 +23,7 @@ describe('Create Account (E2E)', () => {
     await app.init();
   });
 
-  test.skip('[POST] /orders', async () => {
+  test('[POST] /orders', async () => {
     const response = await request(app.getHttpServer()).post('/accounts').send({
       name: 'John Doe',
       email: 'john@example.com',
