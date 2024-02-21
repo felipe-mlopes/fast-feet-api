@@ -1,6 +1,6 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { Recipient } from '@/domain/delivery/enterprise/entities/recipient';
-import { Shipping as PrismaShipping } from '@prisma/client';
+import { Prisma, Shipping as PrismaShipping } from '@prisma/client';
 
 export class PrismaRecipientMapper {
   static toDomain(raw: PrismaShipping): Recipient {
@@ -14,5 +14,16 @@ export class PrismaRecipientMapper {
       },
       new UniqueEntityID(raw.id),
     );
+  }
+
+  static toPrisma(recipient: Recipient): Prisma.ShippingUncheckedCreateInput {
+    return {
+      id: recipient.id.toString(),
+      clientName: recipient.name,
+      clientZipcode: recipient.zipcode,
+      clientAddress: recipient.address,
+      clientNeighborhood: recipient.neighborhood,
+      clientCity: recipient.city,
+    };
   }
 }
