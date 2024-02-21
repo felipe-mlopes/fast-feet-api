@@ -1,48 +1,58 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import { JwtService } from '@nestjs/jwt';
 import request from 'supertest';
 
 import { PrismaService } from '@/infra/database/prisma/prisma.service';
 import { AppModule } from '@/infra/app.module';
 import { DatabaseModule } from '@/infra/database/database.module';
 
-import { OrderFactory } from 'test/factories/make-orders';
+import { RecipientFactory } from 'test/factories/make-recipient';
+import { AdminUserFactory } from 'test/factories/make-admin-user';
 
 describe('Create Order (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
-  let orderFactory: OrderFactory;
+  let adminUserFactory: AdminUserFactory;
+  let recipientFactory: RecipientFactory;
+  let jwt: JwtService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [OrderFactory],
+      providers: [AdminUserFactory, RecipientFactory],
     }).compile();
 
     app = moduleRef.createNestApplication();
 
     prisma = moduleRef.get(PrismaService);
-    orderFactory = moduleRef.get(OrderFactory);
+    adminUserFactory = moduleRef.get(AdminUserFactory);
+    recipientFactory = moduleRef.get(RecipientFactory);
+    jwt = moduleRef.get(JwtService);
 
     await app.init();
   });
 
-  test.skip('[POST] /orders', async () => {
-    const order = await orderFactory.makePrismaOrder();
+  test('[POST] /orders', async () => {
+    const admin = await adminUserFactory.makePrismaAdminUser();
 
-    // const accessToken = jwt.sign({ sub: 'xadwvwvdavssdw', role: 'admin' });
+    const recipient = await recipientFactory.makePrismaRecipient();
 
-    const response = await request(app.getHttpServer()).post('/orders').send({
-      title: 'Order 01',
-      recipientId: order.recipientId,
-      role: 'admin',
-    });
+    const accessToken = jwt.sign({ sub: admin.id.toString() });
+
+    const response = await request(app.getHttpServer())
+      .post('/orders')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        recipientId: recipient.id.toString(),
+        title: 'New Order',
+      });
 
     expect(response.statusCode).toBe(201);
 
     const orderOnDatabase = await prisma.order.findFirst({
       where: {
-        title: 'Order 01',
+        title: 'New Order',
       },
     });
 
