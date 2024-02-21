@@ -33,7 +33,7 @@ model User {
 
 model Order {
   id            String    @id @default(uuid())
-  deliverymanId String    @map("deliveryman_id")
+  deliverymanId String?   @map("deliveryman_id")
   clientId      String    @map("client_id")
   title         String
   status        Status    @default(WAITING)
@@ -43,7 +43,7 @@ model Order {
   picknUpAt  DateTime? @map("pickn_up_at")
   deliveryAt DateTime? @map("delivery_at")
 
-  deliveryman User     @relation(fields: [deliverymanId], references: [id])
+  deliveryman User?    @relation(fields: [deliverymanId], references: [id])
   shipping    Shipping @relation(fields: [clientId], references: [id])
 
   attachments Attachment[]
