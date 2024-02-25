@@ -43,10 +43,10 @@ model Order {
   picknUpAt  DateTime? @map("pickn_up_at")
   deliveryAt DateTime? @map("delivery_at")
 
-  deliveryman User?    @relation(fields: [deliverymanId], references: [id])
   shipping    Shipping @relation(fields: [clientId], references: [id])
+  deliveryman User?    @relation(fields: [deliverymanId], references: [id])
 
-  attachments Attachment[]
+  attachment Attachment?
 
   @@map("orders")
 }
@@ -68,7 +68,7 @@ model Attachment {
   id      String @id @default(uuid())
   title   String
   url     String
-  orderId String @map("order_id")
+  orderId String @unique @map("order_id")
 
   order Order @relation(fields: [orderId], references: [id])
 
