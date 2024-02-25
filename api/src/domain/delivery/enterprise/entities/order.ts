@@ -22,7 +22,7 @@ export interface OrderProps {
   deliverymanId?: UniqueEntityID | null;
   title: string;
   status: Status;
-  attachment: string;
+  attachmentId: string;
   createdAt: Date;
   picknUpAt?: Date | null;
   deliveryAt?: Date | null;
@@ -94,12 +94,12 @@ export class Order extends AggregateRoot<OrderProps> {
     }
   }
 
-  get attachment() {
-    return this.props.attachment;
+  get attachmentId() {
+    return this.props.attachmentId;
   }
 
-  set attachment(attachament: string) {
-    this.props.attachment = attachament;
+  set attachmentId(attachament: string) {
+    this.props.attachmentId = attachament;
     this.touch();
   }
 
@@ -132,14 +132,14 @@ export class Order extends AggregateRoot<OrderProps> {
   }
 
   static create(
-    props: Optional<OrderProps, 'status' | 'attachment' | 'createdAt'>,
+    props: Optional<OrderProps, 'status' | 'attachmentId' | 'createdAt'>,
     id?: UniqueEntityID,
   ) {
     const order = new Order(
       {
         ...props,
         status: props.status ?? Status.WAITING,
-        attachment: props.attachment ?? '',
+        attachmentId: props.attachmentId ?? '',
         createdAt: props.createdAt ?? new Date(),
       },
       id,
