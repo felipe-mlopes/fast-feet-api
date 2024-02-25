@@ -48,6 +48,8 @@ export class EditOrderStatusToDoneUseCase {
       return left(new NotAllowedError());
     }
 
+    order.status = Status.DONE;
+
     const currentOrderAttachment =
       await this.attachmentRepository.findByOrderId(orderId);
 
@@ -57,8 +59,7 @@ export class EditOrderStatusToDoneUseCase {
 
     const attachmentId = currentOrderAttachment.id;
 
-    order.status = Status.DONE;
-    order.attachment = attachmentId.toString();
+    order.attachmentId = attachmentId.toString();
 
     await this.ordersRepository.save(order);
 
