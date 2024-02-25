@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { RecipentsRepository } from '@/domain/delivery/application/repositories/recipients-repository';
 import { PrismaService } from '../prisma.service';
 import { PrismaRecipientMapper } from '../mappers/prisma-recipient-mapper';
+import { Recipient } from '@/domain/delivery/enterprise/entities/recipient';
 
 @Injectable()
 export class PrismaRecipientsRepository implements RecipentsRepository {
@@ -40,7 +41,22 @@ export class PrismaRecipientsRepository implements RecipentsRepository {
     return PrismaRecipientMapper.toDomain(recipient);
   }
 
-  async create() {}
+  async create(recipient: Recipient) {
+    const data = PrismaRecipientMapper.toPrisma(recipient);
 
-  async save() {}
+    await this.prisma.shipping.create({
+      data,
+    });
+  }
+
+  async save(recipient: Recipient) {
+    const data = PrismaRecipientMapper.toPrisma(recipient);
+
+    await this.prisma.shipping.update({
+      where: {
+        id: recipient.id.toString(),
+      },
+      data,
+    });
+  }
 }
