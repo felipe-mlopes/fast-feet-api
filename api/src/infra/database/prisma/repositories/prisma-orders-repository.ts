@@ -72,16 +72,51 @@ export class PrismaOrdersRepository implements OrdersRepository {
     );
   }
 
-  async findManyRecentNearby(
-    status: Status,
+  async findManyRecentByCityAndOrdersWaitingAndPicknUp(
     city: string,
-    neighborhood: string,
     { page }: PaginationParams,
   ): Promise<Order[] | null> {
     const orders = await this.prisma.order.findMany({
       where: {
         status: {
-          equals: status as unknown as $Enums.Status,
+          not: 'DONE',
+        },
+        shipping: {
+          clientCity: city,
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 20,
+      skip: (page - 1) * 20,
+      include: {
+        shipping: {
+          select: {
+            id: true,
+            clientName: true,
+            clientCity: true,
+            clientNeighborhood: true,
+            clientAddress: true,
+            clientZipcode: true,
+          },
+        },
+      },
+    });
+
+    return orders.map((order) =>
+      PrismaOrderMapper.toDomain(order, order.shipping),
+    );
+  }
+
+  async findManyRecentByCityAndOrdersDone(
+    city: string,
+    { page }: PaginationParams,
+  ): Promise<Order[] | null> {
+    const orders = await this.prisma.order.findMany({
+      where: {
+        status: {
+          equals: 'DONE',
         },
         shipping: {
           clientCity: city,
