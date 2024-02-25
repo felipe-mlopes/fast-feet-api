@@ -8,10 +8,12 @@ export abstract class OrdersRepository {
     deliverymanId: string,
     params: PaginationParams,
   ): Promise<Order[]>;
-  abstract findManyRecentNearby(
-    status: Status,
+  abstract findManyRecentByCityAndOrdersWaitingAndPicknUp(
     city: string,
-    neighborhood: string,
+    params: PaginationParams,
+  ): Promise<Order[] | null>;
+  abstract findManyRecentByCityAndOrdersDone(
+    city: string,
     params: PaginationParams,
   ): Promise<Order[] | null>;
   abstract create(order: Order): Promise<void>;
