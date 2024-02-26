@@ -15,7 +15,7 @@ import { CurrentUser } from '@/infra/auth/current-user.decorator';
 import { UserPayload } from '@/infra/auth/jwt.strategy';
 
 const createOrderBodySchema = z.object({
-  title: z.string(),
+  title: z.string().transform((str) => str.toLowerCase()),
   recipientId: z.string().uuid(),
 });
 

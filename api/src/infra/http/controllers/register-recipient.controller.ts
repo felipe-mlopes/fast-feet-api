@@ -15,11 +15,11 @@ import { CurrentUser } from '@/infra/auth/current-user.decorator';
 import { UserPayload } from '@/infra/auth/jwt.strategy';
 
 const registerRecipientBodySchema = z.object({
-  name: z.string(),
+  name: z.string().transform((str) => str.toLowerCase()),
   zipcode: z.number(),
-  address: z.string(),
-  city: z.string(),
-  neighborhood: z.string(),
+  address: z.string().transform((str) => str.toLowerCase()),
+  city: z.string().transform((str) => str.toLowerCase()),
+  neighborhood: z.string().transform((str) => str.toLowerCase()),
 });
 
 const bodyValidationProps = new ZodValidationPipe(registerRecipientBodySchema);

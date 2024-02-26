@@ -15,8 +15,11 @@ import { RegisterAdminUseCase } from '@/domain/delivery/application/use-cases/re
 import { AdminAlreadyExistsError } from '@/domain/delivery/application/use-cases/errors/admin-already-exists-error';
 
 const createAccountBodySchema = z.object({
-  name: z.string(),
-  email: z.string().email(),
+  name: z.string().transform((str) => str.toLowerCase()),
+  email: z
+    .string()
+    .email()
+    .transform((str) => str.toLowerCase()),
   cpf: z.string(),
   password: z.string(),
 });

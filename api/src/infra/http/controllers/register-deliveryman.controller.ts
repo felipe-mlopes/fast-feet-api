@@ -15,9 +15,9 @@ import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 import { DeliveryManAlreadyExistsError } from '@/domain/delivery/application/use-cases/errors/deliveryman-already-exists-error';
 
 const registerDeliverymanBodySchema = z.object({
-  name: z.string(),
+  name: z.string().transform((str) => str.toLowerCase()),
   cpf: z.string(),
-  email: z.string(),
+  email: z.string().transform((str) => str.toLowerCase()),
   password: z.string(),
 });
 
