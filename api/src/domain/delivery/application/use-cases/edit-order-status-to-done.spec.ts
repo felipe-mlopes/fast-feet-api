@@ -48,7 +48,7 @@ describe('Edit Order Status to Done', () => {
 
     order.status = Status.PICKN_UP;
     order.deliverymanId = newDeliveryman.id;
-    order.attachment = attachment.id.toString();
+    order.attachmentId = attachment.id.toString();
 
     await inMemoryOrdersRepository.save(order);
 
@@ -62,7 +62,7 @@ describe('Edit Order Status to Done', () => {
       newDeliveryman.id,
     );
     expect(inMemoryOrdersRepository.items[0].title).toEqual('New order');
-    expect(inMemoryOrdersRepository.items[0].attachment).toEqual(
+    expect(inMemoryOrdersRepository.items[0].attachmentId).toEqual(
       attachment.id.toString(),
     );
   });
@@ -85,7 +85,7 @@ describe('Edit Order Status to Done', () => {
 
     inMemoryAttachmentRespository.items.push(attachment);
 
-    order.attachment = attachment.id.toString();
+    order.attachmentId = attachment.id.toString();
 
     const result = await sut.execute({
       deliverymanId: newDeliveryman.id.toString(),
@@ -109,7 +109,7 @@ describe('Edit Order Status to Done', () => {
 
     inMemoryAttachmentRespository.items.push(attachment);
 
-    order.attachment = attachment.id.toString();
+    order.attachmentId = attachment.id.toString();
 
     const result = await sut.execute({
       deliverymanId: newDeliveryman.id.toString(),
