@@ -24,7 +24,7 @@ export function makeOrder(
       deliverymanId: null,
       title: faker.lorem.sentence(),
       status: Status.WAITING,
-      attachment: '',
+      attachmentId: '',
       ...override,
     },
     id,
