@@ -11,7 +11,7 @@ let fakeHasher: FakeHasher;
 let fakeEncrypter: FakeEncrypter;
 let sut: AuthenticateAdminUseCase;
 
-describe('Register Recipient', () => {
+describe('Authenticate Admin User', () => {
   beforeEach(() => {
     inMemoryAdminRepository = new InMemoryAdminRepository();
     fakeHasher = new FakeHasher();
