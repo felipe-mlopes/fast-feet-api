@@ -3,12 +3,15 @@ import { Test } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import request from 'supertest';
 
+import { PrismaService } from '@/infra/database/prisma/prisma.service';
 import { AppModule } from '@/infra/app.module';
 import { DatabaseModule } from '@/infra/database/database.module';
+
 import { AdminUserFactory } from 'test/factories/make-admin-user';
 
 describe('Register Recipient (E2E)', () => {
   let app: INestApplication;
+  let prisma: PrismaService;
   let adminUserFactory: AdminUserFactory;
   let jwt: JwtService;
 
@@ -21,6 +24,7 @@ describe('Register Recipient (E2E)', () => {
     app = moduleRef.createNestApplication();
 
     adminUserFactory = moduleRef.get(AdminUserFactory);
+    prisma = moduleRef.get(PrismaService);
     jwt = moduleRef.get(JwtService);
 
     await app.init();
@@ -36,12 +40,22 @@ describe('Register Recipient (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         name: 'John Doe',
-        zipcode: 12345678,
         address: 'Somewhere st',
+        zipcode: 12345678,
         neighborhood: 'Downtown',
         city: 'Somewhere city',
       });
 
     expect(response.statusCode).toBe(201);
+
+    const recipientOnDatabase = await prisma.shipping.findFirst({
+      where: {
+        clientName: 'John Doe',
+      },
+    });
+
+    console.log(recipientOnDatabase);
+
+    // expect(recipientOnDatabase).toBeTruthy();
   });
 });
