@@ -33,19 +33,24 @@ export class InMemoryOrdersRepository implements OrdersRepository {
     return orders;
   }
 
-  async findManyRecentNearby(
-    status: Status,
+  async findManyRecentByCityAndOrdersWaitingAndPicknUp(
     city: string,
-    neighborhood: string,
     { page }: PaginationParams,
   ) {
     const orders = this.items
-      .filter(
-        (item) =>
-          item.status === status &&
-          item.city === city &&
-          item.neighborhood === neighborhood,
-      )
+      .filter((item) => item.status !== Status.DONE && item.city === city)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice((page - 1) * 20, page * 20);
+
+    return orders;
+  }
+
+  async findManyRecentByCityAndOrdersDone(
+    city: string,
+    { page }: PaginationParams,
+  ) {
+    const orders = this.items
+      .filter((item) => item.status === Status.DONE && item.city === city)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice((page - 1) * 20, page * 20);
 
