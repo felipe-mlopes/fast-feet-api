@@ -7,9 +7,9 @@ import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 
 interface FetchNearbyOrdersWaitingAndPicknUpUseCaseRequest {
-  deliverymanRole: Role.DELIVERYMAN;
   city: string;
   page: number;
+  deliverymanRole: Role;
 }
 
 type FetchNearbyOrdersWaitingAndPicknUpUseCaseResponse = Either<
