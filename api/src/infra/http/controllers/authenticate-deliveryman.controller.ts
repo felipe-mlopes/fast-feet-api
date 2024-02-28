@@ -9,7 +9,6 @@ import {
 import { z } from 'zod';
 
 import { Public } from '@/infra/auth/public';
-import { PrismaService } from '@/infra/database/prisma/prisma.service';
 
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 
@@ -29,7 +28,6 @@ type AuthenticateBodySchema = z.infer<typeof authenticateBodySchema>;
 export class AuthenticateDeliverymanController {
   constructor(
     private authenticateDeliveryman: AuthenticateDeliverymenUseCase,
-    private prisma: PrismaService,
   ) {}
 
   @Post()
