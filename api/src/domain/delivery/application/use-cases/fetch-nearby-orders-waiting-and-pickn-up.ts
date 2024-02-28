@@ -1,14 +1,13 @@
 import { OrdersRepository } from '../repositories/orders-repository';
-import { DeliveryMenRepository } from '../repositories/deliverymen-repository';
 
-import { Order } from '@/domain/delivery/enterprise/entities/order';
+import { Order, Role } from '@/domain/delivery/enterprise/entities/order';
 
 import { Either, left, right } from '@/core/either';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 
 interface FetchNearbyOrdersWaitingAndPicknUpUseCaseRequest {
-  deliverymanId: string;
+  deliverymanRole: Role.DELIVERYMAN;
   city: string;
   page: number;
 }
@@ -21,20 +20,14 @@ type FetchNearbyOrdersWaitingAndPicknUpUseCaseResponse = Either<
 >;
 
 export class FetchNearbyOrdersWaitingAndPicknUpUseCase {
-  constructor(
-    private ordersRepository: OrdersRepository,
-    private deliverymenRepository: DeliveryMenRepository,
-  ) {}
+  constructor(private ordersRepository: OrdersRepository) {}
 
   async execute({
-    deliverymanId,
     city,
     page,
+    deliverymanRole,
   }: FetchNearbyOrdersWaitingAndPicknUpUseCaseRequest): Promise<FetchNearbyOrdersWaitingAndPicknUpUseCaseResponse> {
-    const deliveryman =
-      await this.deliverymenRepository.findById(deliverymanId);
-
-    if (!deliveryman) {
+    if (deliverymanRole !== Role.DELIVERYMAN) {
       return left(new NotAllowedError());
     }
 
