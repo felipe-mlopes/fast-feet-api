@@ -1,33 +1,24 @@
 import { FetchNearbyOrdersWaitingAndPicknUpUseCase } from './fetch-nearby-orders-waiting-and-pickn-up';
 
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders-repository';
-import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-deliverymen-repository';
 
 import { makeOrder } from 'test/factories/make-orders';
-import { makeDeliverymen } from 'test/factories/make-deliverymen';
 
-import { Status } from '@/domain/delivery/enterprise/entities/order';
+import { Role, Status } from '@/domain/delivery/enterprise/entities/order';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 
 let inMemoryOrdersRepository: InMemoryOrdersRepository;
-let inMemoryDeliverymenRepository: InMemoryDeliveryMenRepository;
 let sut: FetchNearbyOrdersWaitingAndPicknUpUseCase;
 
 describe("Fetch Nearby Orders Waiting and Pick'n Up", () => {
   beforeEach(() => {
     inMemoryOrdersRepository = new InMemoryOrdersRepository();
-    inMemoryDeliverymenRepository = new InMemoryDeliveryMenRepository();
     sut = new FetchNearbyOrdersWaitingAndPicknUpUseCase(
       inMemoryOrdersRepository,
-      inMemoryDeliverymenRepository,
     );
   });
 
   it("should be able to fetch recent orders with waiting and pick'n up status", async () => {
-    const newDeliveryman = makeDeliverymen();
-
-    await inMemoryDeliverymenRepository.create(newDeliveryman);
-
     const newOrder1 = makeOrder({
       city: 'Somewhere City',
     });
@@ -54,7 +45,7 @@ describe("Fetch Nearby Orders Waiting and Pick'n Up", () => {
     await inMemoryOrdersRepository.save(newOrder3);
 
     const result = await sut.execute({
-      deliverymanId: newDeliveryman.id.toString(),
+      deliverymanRole: Role.DELIVERYMAN,
       city: 'Somewhere City',
       page: 1,
     });
@@ -66,10 +57,6 @@ describe("Fetch Nearby Orders Waiting and Pick'n Up", () => {
   });
 
   it('should not be able to fetch recent orders other than waiting or picknup status', async () => {
-    const newDeliveryman = makeDeliverymen();
-
-    await inMemoryDeliverymenRepository.create(newDeliveryman);
-
     const newOrder1 = makeOrder({
       city: 'Somewhere City',
     });
@@ -80,10 +67,8 @@ describe("Fetch Nearby Orders Waiting and Pick'n Up", () => {
     await inMemoryOrdersRepository.create(newOrder1);
     await inMemoryOrdersRepository.create(newOrder2);
 
-    const deliverymanId = newDeliveryman.id.toString();
-
-    newOrder1.deliverymanId = newDeliveryman.id;
-    newOrder2.deliverymanId = newDeliveryman.id;
+    newOrder1.deliverymanId = new UniqueEntityID('deliveryman-01');
+    newOrder2.deliverymanId = new UniqueEntityID('deliveryman-01');
 
     newOrder1.status = Status.DONE;
     newOrder2.status = Status.DONE;
@@ -92,7 +77,7 @@ describe("Fetch Nearby Orders Waiting and Pick'n Up", () => {
     await inMemoryOrdersRepository.save(newOrder2);
 
     const result = await sut.execute({
-      deliverymanId,
+      deliverymanRole: Role.DELIVERYMAN,
       city: 'Somewhere City',
       page: 1,
     });
