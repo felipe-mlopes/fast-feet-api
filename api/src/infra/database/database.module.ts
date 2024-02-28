@@ -5,11 +5,13 @@ import { OrdersRepository } from '@/domain/delivery/application/repositories/ord
 import { RecipentsRepository } from '@/domain/delivery/application/repositories/recipients-repository';
 import { AdminRepository } from '@/domain/delivery/application/repositories/admin-repository';
 import { DeliveryMenRepository } from '@/domain/delivery/application/repositories/deliverymen-repository';
+import { AttachmentRepository } from '@/domain/delivery/application/repositories/attachment-repository';
 
 import { PrismaOrdersRepository } from './prisma/repositories/prisma-orders-repository';
 import { PrismaRecipientsRepository } from './prisma/repositories/prisma-recipients-repository';
 import { PrismaDeliverymenRepository } from './prisma/repositories/prisma-deliverymen-repository';
 import { PrismaAdminRepository } from './prisma/repositories/prisma-admin-repository';
+import { PrismaAttachmentRepository } from './prisma/repositories/prisma-attachment-repository';
 
 @Module({
   imports: [],
@@ -30,6 +32,10 @@ import { PrismaAdminRepository } from './prisma/repositories/prisma-admin-reposi
     {
       provide: DeliveryMenRepository,
       useClass: PrismaDeliverymenRepository,
+    },
+    {
+      provide: AttachmentRepository,
+      useClass: PrismaAttachmentRepository,
     },
   ],
   exports: [
