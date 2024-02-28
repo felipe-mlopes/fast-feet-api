@@ -16,13 +16,9 @@ const pageQueryParamsSchema = z
   .transform(Number)
   .pipe(z.number().min(1));
 
-const cityQueryParamsSchema = z.string();
-
 const pageQueryValidationPipe = new ZodValidationPipe(pageQueryParamsSchema);
-const cityQueryValidationPipe = new ZodValidationPipe(cityQueryParamsSchema);
 
 type PageQueryParamsSchema = z.infer<typeof pageQueryParamsSchema>;
-type CityQueryParamsSchema = z.infer<typeof cityQueryParamsSchema>;
 
 @Controller('/orders/pending')
 export class FecthNearbyOrdersWaitingAndPicknUpController {
@@ -32,19 +28,18 @@ export class FecthNearbyOrdersWaitingAndPicknUpController {
 
   @Get()
   async handle(
-    @Query('city', cityQueryValidationPipe)
-    city: CityQueryParamsSchema,
+    @Query('city')
+    city: string,
     @Query('page', pageQueryValidationPipe)
     page: PageQueryParamsSchema,
-    @CurrentUser()
-    user: UserPayload,
+    @CurrentUser() user: UserPayload,
   ) {
-    const userId = user.sub;
+    const deliverymanRole = user.role;
 
     const result = await this.fetchNearbyOrdersWaitingOrPicknUp.execute({
-      deliverymanId: userId,
       city,
       page,
+      deliverymanRole,
     });
 
     if (result.isLeft()) {
