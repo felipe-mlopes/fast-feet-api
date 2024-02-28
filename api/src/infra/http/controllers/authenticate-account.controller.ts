@@ -9,7 +9,6 @@ import {
 import { z } from 'zod';
 
 import { Public } from '@/infra/auth/public';
-import { PrismaService } from '@/infra/database/prisma/prisma.service';
 
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 
@@ -23,14 +22,11 @@ const authenticateBodySchema = z.object({
 
 type AuthenticateBodySchema = z.infer<typeof authenticateBodySchema>;
 
-@Controller('/sessions')
+@Controller('/account/sessions')
 @Public()
 @UsePipes(new ZodValidationPipe(authenticateBodySchema))
 export class AuthenticateAccountController {
-  constructor(
-    private authenticateAdmin: AuthenticateAdminUseCase,
-    private prisma: PrismaService,
-  ) {}
+  constructor(private authenticateAdmin: AuthenticateAdminUseCase) {}
 
   @Post()
   async handle(@Body() body: AuthenticateBodySchema) {
