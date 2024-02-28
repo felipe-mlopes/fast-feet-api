@@ -28,7 +28,7 @@ type AuthenticateBodySchema = z.infer<typeof authenticateBodySchema>;
 @UsePipes(new ZodValidationPipe(authenticateBodySchema))
 export class AuthenticateDeliverymanController {
   constructor(
-    private authenticateAdmin: AuthenticateDeliverymenUseCase,
+    private authenticateDeliveryman: AuthenticateDeliverymenUseCase,
     private prisma: PrismaService,
   ) {}
 
@@ -36,7 +36,7 @@ export class AuthenticateDeliverymanController {
   async handle(@Body() body: AuthenticateBodySchema) {
     const { email, password } = body;
 
-    const result = await this.authenticateAdmin.execute({
+    const result = await this.authenticateDeliveryman.execute({
       email,
       password,
     });
