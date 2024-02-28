@@ -34,10 +34,10 @@ export class CreateOrderController {
     @CurrentUser() user: UserPayload,
   ) {
     const { title, recipientId } = body;
-    const userId = user.sub;
+    const userRole = user.role;
 
     const result = await this.createOrder.execute({
-      adminId: userId,
+      adminRole: userRole,
       recipientId,
       title,
     });
