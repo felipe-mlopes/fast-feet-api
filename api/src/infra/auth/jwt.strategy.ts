@@ -5,8 +5,11 @@ import { z } from 'zod';
 
 import { EnvService } from '../env/env.service';
 
+import { Role } from '@/domain/delivery/enterprise/entities/order';
+
 const tokenPayloadSchema = z.object({
   sub: z.string().uuid(),
+  role: z.nativeEnum(Role),
 });
 
 export type UserPayload = z.infer<typeof tokenPayloadSchema>;
