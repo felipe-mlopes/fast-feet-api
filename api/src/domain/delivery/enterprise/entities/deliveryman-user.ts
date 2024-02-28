@@ -20,7 +20,7 @@ export class DeliveryManUser extends User<DeliveryManUserProps> {
       {
         ...props,
         createdAt: props.createdAt ?? new Date(),
-        role: Role.USER,
+        role: Role.DELIVERYMAN,
       },
       id,
     );
