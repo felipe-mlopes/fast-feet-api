@@ -25,16 +25,18 @@ describe('Authenticate Account (E2E)', () => {
     await app.init();
   });
 
-  test('[POST] /sessions', async () => {
+  test('[POST] /account/sessions', async () => {
     await adminUserFactory.makePrismaAdminUser({
       email: 'johndoe@example.com',
       password: await hash('123456', 8),
     });
 
-    const response = await request(app.getHttpServer()).post('/sessions').send({
-      email: 'johndoe@example.com',
-      password: '123456',
-    });
+    const response = await request(app.getHttpServer())
+      .post('/account/sessions')
+      .send({
+        email: 'johndoe@example.com',
+        password: '123456',
+      });
 
     expect(response.statusCode).toBe(201);
     expect(response.body).toEqual({
