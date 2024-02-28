@@ -10,7 +10,7 @@ import { Injectable } from '@nestjs/common';
 import { AdminRepository } from '../repositories/admin-repository';
 
 interface CreateOrderUseCaseRequest {
-  adminId: string;
+  adminRole: string;
   recipientId: string;
   title: string;
 }
@@ -31,17 +31,11 @@ export class CreateOrderUseCase {
   ) {}
 
   async execute({
-    adminId,
+    adminRole,
     recipientId,
     title,
   }: CreateOrderUseCaseRequest): Promise<CreateOrderUseCaseResponse> {
-    const admin = await this.adminRepository.findById(adminId);
-
-    if (!admin) {
-      return left(new NotAllowedError());
-    }
-
-    if (admin?.role !== Role.ADMIN) {
+    if (adminRole !== Role.ADMIN) {
       return left(new NotAllowedError());
     }
 
@@ -52,7 +46,7 @@ export class CreateOrderUseCase {
     }
 
     const order = Order.create({
-      role: Role.ADMIN,
+      role: adminRole,
       recipientId: recipient.id,
       city: recipient.city,
       neighborhood: recipient.neighborhood,
