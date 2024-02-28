@@ -11,7 +11,7 @@ export enum Status {
 
 export enum Role {
   ADMIN = 'admin',
-  USER = 'user',
+  DELIVERYMAN = 'deliveryman',
 }
 
 export interface OrderProps {
