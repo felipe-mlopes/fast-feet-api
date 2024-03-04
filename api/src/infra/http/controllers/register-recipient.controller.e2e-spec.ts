@@ -33,7 +33,10 @@ describe('Register Recipient (E2E)', () => {
   test('[POST] /recipients', async () => {
     const admin = await adminUserFactory.makePrismaAdminUser();
 
-    const accessToken = jwt.sign({ sub: admin.id.toString() });
+    const accessToken = jwt.sign({
+      sub: admin.id.toString(),
+      role: admin.role,
+    });
 
     const response = await request(app.getHttpServer())
       .post('/recipients')
@@ -50,12 +53,10 @@ describe('Register Recipient (E2E)', () => {
 
     const recipientOnDatabase = await prisma.shipping.findFirst({
       where: {
-        clientName: 'John Doe',
+        clientName: 'john doe',
       },
     });
 
-    console.log(recipientOnDatabase);
-
-    // expect(recipientOnDatabase).toBeTruthy();
+    expect(recipientOnDatabase).toBeTruthy();
   });
 });
