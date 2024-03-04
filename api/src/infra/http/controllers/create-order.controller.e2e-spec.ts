@@ -55,12 +55,10 @@ describe('Create Order (E2E)', () => {
 
     const orderOnDatabase = await prisma.order.findFirst({
       where: {
-        title: 'New Order',
+        title: 'new order',
       },
     });
 
-    console.log(orderOnDatabase);
-
-    // expect(orderOnDatabase).toBeTruthy();
+    expect(orderOnDatabase).toBeTruthy();
   });
 });
