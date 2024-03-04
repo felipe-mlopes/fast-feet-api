@@ -45,7 +45,7 @@ describe('Create Order', () => {
     await inMemoryRecipientsRepository.create(recipient);
 
     const result = await sut.execute({
-      adminId: admin.id.toString(),
+      adminRole: admin.role,
       recipientId: recipient.id.toString(),
       title: 'Order 01',
     });
@@ -68,7 +68,7 @@ describe('Create Order', () => {
     await inMemoryRecipientsRepository.create(recipient);
 
     const result = await sut.execute({
-      adminId: 'user-01',
+      adminRole: 'ADMIN',
       recipientId: recipient.id.toString(),
       title: 'Order-01',
     });
@@ -85,7 +85,7 @@ describe('Create Order', () => {
     await inMemoryAdminRepository.create(admin);
 
     const result = await sut.execute({
-      adminId: admin.id.toString(),
+      adminRole: admin.role,
       recipientId: id.toString(),
       title: 'Order-01',
     });
