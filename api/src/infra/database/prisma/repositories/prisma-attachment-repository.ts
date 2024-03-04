@@ -11,7 +11,7 @@ export class PrismaAttachmentRepository implements AttachmentRepository {
   constructor(private prisma: PrismaService) {}
 
   async findByOrderId(orderId: string): Promise<Attachment | null> {
-    const attachment = this.prisma.attachment.findUnique({
+    const attachment = await this.prisma.attachment.findUnique({
       where: {
         orderId,
       },
