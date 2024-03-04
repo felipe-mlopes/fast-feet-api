@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common';
+
 import { OrdersRepository } from '../repositories/orders-repository';
 import { RecipentsRepository } from '../repositories/recipients-repository';
 
@@ -6,8 +8,6 @@ import { Order, Role } from '@/domain/delivery/enterprise/entities/order';
 import { Either, left, right } from '@/core/either';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
-import { Injectable } from '@nestjs/common';
-import { AdminRepository } from '../repositories/admin-repository';
 
 interface CreateOrderUseCaseRequest {
   adminRole: string;
@@ -25,7 +25,6 @@ type CreateOrderUseCaseResponse = Either<
 @Injectable()
 export class CreateOrderUseCase {
   constructor(
-    private adminRepository: AdminRepository,
     private ordersRepository: OrdersRepository,
     private recipientsRepository: RecipentsRepository,
   ) {}
