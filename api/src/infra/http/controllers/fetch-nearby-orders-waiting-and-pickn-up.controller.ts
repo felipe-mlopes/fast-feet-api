@@ -28,10 +28,10 @@ export class FecthNearbyOrdersWaitingAndPicknUpController {
 
   @Get()
   async handle(
-    @Query('city')
-    city: string,
     @Query('page', pageQueryValidationPipe)
     page: PageQueryParamsSchema,
+    @Query('city')
+    city: string,
     @CurrentUser() user: UserPayload,
   ) {
     const deliverymanRole = user.role;
@@ -49,7 +49,7 @@ export class FecthNearbyOrdersWaitingAndPicknUpController {
     const { orders } = result.value;
 
     return {
-      orders: orders.map((order) => OrderPresenter.toHTTP(order)),
+      orders: orders.map(OrderPresenter.toHTTP),
     };
   }
 }
