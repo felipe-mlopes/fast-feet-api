@@ -37,9 +37,13 @@ describe('Get Order Details (E2E)', () => {
   });
 
   test('[GET] /orders/:orderId', async () => {
-    const recipient = await recipientFactory.makePrismaRecipient();
+    const recipient = await recipientFactory.makePrismaRecipient({
+      name: 'John Doe',
+    });
+
     const order = await orderFactory.makePrismaOrder({
       recipientId: recipient.id,
+      city: 'somewhere',
     });
 
     const orderId = order.id.toString();
@@ -56,8 +60,11 @@ describe('Get Order Details (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send();
 
-    console.log(response.error);
-
-    expect(response.statusCode).toBe(201);
+    expect(response.statusCode).toBe(200);
+    expect(response.body.recipient.props).toEqual(
+      expect.objectContaining({
+        name: 'John Doe',
+      }),
+    );
   });
 });
