@@ -34,7 +34,9 @@ export class GetOrderDetailsUseCase {
       return left(new ResourceNotFoundError());
     }
 
-    const recipient = await this.recipientsRepository.findByOrderId(orderId);
+    const recipient = await this.recipientsRepository.findById(
+      order.recipientId.toString(),
+    );
 
     if (!recipient) {
       return left(new ResourceNotFoundError());
