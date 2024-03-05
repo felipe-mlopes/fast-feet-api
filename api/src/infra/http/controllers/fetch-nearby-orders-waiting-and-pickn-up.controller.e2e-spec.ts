@@ -6,8 +6,6 @@ import request from 'supertest';
 import { AppModule } from '@/infra/app.module';
 import { DatabaseModule } from '@/infra/database/database.module';
 
-import { Status } from '@/domain/delivery/enterprise/entities/order';
-
 import { DeliverymenFactory } from 'test/factories/make-deliverymen';
 import { RecipientFactory } from 'test/factories/make-recipient';
 import { OrderFactory } from 'test/factories/make-orders';
@@ -50,14 +48,14 @@ describe('Fetch Nearby Orders Waiting and Pickn Up (E2E)', () => {
     await Promise.all([
       orderFactory.makePrismaOrder({
         recipientId: recipient.id,
-        status: Status.WAITING,
         city: 'somewhere',
+        title: 'order-01',
       }),
       orderFactory.makePrismaOrder({
         recipientId: recipient.id,
-        status: Status.PICKN_UP,
         deliverymanId: anotherUser.id,
         city: 'somewhere',
+        title: 'order-02',
       }),
     ]);
 
@@ -69,20 +67,14 @@ describe('Fetch Nearby Orders Waiting and Pickn Up (E2E)', () => {
         page: 1,
       });
 
-    console.log(response.error);
-
     expect(response.statusCode).toBe(200);
-
-    /*    expect(response.body).toEqual({
-      question: expect.objectContaining({
-        title: 'Question 01',
-        author: 'John Doe',
-        attachments: [
-          expect.objectContaining({
-            title: 'Some attachment',
-          }),
-        ],
-      }),
-    }); */
+    expect(response.body.orders).toHaveLength(2);
+    expect(response.body.orders).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          title: 'order-01',
+        }),
+      ]),
+    );
   });
 });
