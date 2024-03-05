@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common';
+
 import { OrdersRepository } from '../repositories/orders-repository';
 import { RecipentsRepository } from '../repositories/recipients-repository';
 
@@ -19,6 +21,7 @@ type GetOrderDetailsUseCaseResponse = Either<
   }
 >;
 
+@Injectable()
 export class GetOrderDetailsUseCase {
   constructor(
     private ordersRepository: OrdersRepository,

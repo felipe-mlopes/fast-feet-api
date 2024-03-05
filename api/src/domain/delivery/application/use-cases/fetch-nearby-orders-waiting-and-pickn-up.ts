@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common';
+
 import { OrdersRepository } from '../repositories/orders-repository';
 
 import { Order, Role } from '@/domain/delivery/enterprise/entities/order';
@@ -19,6 +21,7 @@ type FetchNearbyOrdersWaitingAndPicknUpUseCaseResponse = Either<
   }
 >;
 
+@Injectable()
 export class FetchNearbyOrdersWaitingAndPicknUpUseCase {
   constructor(private ordersRepository: OrdersRepository) {}
 
