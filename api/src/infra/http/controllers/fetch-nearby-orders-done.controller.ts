@@ -32,7 +32,7 @@ type CityQueryParamsSchema = z.infer<typeof cityQueryParamsSchema>;
 
 type StatusQueryParamsSchema = z.infer<typeof statusQueryParamsSchema>;
 
-@Controller('/orders')
+@Controller('/orders/done')
 export class FecthNearbyOrdersDoneController {
   constructor(private fetchNearbyOrdersDone: FetchNearbyOrdersDoneUseCase) {}
 
