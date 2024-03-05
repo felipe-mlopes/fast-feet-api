@@ -11,6 +11,7 @@ import { RegisterRecipientController } from './controllers/register-recipient.co
 import { FecthNearbyOrdersWaitingAndPicknUpController } from './controllers/fetch-nearby-orders-waiting-and-pickn-up.controller';
 import { FecthNearbyOrdersDoneController } from './controllers/fetch-nearby-orders-done.controller';
 import { AuthenticateDeliverymanController } from './controllers/authenticate-deliveryman.controller';
+import { GetOrderDetailsController } from './controllers/get-order-details.controller';
 
 import { RegisterAdminUseCase } from '@/domain/delivery/application/use-cases/register-admin';
 import { CreateOrderUseCase } from '@/domain/delivery/application/use-cases/create-order';
@@ -20,6 +21,7 @@ import { RegisterRecipientUseCase } from '@/domain/delivery/application/use-case
 import { FetchNearbyOrdersWaitingAndPicknUpUseCase } from '@/domain/delivery/application/use-cases/fetch-nearby-orders-waiting-and-pickn-up';
 import { FetchNearbyOrdersDoneUseCase } from '@/domain/delivery/application/use-cases/fetch-nearby-orders-done';
 import { AuthenticateDeliverymenUseCase } from '@/domain/delivery/application/use-cases/authenticate-deliveryman';
+import { GetOrderDetailsUseCase } from '@/domain/delivery/application/use-cases/get-order-details';
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -32,6 +34,7 @@ import { AuthenticateDeliverymenUseCase } from '@/domain/delivery/application/us
     FecthNearbyOrdersWaitingAndPicknUpController,
     FecthNearbyOrdersDoneController,
     AuthenticateDeliverymanController,
+    GetOrderDetailsController,
   ],
   providers: [
     RegisterAdminUseCase,
@@ -42,6 +45,7 @@ import { AuthenticateDeliverymenUseCase } from '@/domain/delivery/application/us
     FetchNearbyOrdersWaitingAndPicknUpUseCase,
     FetchNearbyOrdersDoneUseCase,
     AuthenticateDeliverymenUseCase,
+    GetOrderDetailsUseCase,
   ],
 })
 export class HttpModule {}
