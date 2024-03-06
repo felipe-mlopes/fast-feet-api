@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { $Enums } from '@prisma/client';
 
 import { PrismaService } from '../prisma.service';
 import { PrismaOrderMapper } from '../mappers/prisma-order-mapper';
 
 import { PaginationParams } from '@/core/repositories/pagination-params';
 import { OrdersRepository } from '@/domain/delivery/application/repositories/orders-repository';
-import { Order, Status } from '@/domain/delivery/enterprise/entities/order';
+import { Order } from '@/domain/delivery/enterprise/entities/order';
 
 @Injectable()
 export class PrismaOrdersRepository implements OrdersRepository {
@@ -34,42 +33,6 @@ export class PrismaOrdersRepository implements OrdersRepository {
     }
 
     return PrismaOrderMapper.toDomain(order, client);
-  }
-
-  async findManyRecentByStatus(
-    status: Status,
-    deliverymanId: string,
-    { page }: PaginationParams,
-  ): Promise<Order[]> {
-    const orders = await this.prisma.order.findMany({
-      where: {
-        status: {
-          equals: status as unknown as $Enums.Status,
-        },
-        deliverymanId,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-      take: 20,
-      skip: (page - 1) * 20,
-      include: {
-        shipping: {
-          select: {
-            id: true,
-            clientName: true,
-            clientCity: true,
-            clientNeighborhood: true,
-            clientAddress: true,
-            clientZipcode: true,
-          },
-        },
-      },
-    });
-
-    return orders.map((order) =>
-      PrismaOrderMapper.toDomain(order, order.shipping),
-    );
   }
 
   async findManyRecentByCityAndOrdersWaitingAndPicknUp(
