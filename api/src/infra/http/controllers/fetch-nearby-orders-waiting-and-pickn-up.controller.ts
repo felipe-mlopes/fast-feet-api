@@ -28,10 +28,10 @@ export class FecthNearbyOrdersWaitingAndPicknUpController {
 
   @Get()
   async handle(
-    @Query('page', pageQueryValidationPipe)
-    page: PageQueryParamsSchema,
     @Query('city')
     city: string,
+    @Query('page', pageQueryValidationPipe)
+    page: PageQueryParamsSchema,
     @CurrentUser() user: UserPayload,
   ) {
     const deliverymanRole = user.role;
