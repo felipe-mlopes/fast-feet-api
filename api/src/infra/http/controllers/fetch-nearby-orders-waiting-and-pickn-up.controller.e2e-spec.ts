@@ -12,37 +12,28 @@ import { OrderFactory } from 'test/factories/make-orders';
 
 describe('Fetch Nearby Orders Waiting and Pickn Up (E2E)', () => {
   let app: INestApplication;
-  let deliveryFactory: DeliverymenFactory;
   let recipientFactory: RecipientFactory;
   let orderFactory: OrderFactory;
+  let deliverymenFactory: DeliverymenFactory;
   let jwt: JwtService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [DeliverymenFactory, RecipientFactory, OrderFactory],
+      providers: [RecipientFactory, OrderFactory, DeliverymenFactory],
     }).compile();
 
     app = moduleRef.createNestApplication();
 
-    deliveryFactory = moduleRef.get(DeliverymenFactory);
     recipientFactory = moduleRef.get(RecipientFactory);
     orderFactory = moduleRef.get(OrderFactory);
+    deliverymenFactory = moduleRef.get(DeliverymenFactory);
     jwt = moduleRef.get(JwtService);
 
     await app.init();
   });
 
   test('[GET] /orders/pending', async () => {
-    const deliveryman = await deliveryFactory.makePrismaDeliveryman();
-
-    const accessToken = jwt.sign({
-      sub: deliveryman.id.toString(),
-      role: deliveryman.role,
-    });
-
-    const anotherUser = await deliveryFactory.makePrismaDeliveryman();
-
     const recipient = await recipientFactory.makePrismaRecipient();
 
     await Promise.all([
@@ -53,11 +44,17 @@ describe('Fetch Nearby Orders Waiting and Pickn Up (E2E)', () => {
       }),
       orderFactory.makePrismaOrder({
         recipientId: recipient.id,
-        deliverymanId: anotherUser.id,
         city: 'somewhere',
         title: 'order-02',
       }),
     ]);
+
+    const deliveryman = await deliverymenFactory.makePrismaDeliveryman();
+
+    const accessToken = jwt.sign({
+      sub: deliveryman.id.toString(),
+      role: deliveryman.role,
+    });
 
     const response = await request(app.getHttpServer())
       .get('/orders/pending')
