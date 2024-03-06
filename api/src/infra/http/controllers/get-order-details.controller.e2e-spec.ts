@@ -3,7 +3,6 @@ import { Test } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import request from 'supertest';
 
-// import { PrismaService } from '@/infra/database/prisma/prisma.service';
 import { AppModule } from '@/infra/app.module';
 import { DatabaseModule } from '@/infra/database/database.module';
 
@@ -13,7 +12,6 @@ import { DeliverymenFactory } from 'test/factories/make-deliverymen';
 
 describe('Get Order Details (E2E)', () => {
   let app: INestApplication;
-  // let prisma: PrismaService;
   let recipientFactory: RecipientFactory;
   let orderFactory: OrderFactory;
   let deliverymenFactory: DeliverymenFactory;
@@ -27,7 +25,6 @@ describe('Get Order Details (E2E)', () => {
 
     app = moduleRef.createNestApplication();
 
-    // prisma = moduleRef.get(PrismaService);
     recipientFactory = moduleRef.get(RecipientFactory);
     orderFactory = moduleRef.get(OrderFactory);
     deliverymenFactory = moduleRef.get(DeliverymenFactory);
@@ -43,7 +40,6 @@ describe('Get Order Details (E2E)', () => {
 
     const order = await orderFactory.makePrismaOrder({
       recipientId: recipient.id,
-      city: 'somewhere',
     });
 
     const orderId = order.id.toString();
