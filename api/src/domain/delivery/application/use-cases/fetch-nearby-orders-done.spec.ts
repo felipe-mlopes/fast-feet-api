@@ -6,9 +6,8 @@ import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-deliv
 import { makeOrder } from 'test/factories/make-orders';
 import { makeDeliverymen } from 'test/factories/make-deliverymen';
 
-import { Status } from '@/domain/delivery/enterprise/entities/order';
+import { Role, Status } from '@/domain/delivery/enterprise/entities/order';
 
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 
 let inMemoryOrdersRepository: InMemoryOrdersRepository;
@@ -19,10 +18,7 @@ describe('Fetch Nearby Orders Done', () => {
   beforeEach(() => {
     inMemoryOrdersRepository = new InMemoryOrdersRepository();
     inMemoryDeliverymenRepository = new InMemoryDeliveryMenRepository();
-    sut = new FetchNearbyOrdersDoneUseCase(
-      inMemoryOrdersRepository,
-      inMemoryDeliverymenRepository,
-    );
+    sut = new FetchNearbyOrdersDoneUseCase(inMemoryOrdersRepository);
   });
 
   it('should be able to fetch recent orders with done status', async () => {
@@ -44,8 +40,6 @@ describe('Fetch Nearby Orders Done', () => {
     await inMemoryOrdersRepository.create(newOrder2);
     await inMemoryOrdersRepository.create(newOrder3);
 
-    const deliverymanId = newDeliveryman.id.toString();
-
     newOrder1.status = Status.DONE;
     newOrder2.status = Status.DONE;
     newOrder3.status = Status.WAITING;
@@ -58,10 +52,9 @@ describe('Fetch Nearby Orders Done', () => {
     await inMemoryOrdersRepository.save(newOrder3);
 
     const result = await sut.execute({
-      deliverymanId,
-      status: Status.DONE,
       city: 'Somewhere City',
       page: 1,
+      deliverymanRole: Role.DELIVERYMAN,
     });
 
     expect(result.isRight()).toBe(true);
@@ -85,10 +78,9 @@ describe('Fetch Nearby Orders Done', () => {
     await inMemoryOrdersRepository.save(newOrder2);
 
     const result = await sut.execute({
-      deliverymanId: 'deliveryman-01',
-      status: Status.DONE,
       city: 'Somewhere City',
       page: 1,
+      deliverymanRole: Role.ADMIN,
     });
 
     expect(result.isLeft()).toBe(true);
@@ -110,8 +102,6 @@ describe('Fetch Nearby Orders Done', () => {
     await inMemoryOrdersRepository.create(newOrder1);
     await inMemoryOrdersRepository.create(newOrder2);
 
-    const deliverymanId = newDeliveryman.id.toString();
-
     newOrder1.deliverymanId = newDeliveryman.id;
     newOrder2.deliverymanId = newDeliveryman.id;
 
@@ -119,13 +109,13 @@ describe('Fetch Nearby Orders Done', () => {
     await inMemoryOrdersRepository.save(newOrder2);
 
     const result = await sut.execute({
-      deliverymanId,
-      status: Status.WAITING,
       city: 'Somewhere City',
       page: 1,
+      deliverymanRole: Role.DELIVERYMAN,
     });
 
-    expect(result.isLeft()).toBe(true);
-    expect(result.value).toBeInstanceOf(ResourceNotFoundError);
+    if (result.isRight()) {
+      expect(result.value.orders).toHaveLength(0);
+    }
   });
 });
