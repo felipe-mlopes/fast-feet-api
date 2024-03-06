@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common';
+
 import { OrdersRepository } from '../repositories/orders-repository';
 import { AttachmentRepository } from '../repositories/attachment-repository';
 import { DeliveryMenRepository } from '../repositories/deliverymen-repository';
@@ -20,6 +22,7 @@ type EditOrderStatusToDoneUseCaseResponse = Either<
   }
 >;
 
+@Injectable()
 export class EditOrderStatusToDoneUseCase {
   constructor(
     private ordersRepository: OrdersRepository,

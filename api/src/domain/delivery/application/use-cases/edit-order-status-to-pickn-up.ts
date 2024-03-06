@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common';
+
 import { OrdersRepository } from '../repositories/orders-repository';
 
 import { Order, Status } from '@/domain/delivery/enterprise/entities/order';
@@ -19,6 +21,7 @@ type EditOrderStatusToPicknUpUseCaseResponse = Either<
   }
 >;
 
+@Injectable()
 export class EditOrderStatusToPicknUpUseCase {
   constructor(private ordersRepository: OrdersRepository) {}
 
