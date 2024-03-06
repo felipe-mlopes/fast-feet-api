@@ -16,23 +16,6 @@ export class InMemoryOrdersRepository implements OrdersRepository {
     return order;
   }
 
-  async findManyRecentByStatus(
-    status: Status,
-    deliverymanId: string,
-    { page }: PaginationParams,
-  ) {
-    const orders = this.items
-      .filter(
-        (item) =>
-          item.status === status &&
-          item.deliverymanId?.toString() === deliverymanId,
-      )
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-      .slice((page - 1) * 20, page * 20);
-
-    return orders;
-  }
-
   async findManyRecentByCityAndOrdersWaitingAndPicknUp(
     city: string,
     { page }: PaginationParams,
