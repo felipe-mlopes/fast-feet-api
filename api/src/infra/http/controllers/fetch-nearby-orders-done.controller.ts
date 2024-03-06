@@ -2,7 +2,6 @@ import { BadRequestException, Controller, Get, Query } from '@nestjs/common';
 import { z } from 'zod';
 
 import { FetchNearbyOrdersDoneUseCase } from '@/domain/delivery/application/use-cases/fetch-nearby-orders-done';
-import { Status } from '@/domain/delivery/enterprise/entities/order';
 
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 
@@ -17,20 +16,9 @@ const pageQueryParamsSchema = z
   .transform(Number)
   .pipe(z.number().min(1));
 
-const cityQueryParamsSchema = z.string();
-
-const statusQueryParamsSchema = z.nativeEnum(Status);
-
 const pageQueryValidationPipe = new ZodValidationPipe(pageQueryParamsSchema);
-const cityQueryValidationPipe = new ZodValidationPipe(cityQueryParamsSchema);
-const statusQueryValidationPipe = new ZodValidationPipe(
-  statusQueryParamsSchema,
-);
 
 type PageQueryParamsSchema = z.infer<typeof pageQueryParamsSchema>;
-type CityQueryParamsSchema = z.infer<typeof cityQueryParamsSchema>;
-
-type StatusQueryParamsSchema = z.infer<typeof statusQueryParamsSchema>;
 
 @Controller('/orders/done')
 export class FecthNearbyOrdersDoneController {
@@ -38,21 +26,19 @@ export class FecthNearbyOrdersDoneController {
 
   @Get()
   async handle(
-    @Query('status', statusQueryValidationPipe) status: StatusQueryParamsSchema,
-    @Query('city', cityQueryValidationPipe)
-    city: CityQueryParamsSchema,
     @Query('page', pageQueryValidationPipe)
     page: PageQueryParamsSchema,
+    @Query('city')
+    city: string,
     @CurrentUser()
     user: UserPayload,
   ) {
-    const userId = user.sub;
+    const deliverymanRole = user.role;
 
     const result = await this.fetchNearbyOrdersDone.execute({
-      deliverymanId: userId,
-      status,
       city,
       page,
+      deliverymanRole,
     });
 
     if (result.isLeft()) {
@@ -62,7 +48,7 @@ export class FecthNearbyOrdersDoneController {
     const { orders } = result.value;
 
     return {
-      orders: orders.map((order) => OrderPresenter.toHTTP(order)),
+      orders: orders.map(OrderPresenter.toHTTP),
     };
   }
 }
