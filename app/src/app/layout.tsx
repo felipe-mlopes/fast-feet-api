@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Roboto_Condensed } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
+const roboto = Roboto_Condensed({
+  subsets: ["latin"],
+  weight: ["700"],
+  variable: "--font-roboto",
+});
 
 export const metadata: Metadata = {
   title: "Fast Feet",
-  description: "A reliable shipping company that gets your packages where they need to be, on time.",
+  description:
+    "A reliable shipping company that gets your packages where they need to be, on time.",
 };
 
 export default function RootLayout({
@@ -15,8 +21,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-br">
-      <body className={inter.className}>{children}</body>
+    <html lang="pt-br" className="bg-indigo-blue">
+      <body className={(inter.className, roboto.variable)}>{children}</body>
     </html>
   );
 }
