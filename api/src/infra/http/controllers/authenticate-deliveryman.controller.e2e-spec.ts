@@ -27,14 +27,14 @@ describe('Authenticate Deliveryman (E2E)', () => {
 
   test('[POST] /deliveryman/sessions', async () => {
     await deliverymenFactory.makePrismaDeliveryman({
-      email: 'johndoe@example.com',
+      cpf: '789.456.123-00',
       password: await hash('123456', 8),
     });
 
     const response = await request(app.getHttpServer())
       .post('/deliveryman/sessions')
       .send({
-        email: 'johndoe@example.com',
+        cpf: '789.456.123-00',
         password: '123456',
       });
 
