@@ -16,7 +16,7 @@ import { AuthenticateDeliverymenUseCase } from '@/domain/delivery/application/us
 import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error';
 
 const authenticateBodySchema = z.object({
-  email: z.string().email(),
+  cpf: z.string(),
   password: z.string(),
 });
 
@@ -32,10 +32,10 @@ export class AuthenticateDeliverymanController {
 
   @Post()
   async handle(@Body() body: AuthenticateBodySchema) {
-    const { email, password } = body;
+    const { cpf, password } = body;
 
     const result = await this.authenticateDeliveryman.execute({
-      email,
+      cpf,
       password,
     });
 
