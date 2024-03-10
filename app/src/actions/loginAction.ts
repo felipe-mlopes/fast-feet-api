@@ -1,36 +1,40 @@
 'use server'
 
-import z, { ZodError, ZodIssue } from "zod"
 import { formSchemaLogin } from "@/utils/validation"
-import { revalidatePath } from "next/cache"
-
-export type ValidationError = Partial<Pick<ZodIssue, 'path' | 'message'>>
-
-export interface FormState {
-    data?: string | null
-    error?: ValidationError[] | null
-  }
+import { FormStateTypes } from "@/types"
 
 export async function loginAction(
-    prevState: FormState,
+    prevState: FormStateTypes,
     formData: FormData,
-): Promise<FormState> {
+): Promise<FormStateTypes> {
     const rawFormData = Object.fromEntries(formData.entries())
 
     const result = formSchemaLogin.safeParse(rawFormData)
 
     if (!result.success) {
-        console.error(result.error.issues)
-
         return { error: result.error.issues }
     }
+    
+    const { cpf, password } = result.data
 
-   
-    console.log(result.data)
+    const response = await fetch('http://localhost:3333/deliveryman/sessions', { 
+        method: 'POST',
+        body: JSON.stringify({
+            cpf,
+            password
+        })
+     })
 
-    return {}
+/*     if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    } */
 
-    // const result = await fetch('http://localhost:3333/account/sessions', { method: 'POST' })
+    const data = await response.json()
 
-    // return revalidatePath("/login")
+    console.log(data?.errors)
+
+    return {
+        data
+    }
+
 }
