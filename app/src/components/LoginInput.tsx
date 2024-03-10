@@ -1,11 +1,17 @@
 "use client";
 
-import React, { InputHTMLAttributes, forwardRef } from "react";
+import React, {
+  ChangeEvent,
+  InputHTMLAttributes,
+  KeyboardEvent,
+  forwardRef,
+} from "react";
 
 import { PadlockIcon } from "./icons/PadlockIcon";
 import { ProfileIcon } from "./icons/ProfileIcon";
 import { PasswordHiddenIcon } from "./icons/PasswordHiddenIcon";
 import { PasswordShowIcon } from "./icons/PasswordShowIcon";
+import { cpfMask } from "@/utils/cpfMask";
 
 interface LoginInputProps extends InputHTMLAttributes<HTMLInputElement> {
   inputType: "text" | "password";
@@ -21,6 +27,23 @@ const LoginInput: React.ForwardRefRenderFunction<
     setShowPassword(!showPassword);
   }
 
+  function handleChangeValue({ currentTarget }: ChangeEvent<HTMLInputElement>) {
+    const { value, name } = currentTarget;
+
+    if (name === "cpf") {
+      const formattedValue = cpfMask(value);
+      currentTarget.value = formattedValue;
+    }
+
+    currentTarget.value;
+  }
+
+  function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+      e.preventDefault();
+    }
+  }
+
   return (
     <div className="flex justify-between gap-4 w-full p-4 rounded bg-gray-light">
       <div className="flex gap-4 items-center justify-start">
@@ -29,8 +52,10 @@ const LoginInput: React.ForwardRefRenderFunction<
         <input
           ref={ref}
           type={showPassword ? "text" : "password"}
-          onChange={(e) => e.target.value}
-          className="outline-none text-base font-normal text-purple-dark bg-gray-light"
+          required={true}
+          onChange={handleChangeValue}
+          onKeyDown={handleKeyDown}
+          className="outline-none text-base font-normal text-purple-dark bg-gray-light appearance-none"
           {...props}
         />
       </div>
