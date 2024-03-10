@@ -8,7 +8,7 @@ import { Either, left, right } from '@/core/either';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 
 interface AuthenticateDeliverymenUseCaseRequest {
-  email: string;
+  cpf: string;
   password: string;
 }
 
@@ -28,10 +28,10 @@ export class AuthenticateDeliverymenUseCase {
   ) {}
 
   async execute({
-    email,
+    cpf,
     password,
   }: AuthenticateDeliverymenUseCaseRequest): Promise<AuthenticateDeliverymenUseCaseResponse> {
-    const deliveryman = await this.deliverymenRepository.findByEmail(email);
+    const deliveryman = await this.deliverymenRepository.findByCPF(cpf);
 
     if (!deliveryman) {
       return left(new WrongCredentialsError());
