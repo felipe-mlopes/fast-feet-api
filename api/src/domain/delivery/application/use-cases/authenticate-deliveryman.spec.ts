@@ -25,14 +25,14 @@ describe('Authenticate Deliveryman', () => {
 
   it('should be able to authenticate a deliveryman', async () => {
     const deliveryman = makeDeliverymen({
-      email: 'johndoe@example.com',
+      cpf: '789.456.123-00',
       password: await fakeHasher.hash('123456'),
     });
 
     inMemoryDeliverymenRepository.create(deliveryman);
 
     const result = await sut.execute({
-      email: 'johndoe@example.com',
+      cpf: '789.456.123-00',
       password: '123456',
     });
 
