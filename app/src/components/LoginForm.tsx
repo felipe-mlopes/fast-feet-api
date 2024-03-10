@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useFormState } from "react-dom";
 
 import { loginAction } from "@/actions/loginAction";
 
 import LoginInput from "./LoginInput";
 import { Button } from "./Button";
-import { useFormState } from "react-dom";
 
 export function LoginForm() {
   const [state, formAction] = useFormState(loginAction, {
@@ -30,9 +30,10 @@ export function LoginForm() {
       <div className="space-y-2">
         <LoginInput
           inputType="text"
-          type="number"
+          type="text"
           id="cpf"
           name="cpf"
+          maxLength={14}
           placeholder="CPF"
         />
         {state.error ? (
@@ -55,7 +56,7 @@ export function LoginForm() {
             type="checkbox"
             id="remember"
             name="remember"
-            className="w-5 h-5 rounded bg-gray-light border border-gray-light checked:bg-blue-900 checked:text-gray-light"
+            className="w-5 h-5 rounded bg-gray-light border border-gray-light checked:border-[6px] checked:border-orange-light checked:gray-gray-light"
           />
           <span className="text-lilac-smooth text-xs">Lembrar-me</span>
         </label>
