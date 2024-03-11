@@ -52,7 +52,7 @@ describe('Get Order Details', () => {
 
     if (result.isRight()) {
       expect(result.value.recipient.name).toEqual('John Doe');
-      expect(result.value.order.status).toEqual('waiting');
+      expect(result.value.order.status).toEqual('WAITING');
     }
   });
 

@@ -29,7 +29,7 @@ export class OnChangeOrderStatus implements EventHandler {
       order.id.toString(),
     );
 
-    if (currentOrder && currentOrder.status !== 'waiting') {
+    if (currentOrder && currentOrder.status !== 'WAITING') {
       await this.sendNotification.execute({
         recipientId: currentOrder.recipientId.toString(),
         title: `O status do seu pedido ${order.title} mudou para ${order.status}`,
