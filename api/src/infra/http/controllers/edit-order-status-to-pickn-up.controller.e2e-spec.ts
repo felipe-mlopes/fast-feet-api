@@ -43,8 +43,6 @@ describe('Edit Order Status to Pickn Up (E2E)', () => {
       recipientId: recipient.id,
     });
 
-    console.log(order);
-
     const orderId = order.id.toString();
 
     const deliveryman = await deliveryFactory.makePrismaDeliveryman();
@@ -59,7 +57,7 @@ describe('Edit Order Status to Pickn Up (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send();
 
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(204);
 
     const orderOnDatabase = await prisma.order.findUnique({
       where: {
