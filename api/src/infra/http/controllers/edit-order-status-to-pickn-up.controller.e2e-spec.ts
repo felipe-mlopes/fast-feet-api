@@ -65,6 +65,8 @@ describe('Edit Order Status to Pickn Up (E2E)', () => {
       },
     });
 
-    expect(orderOnDatabase).toBeTruthy();
+    if (orderOnDatabase) {
+      expect(orderOnDatabase.status).toEqual('PICKN_UP');
+    }
   });
 });
