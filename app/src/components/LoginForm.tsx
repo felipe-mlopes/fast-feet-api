@@ -60,7 +60,10 @@ export function LoginForm() {
           />
           <span className="text-lilac-smooth text-xs">Lembrar-me</span>
         </label>
-        <Link href="#" className="text-lilac-smooth text-xs lg:ml-8">
+        <Link
+          href={"/forgot-password"}
+          className="text-lilac-smooth text-xs lg:ml-8"
+        >
           Esqueci minha senha
         </Link>
       </div>
