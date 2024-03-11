@@ -34,10 +34,10 @@ import { EditOrderStatusToPicknUpUseCase } from '@/domain/delivery/application/u
     RegisterRecipientController,
     AuthenticateAccountController,
     AuthenticateDeliverymanController,
-    GetOrderDetailsController,
+    EditOrderStatusToPicknUpController,
     FecthNearbyOrdersWaitingAndPicknUpController,
     FecthNearbyOrdersDoneController,
-    EditOrderStatusToPicknUpController,
+    GetOrderDetailsController,
   ],
   providers: [
     RegisterAdminUseCase,
@@ -46,10 +46,10 @@ import { EditOrderStatusToPicknUpUseCase } from '@/domain/delivery/application/u
     RegisterRecipientUseCase,
     AuthenticateAdminUseCase,
     AuthenticateDeliverymenUseCase,
-    GetOrderDetailsUseCase,
+    EditOrderStatusToPicknUpUseCase,
     FetchNearbyOrdersWaitingAndPicknUpUseCase,
     FetchNearbyOrdersDoneUseCase,
-    EditOrderStatusToPicknUpUseCase,
+    GetOrderDetailsUseCase,
   ],
 })
 export class HttpModule {}
