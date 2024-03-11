@@ -4,9 +4,9 @@ import { Optional } from '@/core/types/optional';
 import { ChangeOrderStatusEvent } from '../events/change-order-status-event';
 
 export enum Status {
-  WAITING = 'waiting',
-  PICKN_UP = "pick'n up",
-  DONE = 'done',
+  WAITING = 'WAITING',
+  PICKN_UP = 'PICKN_UP',
+  DONE = 'DONE',
 }
 
 export enum Role {
