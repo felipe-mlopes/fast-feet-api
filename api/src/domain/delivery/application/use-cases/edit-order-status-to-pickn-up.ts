@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { DeliveryMenRepository } from '../repositories/deliverymen-repository';
 import { OrdersRepository } from '../repositories/orders-repository';
 
 import { Order, Status } from '@/domain/delivery/enterprise/entities/order';
@@ -23,7 +24,10 @@ type EditOrderStatusToPicknUpUseCaseResponse = Either<
 
 @Injectable()
 export class EditOrderStatusToPicknUpUseCase {
-  constructor(private ordersRepository: OrdersRepository) {}
+  constructor(
+    private ordersRepository: OrdersRepository,
+    private deliverymenRepository: DeliveryMenRepository,
+  ) {}
 
   async execute({
     orderId,
@@ -39,8 +43,15 @@ export class EditOrderStatusToPicknUpUseCase {
       return left(new NotAllowedError());
     }
 
-    order.status = Status.PICKN_UP;
+    const deliveryman =
+      await this.deliverymenRepository.findById(deliverymanId);
+
+    if (!deliveryman) {
+      return left(new ResourceNotFoundError());
+    }
+
     order.deliverymanId = new UniqueEntityID(deliverymanId);
+    order.status = Status.PICKN_UP;
 
     await this.ordersRepository.save(order);
 
