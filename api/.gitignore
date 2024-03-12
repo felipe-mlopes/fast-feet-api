@@ -43,3 +43,6 @@ data
 
 # Http
 client.http
+
+# Storage
+/test/e2e
