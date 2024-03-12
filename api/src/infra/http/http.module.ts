@@ -2,31 +2,36 @@ import { Module } from '@nestjs/common';
 
 import { DatabaseModule } from '../database/database.module';
 import { CryptographyModule } from '../cryptography/cryptography.module';
+import { StorageModule } from '../storage/storage.module';
 
 import { CreateOrderController } from './controllers/create-order.controller';
 import { CreateAccountController } from './controllers/create-account.controller';
-import { AuthenticateAccountController } from './controllers/authenticate-account.controller';
 import { RegisterDeliveryManController } from './controllers/register-deliveryman.controller';
 import { RegisterRecipientController } from './controllers/register-recipient.controller';
+import { AuthenticateAccountController } from './controllers/authenticate-account.controller';
 import { AuthenticateDeliverymanController } from './controllers/authenticate-deliveryman.controller';
-import { GetOrderDetailsController } from './controllers/get-order-details.controller';
+import { EditOrderStatusToPicknUpController } from './controllers/edit-order-status-to-pickn-up.controller';
+import { EditOrderStatusToDoneController } from './controllers/edit-order-status-to-done.controller';
+import { UploadAndCreateAttachmentController } from './controllers/upload-and-create-attachment.controller';
 import { FecthNearbyOrdersWaitingAndPicknUpController } from './controllers/fetch-nearby-orders-waiting-and-pickn-up.controller';
 import { FecthNearbyOrdersDoneController } from './controllers/fetch-nearby-orders-done.controller';
-import { EditOrderStatusToPicknUpController } from './controllers/edit-order-status-to-pickn-up.controller';
+import { GetOrderDetailsController } from './controllers/get-order-details.controller';
 
 import { RegisterAdminUseCase } from '@/domain/delivery/application/use-cases/register-admin';
 import { CreateOrderUseCase } from '@/domain/delivery/application/use-cases/create-order';
-import { AuthenticateAdminUseCase } from '@/domain/delivery/application/use-cases/authenticate-admin';
 import { RegisterDeliverymanUseCase } from '@/domain/delivery/application/use-cases/register-deliveryman';
 import { RegisterRecipientUseCase } from '@/domain/delivery/application/use-cases/register-recipient';
+import { AuthenticateAdminUseCase } from '@/domain/delivery/application/use-cases/authenticate-admin';
 import { AuthenticateDeliverymenUseCase } from '@/domain/delivery/application/use-cases/authenticate-deliveryman';
-import { GetOrderDetailsUseCase } from '@/domain/delivery/application/use-cases/get-order-details';
+import { EditOrderStatusToPicknUpUseCase } from '@/domain/delivery/application/use-cases/edit-order-status-to-pickn-up';
+import { EditOrderStatusToDoneUseCase } from '@/domain/delivery/application/use-cases/edit-order-status-to-done';
+import { UploadAndCreateAttachmentUseCase } from '@/domain/delivery/application/use-cases/upload-and-create-attachment';
 import { FetchNearbyOrdersWaitingAndPicknUpUseCase } from '@/domain/delivery/application/use-cases/fetch-nearby-orders-waiting-and-pickn-up';
 import { FetchNearbyOrdersDoneUseCase } from '@/domain/delivery/application/use-cases/fetch-nearby-orders-done';
-import { EditOrderStatusToPicknUpUseCase } from '@/domain/delivery/application/use-cases/edit-order-status-to-pickn-up';
+import { GetOrderDetailsUseCase } from '@/domain/delivery/application/use-cases/get-order-details';
 
 @Module({
-  imports: [DatabaseModule, CryptographyModule],
+  imports: [DatabaseModule, CryptographyModule, StorageModule],
   controllers: [
     CreateAccountController,
     CreateOrderController,
@@ -35,6 +40,8 @@ import { EditOrderStatusToPicknUpUseCase } from '@/domain/delivery/application/u
     AuthenticateAccountController,
     AuthenticateDeliverymanController,
     EditOrderStatusToPicknUpController,
+    EditOrderStatusToDoneController,
+    UploadAndCreateAttachmentController,
     FecthNearbyOrdersWaitingAndPicknUpController,
     FecthNearbyOrdersDoneController,
     GetOrderDetailsController,
@@ -47,6 +54,8 @@ import { EditOrderStatusToPicknUpUseCase } from '@/domain/delivery/application/u
     AuthenticateAdminUseCase,
     AuthenticateDeliverymenUseCase,
     EditOrderStatusToPicknUpUseCase,
+    EditOrderStatusToDoneUseCase,
+    UploadAndCreateAttachmentUseCase,
     FetchNearbyOrdersWaitingAndPicknUpUseCase,
     FetchNearbyOrdersDoneUseCase,
     GetOrderDetailsUseCase,
