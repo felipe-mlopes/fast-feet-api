@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 
 import {
-  Updloader,
+  Uploader,
   UploadParams,
 } from '@/domain/delivery/application/storage/uploader';
 
@@ -10,7 +10,7 @@ interface Upload {
   url: string;
 }
 
-export class FakeUploader implements Updloader {
+export class FakeUploader implements Uploader {
   public uploads: Upload[] = [];
 
   async upload({ fileName }: UploadParams): Promise<{ url: string }> {
