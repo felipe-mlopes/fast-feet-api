@@ -22,6 +22,10 @@ const LoginInput: React.ForwardRefRenderFunction<
   LoginInputProps
 > = ({ inputType, ...props }, ref) => {
   const [showPassword, setShowPassword] = React.useState(false);
+  const [isProfileIconChangeColor, setIsProfileIconChangeColor] =
+    React.useState(false);
+  const [isPadlockIconChangeColor, setIsPadlockIconChangeColor] =
+    React.useState(false);
 
   function toggleShowPassword() {
     setShowPassword(!showPassword);
@@ -33,9 +37,18 @@ const LoginInput: React.ForwardRefRenderFunction<
     if (name === "cpf") {
       const formattedValue = cpfMask(value);
       currentTarget.value = formattedValue;
+
+      const charMaxLength = props.maxLength ?? 0;
+      value.length >= charMaxLength
+        ? setIsProfileIconChangeColor(true)
+        : setIsProfileIconChangeColor(false);
     }
 
     currentTarget.value;
+    const charMinLength = props.minLength ?? 0;
+    value.length >= charMinLength && name !== "cpf"
+      ? setIsPadlockIconChangeColor(true)
+      : setIsPadlockIconChangeColor(false);
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
@@ -46,8 +59,14 @@ const LoginInput: React.ForwardRefRenderFunction<
 
   return (
     <div className="flex justify-between gap-4 w-full p-4 rounded bg-gray-light">
-      <div className="flex gap-4 items-center justify-start">
-        <span>{inputType === "text" ? <ProfileIcon /> : <PadlockIcon />}</span>
+      <div className="flex gap-4 items-center justify-start group">
+        <span>
+          {inputType === "text" ? (
+            <ProfileIcon isActived={isProfileIconChangeColor} />
+          ) : (
+            <PadlockIcon isActived={isPadlockIconChangeColor} />
+          )}
+        </span>
         <span className="border-[1px] bg-bluish-gray rounded w-[1px] h-6" />
         <input
           ref={ref}
