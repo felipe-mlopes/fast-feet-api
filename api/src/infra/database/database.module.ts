@@ -44,6 +44,7 @@ import { PrismaAttachmentRepository } from './prisma/repositories/prisma-attachm
     RecipentsRepository,
     AdminRepository,
     DeliveryMenRepository,
+    AttachmentRepository,
   ],
 })
 export class DatabaseModule {}
