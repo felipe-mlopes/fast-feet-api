@@ -1,5 +1,7 @@
+import { Injectable } from '@nestjs/common';
+
 import { AttachmentRepository } from '../repositories/attachment-repository';
-import { Updloader } from '../storage/uploader';
+import { Uploader } from '../storage/uploader';
 
 import { Attachment } from '@/domain/delivery/enterprise/entities/attachment';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
@@ -7,24 +9,25 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { Either, left, right } from '@/core/either';
 import { InvalidAttachmentTypeError } from './errors/invalid-attachment-type-error';
 
-interface UploadAndCreateAttachmentsUseCaseRequest {
+interface UploadAndCreateAttachmentUseCaseRequest {
   fileName: string;
   fileType: string;
   body: Buffer;
   orderId: string;
 }
 
-type UploadAndCreateAttachmentsUseCaseResponse = Either<
+type UploadAndCreateAttachmentUseCaseResponse = Either<
   InvalidAttachmentTypeError,
   {
     attachment: Attachment;
   }
 >;
 
-export class UploadAndCreateAttachmentsUseCase {
+@Injectable()
+export class UploadAndCreateAttachmentUseCase {
   constructor(
     private attachmentsRepository: AttachmentRepository,
-    private uploader: Updloader,
+    private uploader: Uploader,
   ) {}
 
   async execute({
@@ -32,7 +35,7 @@ export class UploadAndCreateAttachmentsUseCase {
     fileName,
     fileType,
     orderId,
-  }: UploadAndCreateAttachmentsUseCaseRequest): Promise<UploadAndCreateAttachmentsUseCaseResponse> {
+  }: UploadAndCreateAttachmentUseCaseRequest): Promise<UploadAndCreateAttachmentUseCaseResponse> {
     if (!/^(image\/(jpeg|png))$|application\/pdf$/.test(fileType)) {
       return left(new InvalidAttachmentTypeError(fileType));
     }
