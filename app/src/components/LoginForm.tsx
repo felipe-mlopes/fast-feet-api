@@ -25,7 +25,7 @@ export function LoginForm() {
   return (
     <form
       action={formAction}
-      className="mb-20 space-y-[1.625rem] lg:row-start-2 lg:row-end-3 lg:col-start-2 lg:col-end-2 lg:flex lg:flex-col lg:items-center lg:mb-0"
+      className="flex flex-col gap-[1.625rem] pb-24 lg:row-start-2 lg:row-end-3 lg:col-start-2 lg:col-end-2 lg:flex lg:flex-col lg:items-center lg:mb-0"
     >
       <div className="space-y-2">
         <LoginInput
