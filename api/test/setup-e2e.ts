@@ -4,11 +4,8 @@ import { randomUUID } from 'node:crypto';
 import { execSync } from 'node:child_process';
 import { PrismaClient } from '@prisma/client';
 
-import { envSchema } from '@/infra/env/env';
-
 config({ path: '.env', override: true });
-
-const env = envSchema.parse(process.env);
+config({ path: '.env.test', override: true });
 
 const prisma = new PrismaClient();
 
@@ -19,7 +16,7 @@ function generateUniqueDatabaseURL(schemaId: string) {
     throw new Error('Please provider a DATABASE_URL environment variable');
   }
 
-  const url = new URL(env.DATABASE_URL);
+  const url = new URL(process.env.DATABASE_URL);
 
   url.searchParams.set('schema', schemaId);
 
