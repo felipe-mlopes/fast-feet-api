@@ -40,18 +40,16 @@ export class EditOrderStatusToDoneUseCase {
       return left(new ResourceNotFoundError());
     }
 
+    if (order.status !== Status.PICKN_UP) {
+      return left(new NotAllowedError());
+    }
+
     const deliveryman =
       await this.deliveryMenRepository.findById(deliverymanId);
 
     if (!deliveryman) {
       return left(new NotAllowedError());
     }
-
-    if (order.status !== Status.PICKN_UP) {
-      return left(new NotAllowedError());
-    }
-
-    order.status = Status.DONE;
 
     const currentOrderAttachment =
       await this.attachmentRepository.findByOrderId(orderId);
@@ -60,9 +58,7 @@ export class EditOrderStatusToDoneUseCase {
       return left(new ResourceNotFoundError());
     }
 
-    const attachmentId = currentOrderAttachment.id;
-
-    order.attachmentId = attachmentId.toString();
+    order.status = Status.DONE;
 
     await this.ordersRepository.save(order);
 
