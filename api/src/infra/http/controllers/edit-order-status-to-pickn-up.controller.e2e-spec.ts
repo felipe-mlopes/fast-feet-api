@@ -30,13 +30,14 @@ describe('Edit Order Status to Pickn Up (E2E)', () => {
     deliveryFactory = moduleRef.get(DeliverymenFactory);
     recipientFactory = moduleRef.get(RecipientFactory);
     orderFactory = moduleRef.get(OrderFactory);
+
     prisma = moduleRef.get(PrismaService);
     jwt = moduleRef.get(JwtService);
 
     await app.init();
   });
 
-  test('[GET] /orders/:orderId/picknup', async () => {
+  test('[PACTH] /orders/:orderId/picknup', async () => {
     const recipient = await recipientFactory.makePrismaRecipient();
 
     const order = await orderFactory.makePrismaOrder({
@@ -65,8 +66,6 @@ describe('Edit Order Status to Pickn Up (E2E)', () => {
       },
     });
 
-    if (orderOnDatabase) {
-      expect(orderOnDatabase.status).toEqual('PICKN_UP');
-    }
+    expect(orderOnDatabase?.status).toEqual('PICKN_UP');
   });
 });
