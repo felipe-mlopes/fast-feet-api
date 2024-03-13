@@ -3,9 +3,11 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { PrismaOrderMapper } from '../mappers/prisma-order-mapper';
 
-import { PaginationParams } from '@/core/repositories/pagination-params';
 import { OrdersRepository } from '@/domain/delivery/application/repositories/orders-repository';
 import { Order } from '@/domain/delivery/enterprise/entities/order';
+
+import { PaginationParams } from '@/core/repositories/pagination-params';
+import { DomainEvents } from '@/core/events/domain-events';
 
 @Injectable()
 export class PrismaOrdersRepository implements OrdersRepository {
@@ -15,6 +17,30 @@ export class PrismaOrdersRepository implements OrdersRepository {
     const order = await this.prisma.order.findUnique({
       where: {
         id,
+      },
+    });
+
+    if (!order) {
+      return null;
+    }
+
+    const client = await this.prisma.shipping.findUnique({
+      where: {
+        id: order.clientId,
+      },
+    });
+
+    if (!client) {
+      return null;
+    }
+
+    return PrismaOrderMapper.toDomain(order, client);
+  }
+
+  async findByTrackingCode(trackingCode: string): Promise<Order | null> {
+    const order = await this.prisma.order.findFirst({
+      where: {
+        trackingCode,
       },
     });
 
@@ -126,5 +152,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
       },
       data,
     });
+
+    DomainEvents.dispatchEventsForAggregate(order.id);
   }
 }
