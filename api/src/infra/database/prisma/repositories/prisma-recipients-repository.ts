@@ -26,7 +26,7 @@ export class PrismaRecipientsRepository implements RecipentsRepository {
   async findByOrderId(orderId: string) {
     const recipient = await this.prisma.shipping.findFirst({
       where: {
-        Order: {
+        orders: {
           some: {
             id: orderId,
           },
