@@ -7,26 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  ADMIN
-  DELIVERYMAN
-}
-
-enum Status {
-  WAITING
-  PICKN_UP
-  DONE
-}
-
 model User {
   id       String   @id @default(uuid())
   name     String
-  cpf      String   @unique
   email    String   @unique
   password String
   role     UserRole @default(DELIVERYMAN)
+  cpf      String   @unique
 
-  Order Order[]
+  orders Order[]
 
   @@map("User")
 }
@@ -35,18 +24,18 @@ model Order {
   id            String    @id @default(uuid())
   deliverymanId String?   @map("deliveryman_id")
   clientId      String    @map("client_id")
+  trackingCode  String    @map("tracking_code")
   title         String
   status        Status    @default(WAITING)
+  isReturned    Boolean   @default(false)
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime? @default(now()) @map("updated_at")
+  picknUpAt     DateTime? @map("pickn_up_at")
+  deliveryAt    DateTime? @map("delivery_at")
 
-  picknUpAt  DateTime? @map("pickn_up_at")
-  deliveryAt DateTime? @map("delivery_at")
-
-  shipping    Shipping @relation(fields: [clientId], references: [id])
-  deliveryman User?    @relation(fields: [deliverymanId], references: [id])
-
-  attachment Attachment?
+  attachment  Attachment?
+  shipping    Shipping    @relation(fields: [clientId], references: [id])
+  deliveryman User?       @relation(fields: [deliverymanId], references: [id])
 
   @@map("orders")
 }
@@ -59,7 +48,8 @@ model Shipping {
   clientAddress      String @map("client_address")
   clientZipcode      Int    @map("client_zipcode")
 
-  Order Order[]
+  orders        Order[]
+  notifications Notification[]
 
   @@map("shippings")
 }
@@ -76,11 +66,24 @@ model Attachment {
 }
 
 model Notification {
-  id          String    @id @default(uuid())
-  recipientId String    @map("recipient_id")
-  title       String
-  readAt      DateTime? @map("read_at")
-  createdAt   DateTime  @default(now()) @map("created_at")
+  id         String    @id @default(uuid())
+  shippingId String    @map("shipping_id")
+  title      String
+  readAt     DateTime? @map("read_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  Shipping Shipping @relation(fields: [shippingId], references: [id])
 
   @@map("notifications")
+}
+
+enum UserRole {
+  ADMIN
+  DELIVERYMAN
+}
+
+enum Status {
+  WAITING
+  PICKN_UP
+  DONE
 }
