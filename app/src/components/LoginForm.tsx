@@ -1,15 +1,31 @@
 "use client";
 
-import Link from "next/link";
+import {
+  DetailedHTMLProps,
+  FormHTMLAttributes,
+  PropsWithChildren,
+} from "react";
 import { useFormState } from "react-dom";
 
-import { loginAction } from "@/actions/loginAction";
+import { FormStateTypes } from "@/types";
 
 import LoginInput from "./LoginInput";
-import { Button } from "./Button";
+import { ModalError } from "./ModalError";
 
-export function LoginForm() {
-  const [state, formAction] = useFormState(loginAction, {
+type HTMLFormProps = DetailedHTMLProps<
+  FormHTMLAttributes<HTMLFormElement>,
+  HTMLFormElement
+>;
+
+interface FormProps extends PropsWithChildren<Omit<HTMLFormProps, "action">> {
+  action: (
+    prevState: FormStateTypes,
+    formData: FormData
+  ) => Promise<FormStateTypes>;
+}
+
+export function LoginForm({ children, action, ...props }: FormProps) {
+  const [state, formAction] = useFormState(action, {
     data: null,
     error: null,
   });
@@ -26,6 +42,7 @@ export function LoginForm() {
     <form
       action={formAction}
       className="flex flex-col gap-[1.625rem] pb-24 lg:row-start-2 lg:row-end-3 lg:col-start-2 lg:col-end-2 lg:flex lg:flex-col lg:items-center lg:mb-0"
+      {...props}
     >
       <div className="space-y-2">
         <LoginInput
@@ -35,6 +52,7 @@ export function LoginForm() {
           name="cpf"
           maxLength={14}
           placeholder="CPF"
+          error={cpfError}
         />
         {state.error ? (
           <span className="pt-1 text-xs text-red-400">{cpfError}</span>
@@ -45,29 +63,14 @@ export function LoginForm() {
           name="password"
           minLength={6}
           placeholder="Senha"
+          error={passwordError}
         />
         {state.error ? (
           <span className="pt-1 text-xs text-red-400">{passwordError}</span>
         ) : null}
       </div>
-      <div className="flex justify-between items-center">
-        <label htmlFor="remember" className="flex gap-3 items-center">
-          <input
-            type="checkbox"
-            id="remember"
-            name="remember"
-            className="w-5 h-5 rounded bg-gray-light border border-gray-light checked:border-[6px] checked:border-orange-light checked:gray-gray-light"
-          />
-          <span className="text-lilac-smooth text-xs">Lembrar-me</span>
-        </label>
-        <Link
-          href={"/forgot-password"}
-          className="text-lilac-smooth text-xs lg:ml-8"
-        >
-          Esqueci minha senha
-        </Link>
-      </div>
-      <Button content="Entrar" type="submit" />
+      {state.error ? <ModalError /> : null}
+      {children}
     </form>
   );
 }
