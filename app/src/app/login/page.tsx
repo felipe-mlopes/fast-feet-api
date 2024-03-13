@@ -1,6 +1,11 @@
+import Link from "next/link";
+
+import { loginAction } from "@/actions/loginAction";
+
 import { Header } from "@/components/Header";
 import { Cover } from "@/components/Cover";
 import { LoginForm } from "@/components/LoginForm";
+import { Button } from "@/components/Button";
 
 export default function Login() {
   return (
@@ -18,7 +23,29 @@ export default function Login() {
           </p>
         </div>
       </main>
-      <LoginForm />
+      <LoginForm
+        action={loginAction}
+        className="flex flex-col gap-[1.625rem] pb-24 lg:row-start-2 lg:row-end-3 lg:col-start-2 lg:col-end-2 lg:flex lg:flex-col lg:items-center lg:mb-0"
+      >
+        <div className="flex justify-between items-center">
+          <label htmlFor="remember" className="flex gap-3 items-center">
+            <input
+              type="checkbox"
+              id="remember"
+              name="remember"
+              className="w-5 h-5 rounded bg-gray-light border border-gray-light checked:border-[6px] checked:border-orange-light checked:gray-gray-light"
+            />
+            <span className="text-lilac-smooth text-xs">Lembrar-me</span>
+          </label>
+          <Link
+            href={"/forgot-password"}
+            className="text-lilac-smooth text-xs lg:ml-8"
+          >
+            Esqueci minha senha
+          </Link>
+        </div>
+        <Button content="Entrar" type="submit" />
+      </LoginForm>
     </div>
   );
 }
