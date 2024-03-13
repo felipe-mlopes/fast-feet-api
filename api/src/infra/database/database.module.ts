@@ -6,12 +6,14 @@ import { RecipentsRepository } from '@/domain/delivery/application/repositories/
 import { AdminRepository } from '@/domain/delivery/application/repositories/admin-repository';
 import { DeliveryMenRepository } from '@/domain/delivery/application/repositories/deliverymen-repository';
 import { AttachmentRepository } from '@/domain/delivery/application/repositories/attachment-repository';
+import { NotificationsRepository } from '@/domain/notification/application/repositories/notifications-repository';
 
 import { PrismaOrdersRepository } from './prisma/repositories/prisma-orders-repository';
 import { PrismaRecipientsRepository } from './prisma/repositories/prisma-recipients-repository';
 import { PrismaDeliverymenRepository } from './prisma/repositories/prisma-deliverymen-repository';
 import { PrismaAdminRepository } from './prisma/repositories/prisma-admin-repository';
 import { PrismaAttachmentRepository } from './prisma/repositories/prisma-attachment-repository';
+import { PrismaNotificationsRepository } from './prisma/repositories/prisma-notifications-repository';
 
 @Module({
   imports: [],
@@ -37,6 +39,10 @@ import { PrismaAttachmentRepository } from './prisma/repositories/prisma-attachm
       provide: AttachmentRepository,
       useClass: PrismaAttachmentRepository,
     },
+    {
+      provide: NotificationsRepository,
+      useClass: PrismaNotificationsRepository,
+    },
   ],
   exports: [
     PrismaService,
@@ -45,6 +51,7 @@ import { PrismaAttachmentRepository } from './prisma/repositories/prisma-attachm
     AdminRepository,
     DeliveryMenRepository,
     AttachmentRepository,
+    NotificationsRepository,
   ],
 })
 export class DatabaseModule {}
