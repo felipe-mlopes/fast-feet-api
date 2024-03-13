@@ -15,12 +15,13 @@ import { cpfMask } from "@/utils/cpfMask";
 
 interface LoginInputProps extends InputHTMLAttributes<HTMLInputElement> {
   inputType: "text" | "password";
+  error: string | undefined;
 }
 
 const LoginInput: React.ForwardRefRenderFunction<
   HTMLInputElement,
   LoginInputProps
-> = ({ inputType, ...props }, ref) => {
+> = ({ inputType, error, ...props }, ref) => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [isProfileIconChangeColor, setIsProfileIconChangeColor] =
     React.useState(false);
@@ -32,6 +33,7 @@ const LoginInput: React.ForwardRefRenderFunction<
   }
 
   function handleChangeValue({ currentTarget }: ChangeEvent<HTMLInputElement>) {
+    currentTarget.setCustomValidity(error ?? "");
     const { value, name } = currentTarget;
 
     if (name === "cpf") {
