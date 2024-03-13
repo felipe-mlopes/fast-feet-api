@@ -1,6 +1,7 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { Optional } from '@/core/types/optional';
+
 import { ChangeOrderStatusEvent } from '../events/change-order-status-event';
 
 export enum Status {
@@ -10,18 +11,19 @@ export enum Status {
 }
 
 export enum Role {
-  ADMIN = 'admin',
-  DELIVERYMAN = 'deliveryman',
+  ADMIN = 'ADMIN',
+  DELIVERYMAN = 'DELIVERYMAN',
 }
 
 export interface OrderProps {
+  trackingCode: string;
+  title: string;
   recipientId: UniqueEntityID;
   city: string;
   neighborhood: string;
-  role: Role;
-  deliverymanId?: UniqueEntityID | null;
-  title: string;
   status: Status;
+  deliverymanId?: UniqueEntityID | null;
+  isReturned: boolean;
   attachmentId: string;
   createdAt: Date;
   picknUpAt?: Date | null;
@@ -30,6 +32,19 @@ export interface OrderProps {
 }
 
 export class Order extends AggregateRoot<OrderProps> {
+  get trackingCode() {
+    return this.props.trackingCode;
+  }
+
+  get title() {
+    return this.props.title;
+  }
+
+  set title(title: string) {
+    this.props.title = title;
+    this.touch();
+  }
+
   get recipientId() {
     return this.props.recipientId;
   }
@@ -40,36 +55,6 @@ export class Order extends AggregateRoot<OrderProps> {
 
   get neighborhood() {
     return this.props.neighborhood;
-  }
-
-  get role() {
-    return this.props.role;
-  }
-
-  set role(role: Role) {
-    if (Object.values(Role).includes(role)) {
-      this.props.role = role;
-    } else {
-      console.error('Role invalid.');
-    }
-  }
-
-  get deliverymanId() {
-    return this.props.deliverymanId;
-  }
-
-  set deliverymanId(deliverymanId: UniqueEntityID | undefined | null) {
-    this.props.deliverymanId = deliverymanId;
-    this.touch();
-  }
-
-  get title() {
-    return this.props.title;
-  }
-
-  set title(title: string) {
-    this.props.title = title;
-    this.touch();
   }
 
   get status() {
@@ -92,6 +77,23 @@ export class Order extends AggregateRoot<OrderProps> {
     } else {
       console.error('Status invalid.');
     }
+  }
+
+  get deliverymanId() {
+    return this.props.deliverymanId;
+  }
+
+  set deliverymanId(deliverymanId: UniqueEntityID | undefined | null) {
+    this.props.deliverymanId = deliverymanId;
+    this.touch();
+  }
+
+  get isReturned() {
+    return this.props.isReturned;
+  }
+
+  set isReturned(isReturned: boolean) {
+    this.props.isReturned = isReturned;
   }
 
   get attachmentId() {
@@ -132,13 +134,18 @@ export class Order extends AggregateRoot<OrderProps> {
   }
 
   static create(
-    props: Optional<OrderProps, 'status' | 'attachmentId' | 'createdAt'>,
+    props: Optional<
+      OrderProps,
+      'trackingCode' | 'status' | 'isReturned' | 'attachmentId' | 'createdAt'
+    >,
     id?: UniqueEntityID,
   ) {
     const order = new Order(
       {
         ...props,
+        trackingCode: new UniqueEntityID().toString().substring(24, 36),
         status: props.status ?? Status.WAITING,
+        isReturned: props.isReturned ?? false,
         attachmentId: props.attachmentId ?? '',
         createdAt: props.createdAt ?? new Date(),
       },
