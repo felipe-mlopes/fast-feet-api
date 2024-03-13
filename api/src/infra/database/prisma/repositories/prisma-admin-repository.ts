@@ -4,7 +4,7 @@ import { PrismaService } from '../prisma.service';
 
 import { AdminRepository } from '@/domain/delivery/application/repositories/admin-repository';
 import { AdminUser } from '@/domain/delivery/enterprise/entities/admin-user';
-import { PrismaAdminMapper } from '../mappers/prisma-admin.mapper';
+import { PrismaAdminMapper } from '../mappers/prisma-admin-mapper';
 
 @Injectable()
 export class PrismaAdminRepository implements AdminRepository {
