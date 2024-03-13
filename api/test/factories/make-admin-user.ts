@@ -8,7 +8,7 @@ import {
   AdminUser,
   AdminUserProps,
 } from '@/domain/delivery/enterprise/entities/admin-user';
-import { PrismaAdminMapper } from '@/infra/database/prisma/mappers/prisma-admin.mapper';
+import { PrismaAdminMapper } from '@/infra/database/prisma/mappers/prisma-admin-mapper';
 
 export function makeAdminUser(
   override: Partial<AdminUserProps> = {},
