@@ -11,6 +11,7 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
+import { makeDeliverymen } from 'test/factories/make-deliverymen';
 
 let inMemoryAdminRepository: InMemoryAdminRepository;
 let inMemoryOrdersRepository: InMemoryOrdersRepository;
@@ -66,8 +67,10 @@ describe('Create Order', () => {
 
     await inMemoryRecipientsRepository.create(recipient);
 
+    const user = makeDeliverymen();
+
     const result = await sut.execute({
-      adminRole: 'ADMIN',
+      adminRole: user.role,
       recipientId: recipient.id.toString(),
       title: 'Order-01',
     });
