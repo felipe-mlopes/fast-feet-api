@@ -19,22 +19,26 @@ export async function loginAction(
 
     const response = await fetch('http://localhost:3333/deliveryman/sessions', { 
         method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+          },
         body: JSON.stringify({
             cpf,
             password
         })
      })
 
-/*     if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-    } */
+     if (response.ok) {
+         const data = await response.json()
+         console.log(data)
+        
+         return {
+             data
+         }
+     } else {
+        const data = await response.json()
+        console.error(data.message)
 
-    const data = await response.json()
-
-    console.log(data?.errors)
-
-    return {
-        data
-    }
-
+        return {}
+     }
 }
