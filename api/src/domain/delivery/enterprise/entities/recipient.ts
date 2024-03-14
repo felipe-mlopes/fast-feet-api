@@ -4,6 +4,7 @@ import { Optional } from '@/core/types/optional';
 
 export interface RecipientProps {
   name: string;
+  email: string;
   zipcode: number;
   address: string;
   city: string;
@@ -18,6 +19,14 @@ export class Recipient extends Entity<RecipientProps> {
 
   set name(name: string) {
     this.props.name = name;
+  }
+
+  get email() {
+    return this.props.email;
+  }
+
+  set email(email: string) {
+    this.props.email = email;
   }
 
   get zipcode() {
