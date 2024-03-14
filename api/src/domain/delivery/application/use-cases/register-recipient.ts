@@ -12,6 +12,7 @@ import { AdminRepository } from '../repositories/admin-repository';
 interface RegisterRecipientUseCaseRequest {
   adminId: string;
   name: string;
+  email: string;
   zipcode: number;
   address: string;
   neighborhood: string;
@@ -35,6 +36,7 @@ export class RegisterRecipientUseCase {
   async execute({
     adminId,
     name,
+    email,
     zipcode,
     address,
     neighborhood,
@@ -52,6 +54,7 @@ export class RegisterRecipientUseCase {
 
     const recipient = Recipient.create({
       name,
+      email,
       address,
       zipcode,
       neighborhood,
