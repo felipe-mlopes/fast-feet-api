@@ -19,11 +19,12 @@ export interface OrderProps {
   trackingCode: string;
   title: string;
   recipientId: UniqueEntityID;
+  recipientName: string;
   city: string;
   neighborhood: string;
   status: Status;
-  deliverymanId?: UniqueEntityID | null;
   isReturned: boolean;
+  deliverymanId?: UniqueEntityID | null;
   attachmentId: string;
   createdAt: Date;
   picknUpAt?: Date | null;
@@ -47,6 +48,10 @@ export class Order extends AggregateRoot<OrderProps> {
 
   get recipientId() {
     return this.props.recipientId;
+  }
+
+  get recipientName() {
+    return this.props.recipientName;
   }
 
   get city() {
