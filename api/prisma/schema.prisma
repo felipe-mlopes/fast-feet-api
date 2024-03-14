@@ -43,6 +43,7 @@ model Order {
 model Shipping {
   id                 String @id @default(uuid())
   clientName         String @map("client_name")
+  clientEmail        String @unique @map("client_email")
   clientCity         String @map("client_city")
   clientNeighborhood String @map("client_neighborhood")
   clientAddress      String @map("client_address")
@@ -66,11 +67,10 @@ model Attachment {
 }
 
 model Notification {
-  id         String    @id @default(uuid())
-  shippingId String    @map("shipping_id")
+  id         String   @id @default(uuid())
+  shippingId String   @map("shipping_id")
   title      String
-  readAt     DateTime? @map("read_at")
-  createdAt  DateTime  @default(now()) @map("created_at")
+  createdAt  DateTime @default(now()) @map("created_at")
 
   Shipping Shipping @relation(fields: [shippingId], references: [id])
 
