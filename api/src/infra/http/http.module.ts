@@ -17,6 +17,7 @@ import { UploadAndCreateAttachmentController } from './controllers/upload-and-cr
 import { FecthNearbyOrdersWaitingAndPicknUpController } from './controllers/fetch-nearby-orders-waiting-and-pickn-up.controller';
 import { FecthNearbyOrdersDoneController } from './controllers/fetch-nearby-orders-done.controller';
 import { GetOrderDetailsController } from './controllers/get-order-details.controller';
+import { GetOrderByTrackingCodeController } from './controllers/get-order-by-tracking-code.controller';
 
 import { RegisterAdminUseCase } from '@/domain/delivery/application/use-cases/register-admin';
 import { CreateOrderUseCase } from '@/domain/delivery/application/use-cases/create-order';
@@ -31,6 +32,7 @@ import { UploadAndCreateAttachmentUseCase } from '@/domain/delivery/application/
 import { FetchNearbyOrdersWaitingAndPicknUpUseCase } from '@/domain/delivery/application/use-cases/fetch-nearby-orders-waiting-and-pickn-up';
 import { FetchNearbyOrdersDoneUseCase } from '@/domain/delivery/application/use-cases/fetch-nearby-orders-done';
 import { GetOrderDetailsUseCase } from '@/domain/delivery/application/use-cases/get-order-details';
+import { GetOrderByTrackingCodeUseCase } from '@/domain/delivery/application/use-cases/get-order-by-tracking-code';
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -48,6 +50,7 @@ import { GetOrderDetailsUseCase } from '@/domain/delivery/application/use-cases/
     FecthNearbyOrdersWaitingAndPicknUpController,
     FecthNearbyOrdersDoneController,
     GetOrderDetailsController,
+    GetOrderByTrackingCodeController,
   ],
   providers: [
     RegisterAdminUseCase,
@@ -63,6 +66,7 @@ import { GetOrderDetailsUseCase } from '@/domain/delivery/application/use-cases/
     FetchNearbyOrdersWaitingAndPicknUpUseCase,
     FetchNearbyOrdersDoneUseCase,
     GetOrderDetailsUseCase,
+    GetOrderByTrackingCodeUseCase,
   ],
 })
 export class HttpModule {}
