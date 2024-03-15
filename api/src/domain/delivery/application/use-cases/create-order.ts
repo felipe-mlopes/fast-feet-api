@@ -46,7 +46,6 @@ export class CreateOrderUseCase {
 
     const order = Order.create({
       recipientId: recipient.id,
-      recipientName: recipient.name,
       city: recipient.city,
       neighborhood: recipient.neighborhood,
       title,
