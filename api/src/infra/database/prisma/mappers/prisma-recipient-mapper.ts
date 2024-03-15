@@ -7,6 +7,7 @@ export class PrismaRecipientMapper {
     return Recipient.create(
       {
         name: raw.clientName,
+        email: raw.clientEmail,
         zipcode: raw.clientZipcode,
         address: raw.clientAddress,
         neighborhood: raw.clientNeighborhood,
@@ -20,6 +21,7 @@ export class PrismaRecipientMapper {
     return {
       id: recipient.id.toString(),
       clientName: recipient.name,
+      clientEmail: recipient.email,
       clientZipcode: recipient.zipcode,
       clientAddress: recipient.address,
       clientNeighborhood: recipient.neighborhood,
