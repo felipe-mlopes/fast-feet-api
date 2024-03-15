@@ -37,10 +37,16 @@ export class PrismaOrdersRepository implements OrdersRepository {
     return PrismaOrderMapper.toDomain(order, client);
   }
 
-  async findByTrackingCode(trackingCode: string): Promise<Order | null> {
+  async findByTrackingCodeAndClientName(
+    trackingCode: string,
+    clientName: string,
+  ): Promise<Order | null> {
     const order = await this.prisma.order.findFirst({
       where: {
         trackingCode,
+        shipping: {
+          clientName,
+        },
       },
     });
 
@@ -84,6 +90,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
           select: {
             id: true,
             clientName: true,
+            clientEmail: true,
             clientCity: true,
             clientNeighborhood: true,
             clientAddress: true,
@@ -121,6 +128,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
           select: {
             id: true,
             clientName: true,
+            clientEmail: true,
             clientCity: true,
             clientNeighborhood: true,
             clientAddress: true,
