@@ -18,3 +18,13 @@ input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+@layer components {
+  .step-item {
+    @apply relative flex flex-col justify-center items-center w-full;
+  }
+
+  .step-item:not(:first-child):before {
+    @apply content-[''] absolute w-full h-[2px] -top-3/4 -translate-y-2/4 bg-bluish-gray;
+  }
+}
