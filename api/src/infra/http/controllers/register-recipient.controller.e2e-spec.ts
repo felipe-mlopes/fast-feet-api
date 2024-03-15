@@ -43,6 +43,7 @@ describe('Register Recipient (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         name: 'John Doe',
+        email: 'johndoe@example.com',
         address: 'Somewhere st',
         zipcode: 12345678,
         neighborhood: 'Downtown',
