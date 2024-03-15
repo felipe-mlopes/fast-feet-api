@@ -57,7 +57,7 @@ describe('Get Order Details (E2E)', () => {
       .send();
 
     expect(response.statusCode).toBe(200);
-    expect(response.body.recipient.props).toEqual(
+    expect(response.body.recipient).toEqual(
       expect.objectContaining({
         name: 'John Doe',
       }),
