@@ -5,13 +5,12 @@ import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders-rep
 import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipients-repository';
 
 import { makeAdminUser } from 'test/factories/make-admin-user';
+import { makeRecipient } from 'test/factories/make-recipient';
+import { makeDeliverymen } from 'test/factories/make-deliverymen';
 
-import { Recipient } from '@/domain/delivery/enterprise/entities/recipient';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
-
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
-import { makeDeliverymen } from 'test/factories/make-deliverymen';
 
 let inMemoryAdminRepository: InMemoryAdminRepository;
 let inMemoryOrdersRepository: InMemoryOrdersRepository;
@@ -31,17 +30,9 @@ describe('Create Order', () => {
 
   it('should be able to create a new order', async () => {
     const admin = makeAdminUser();
-
     await inMemoryAdminRepository.create(admin);
 
-    const recipient = Recipient.create({
-      name: 'John Doe',
-      zipcode: 12345678,
-      address: 'Somewhere St',
-      city: 'Somewhere city',
-      neighborhood: 'downtown',
-    });
-
+    const recipient = makeRecipient();
     await inMemoryRecipientsRepository.create(recipient);
 
     const result = await sut.execute({
@@ -57,14 +48,7 @@ describe('Create Order', () => {
   });
 
   it('should not be possible to create an order without being an administrator', async () => {
-    const recipient = Recipient.create({
-      name: 'John Doe',
-      zipcode: 12345678,
-      address: 'Somewhere St',
-      city: 'Somewhere city',
-      neighborhood: 'downtown',
-    });
-
+    const recipient = makeRecipient();
     await inMemoryRecipientsRepository.create(recipient);
 
     const user = makeDeliverymen();
