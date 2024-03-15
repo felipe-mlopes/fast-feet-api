@@ -37,16 +37,10 @@ export class PrismaOrdersRepository implements OrdersRepository {
     return PrismaOrderMapper.toDomain(order, client);
   }
 
-  async findByTrackingCodeAndClientName(
-    trackingCode: string,
-    clientName: string,
-  ): Promise<Order | null> {
-    const order = await this.prisma.order.findFirst({
+  async findByTrackingCode(trackingCode: string): Promise<Order | null> {
+    const order = await this.prisma.order.findUnique({
       where: {
         trackingCode,
-        shipping: {
-          clientName,
-        },
       },
     });
 
