@@ -1,4 +1,5 @@
 import { Button } from "@/components/Button";
+import { Card } from "@/components/Card";
 import { ExistIcon } from "@/components/icons/ExistIcon";
 import { PinIcon } from "@/components/icons/PinIcon";
 import { SearchIcon } from "@/components/icons/SearchIcon";
@@ -22,8 +23,8 @@ export default function Deliveries() {
           </div>
         </div>
       </header>
-      <main className="relative w-full bg-white">
-        <div className="flex items-center justify-start gap-4 px-6 absolute bg-white border border-black rounded shadow-sm">
+      <main className="w-full bg-white px-6">
+        <div className="flex items-center justify-start gap-4 px-6 bg-white border border-black rounded shadow-sm">
           <input
             type="search"
             name=""
@@ -35,12 +36,11 @@ export default function Deliveries() {
             <SearchIcon />
           </button>
         </div>
-        <div className="space-y-3">
-          <Button content="" />
-          <Button content="" />
-          <Button content="" />
-          <Button content="" />
-          <Button content="" />
+        <div className="space-y-4">
+          <Card />
+          <Card />
+          <Card />
+          <Card />
         </div>
       </main>
       <footer></footer>
