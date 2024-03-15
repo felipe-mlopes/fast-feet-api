@@ -9,7 +9,6 @@ export class PrismaOrderMapper {
         trackingCode: raw.trackingCode,
         title: raw.title,
         recipientId: new UniqueEntityID(raw.clientId),
-        recipientName: client.clientName,
         city: client.clientCity,
         neighborhood: client.clientNeighborhood,
         status: raw.status as Status,
