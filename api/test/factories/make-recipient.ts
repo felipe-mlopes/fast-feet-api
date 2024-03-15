@@ -18,6 +18,7 @@ export function makeRecipient(
   const recipient = Recipient.create(
     {
       name: faker.person.fullName(),
+      email: faker.internet.email(),
       zipcode: parseInt(faker.location.zipCode('########')),
       address: faker.location.streetAddress(),
       neighborhood: faker.location.county(),
