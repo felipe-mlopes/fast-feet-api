@@ -16,6 +16,10 @@ import { UserPayload } from '@/infra/auth/jwt.strategy';
 
 const registerRecipientBodySchema = z.object({
   name: z.string().transform((str) => str.toLowerCase()),
+  email: z
+    .string()
+    .email()
+    .transform((str) => str.toLowerCase()),
   zipcode: z.number(),
   address: z.string().transform((str) => str.toLowerCase()),
   city: z.string().transform((str) => str.toLowerCase()),
@@ -36,12 +40,13 @@ export class RegisterRecipientController {
     @Body(bodyValidationProps) body: RegisterRecipientBodySchema,
     @CurrentUser() user: UserPayload,
   ) {
-    const { name, address, zipcode, neighborhood, city } = body;
+    const { name, email, address, zipcode, neighborhood, city } = body;
     const userId = user.sub;
 
     const result = await this.registerRecipient.execute({
       adminId: userId,
       name,
+      email,
       address,
       zipcode,
       neighborhood,
