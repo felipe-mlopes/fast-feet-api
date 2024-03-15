@@ -7,6 +7,7 @@ export class OrderPresenter {
       title: order.title,
       recipientId: order.recipientId,
       status: order.status,
+      isReturn: order.isReturned,
       city: order.city,
       neighborhood: order.neighborhood,
       createdAt: order.createdAt,
