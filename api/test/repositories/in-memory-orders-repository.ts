@@ -16,8 +16,14 @@ export class InMemoryOrdersRepository implements OrdersRepository {
     return order;
   }
 
-  async findByTrackingCode(trackingCode: string): Promise<Order | null> {
-    const order = this.items.find((item) => item.trackingCode === trackingCode);
+  async findByTrackingCodeAndClientName(
+    trackingCode: string,
+    clientName: string,
+  ): Promise<Order | null> {
+    const order = this.items.find(
+      (item) =>
+        item.trackingCode === trackingCode && item.recipientName === clientName,
+    );
 
     if (!order) {
       return null;
