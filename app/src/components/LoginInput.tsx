@@ -61,7 +61,7 @@ const LoginInput: React.ForwardRefRenderFunction<
 
   return (
     <div className="flex justify-between gap-4 w-full p-4 rounded bg-gray-light">
-      <div className="flex gap-4 items-center justify-start group">
+      <div className="flex gap-4 items-center justify-start">
         <span>
           {inputType === "text" ? (
             <ProfileIcon isActived={isProfileIconChangeColor} />
