@@ -13,6 +13,9 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      boxShadow: {
+        "card": "0px 8px 24px 0px rgba(21, 6, 51, 0.08)"
+      },
       colors: {
         "indigo-blue": "#4C33CC",
         "orange-light": "#FFC042",
@@ -20,6 +23,9 @@ const config: Config = {
         "purple-dark": "#4C4766",
         "gray-light": "#F7F5FA",
         "bluish-gray": "#DAD7E0",
+        "lavender-gray": "#6F6C80",
+        "yellow-slow": "#FFF1D6",
+        "ligth-slate-gray": "#BEBCCC",
       }
     },
   },
