@@ -6,16 +6,17 @@ export class PrismaOrderMapper {
   static toDomain(raw: PrismaOrder, client: Shipping): Order {
     return Order.create(
       {
-        recipientId: new UniqueEntityID(raw.clientId),
-        title: raw.title,
         trackingCode: raw.trackingCode,
+        title: raw.title,
+        recipientId: new UniqueEntityID(raw.clientId),
+        recipientName: client.clientName,
+        city: client.clientCity,
+        neighborhood: client.clientNeighborhood,
         status: raw.status as Status,
         isReturned: raw.isReturned,
         deliverymanId: raw.deliverymanId
           ? new UniqueEntityID(raw.deliverymanId)
           : null,
-        city: client.clientCity,
-        neighborhood: client.clientNeighborhood,
         picknUpAt: raw.picknUpAt ?? null,
         deliveryAt: raw.deliveryAt ?? null,
         createdAt: raw.createdAt,
@@ -28,15 +29,15 @@ export class PrismaOrderMapper {
   static toPrisma(order: Order): Prisma.OrderUncheckedCreateInput {
     return {
       id: order.id.toString(),
-      clientId: order.recipientId.toString(),
-      deliverymanId: order.deliverymanId?.toString() ?? null,
       trackingCode: order.trackingCode,
       title: order.title,
+      clientId: order.recipientId.toString(),
       status: order.status,
       isReturned: order.isReturned,
+      deliverymanId: order.deliverymanId?.toString() ?? null,
+      createdAt: order.createdAt,
       picknUpAt: order.picknUpAt,
       deliveryAt: order.deliveryAt,
-      createdAt: order.createdAt,
       updatedAt: order.updatedAt,
     };
   }
