@@ -11,6 +11,11 @@ export const envSchema = z.object({
   REDIS_HOST: z.string().optional().default('127.0.0.1'),
   REDIS_PORT: z.coerce.number().optional().default(6379),
   REDIS_DB: z.coerce.number().optional().default(0),
+  MAIL_HOST: z.string().optional().default('127.0.0.1'),
+  MAIL_PORT: z.coerce.number().optional().default(2525),
+  MAIL_USER: z.string(),
+  MAIL_PASS: z.string(),
+  MAIL_FROM: z.string().email(),
   PORT: z.coerce.number().optional().default(3333),
 });
 
