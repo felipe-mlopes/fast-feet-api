@@ -3,10 +3,7 @@ import { Order } from '@/domain/delivery/enterprise/entities/order';
 
 export abstract class OrdersRepository {
   abstract findById(id: string): Promise<Order | null>;
-  abstract findByTrackingCodeAndClientName(
-    trackingCode: string,
-    clientName: string,
-  ): Promise<Order | null>;
+  abstract findByTrackingCode(trackingCode: string): Promise<Order | null>;
   abstract findManyRecentByCityAndOrdersWaitingAndPicknUp(
     city: string,
     params: PaginationParams,
