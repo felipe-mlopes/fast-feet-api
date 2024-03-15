@@ -24,7 +24,7 @@ model Order {
   id            String    @id @default(uuid())
   deliverymanId String?   @map("deliveryman_id")
   clientId      String    @map("client_id")
-  trackingCode  String    @map("tracking_code")
+  trackingCode  String    @unique @map("tracking_code")
   title         String
   status        Status    @default(WAITING)
   isReturned    Boolean   @default(false)
