@@ -26,6 +26,7 @@ const config: Config = {
         "lavender-gray": "#6F6C80",
         "yellow-slow": "#FFF1D6",
         "ligth-slate-gray": "#BEBCCC",
+        "spring-green": "#00DA6D"
       }
     },
   },
