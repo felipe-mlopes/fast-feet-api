@@ -2,7 +2,8 @@ import Link from "next/link";
 
 import { Header } from "@/components/Header";
 import { Cover } from "@/components/Cover";
-import { ArrowLeft } from "@/components/icons/ArrowLeft";
+
+import { LongArrowIcon } from "@/components/icons/LongArrowIcon";
 
 export default function ForgotPassword() {
   return (
@@ -29,7 +30,7 @@ export default function ForgotPassword() {
       </main>
       <footer className="flex justify-between items-center w-full pt-24">
         <Link href={"/login"}>
-          <ArrowLeft />
+          <LongArrowIcon />
         </Link>
         <Link href={"/login"} className="font-medium text-white">
           Voltar para o login
