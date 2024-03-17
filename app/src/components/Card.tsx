@@ -1,4 +1,8 @@
-import { ArrowRightIcon } from "./icons/ArrowRightIcon";
+import Link from "next/link";
+
+import { StatusSteps } from "./StatusSteps";
+
+import { ArrowIcon } from "./icons/ArrowIcon";
 import { PackageIcon } from "./icons/PackageIcon";
 
 export function Card() {
@@ -14,18 +18,15 @@ export function Card() {
             01/07/2020
           </p>
         </div>
-        <div className="step-item">
-          <div className="flex justify-between w-full uppercase text-[0.625rem] font-bold text-ligth-slate-gray">
-            <p>Aguardando</p>
-            <p>Retirado</p>
-            <p>Entregue</p>
-          </div>
-        </div>
+        <StatusSteps />
       </div>
-      <button className="flex justify-between items-center p-4 w-full bg-yellow-slow">
+      <Link
+        href={"/deliveries/1"}
+        className="flex justify-between items-center p-4 w-full bg-yellow-slow"
+      >
         <span className="font-medium text-purple-dark">Detalhes</span>
-        <ArrowRightIcon />
-      </button>
+        <ArrowIcon side="right" className="fill-lavender-gray" />
+      </Link>
     </div>
   );
 }
