@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 import { NotificationsRepository } from '../repositories/notifications-repository';
 import { RecipentsRepository } from '@/domain/delivery/application/repositories/recipients-repository';
-import { SendEmail } from '../mailing/sendEmail';
 
 import { Notification } from '../../enterprise/entities/notification';
 
@@ -27,7 +26,6 @@ export class SendNotificationUseCase {
   constructor(
     private notificationsRepository: NotificationsRepository,
     private recipientRepository: RecipentsRepository,
-    private sendEmail: SendEmail,
   ) {}
 
   async execute({
@@ -46,12 +44,6 @@ export class SendNotificationUseCase {
     });
 
     await this.notificationsRepository.create(notification);
-
-    await this.sendEmail.send({
-      to: [recipient.email],
-      subject: notification.title,
-      html: 'E-mail enviado com sucesso',
-    });
 
     return right({
       notification,
