@@ -6,14 +6,27 @@ import { PrismaOrderMapper } from '../mappers/prisma-order-mapper';
 import { OrdersRepository } from '@/domain/delivery/application/repositories/orders-repository';
 import { Order } from '@/domain/delivery/enterprise/entities/order';
 
+import { CacheRepository } from '@/infra/cache/cache-repository';
+
 import { PaginationParams } from '@/core/repositories/pagination-params';
 import { DomainEvents } from '@/core/events/domain-events';
 
 @Injectable()
 export class PrismaOrdersRepository implements OrdersRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private cacheRepository: CacheRepository,
+  ) {}
 
   async findById(id: string): Promise<Order | null> {
+    const cacheHit = await this.cacheRepository.get(`order:${id}:details`);
+
+    if (cacheHit) {
+      const cachedData = JSON.parse(cacheHit);
+
+      return cachedData;
+    }
+
     const order = await this.prisma.order.findUnique({
       where: {
         id,
@@ -34,7 +47,14 @@ export class PrismaOrdersRepository implements OrdersRepository {
       return null;
     }
 
-    return PrismaOrderMapper.toDomain(order, client);
+    const questionDetails = PrismaOrderMapper.toDomain(order, client);
+
+    await this.cacheRepository.set(
+      `order:${id}:details`,
+      JSON.stringify(questionDetails),
+    );
+
+    return questionDetails;
   }
 
   async findByTrackingCode(trackingCode: string): Promise<Order | null> {
@@ -148,12 +168,16 @@ export class PrismaOrdersRepository implements OrdersRepository {
   async save(order: Order): Promise<void> {
     const data = PrismaOrderMapper.toPrisma(order);
 
-    await this.prisma.order.update({
-      where: {
-        id: order.id.toString(),
-      },
-      data,
-    });
+    await Promise.all([
+      this.prisma.order.update({
+        where: {
+          id: order.id.toString(),
+        },
+        data,
+      }),
+
+      this.cacheRepository.delete(`order:${order.id.toString()}:details`),
+    ]);
 
     DomainEvents.dispatchEventsForAggregate(order.id);
   }
