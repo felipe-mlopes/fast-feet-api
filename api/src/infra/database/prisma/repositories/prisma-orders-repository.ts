@@ -83,16 +83,26 @@ export class PrismaOrdersRepository implements OrdersRepository {
 
   async findManyRecentByCityAndOrdersWaitingAndPicknUp(
     city: string,
+    deliverymanId: string,
     { page }: PaginationParams,
   ): Promise<Order[] | null> {
     const orders = await this.prisma.order.findMany({
       where: {
-        status: {
-          not: 'DONE',
-        },
-        shipping: {
-          clientCity: city,
-        },
+        OR: [
+          {
+            AND: [
+              { shipping: { clientCity: city } },
+              { status: { equals: 'WAITING' } },
+            ],
+          },
+          {
+            AND: [
+              { deliverymanId },
+              { shipping: { clientCity: city } },
+              { status: { equals: 'PICKN_UP' } },
+            ],
+          },
+        ],
       },
       orderBy: {
         createdAt: 'desc',
@@ -121,6 +131,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
 
   async findManyRecentByCityAndOrdersDone(
     city: string,
+    deliverymanId: string,
     { page }: PaginationParams,
   ): Promise<Order[] | null> {
     const orders = await this.prisma.order.findMany({
@@ -128,6 +139,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
         status: {
           equals: 'DONE',
         },
+        deliverymanId,
         shipping: {
           clientCity: city,
         },
