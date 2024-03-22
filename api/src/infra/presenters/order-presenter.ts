@@ -11,6 +11,7 @@ export class OrderPresenter {
       isReturn: order.isReturned,
       city: order.city,
       neighborhood: order.neighborhood,
+      deliverymanId: order.deliverymanId?.toString(),
       createdAt: order.createdAt,
       picknUpAt: order.picknUpAt,
       deliveryAt: order.deliveryAt,
