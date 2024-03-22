@@ -9,7 +9,7 @@ import { SendEmail } from '../mailing/sendEmail';
 
 import { EventHandler } from '@/core/events/event-handler';
 import { DomainEvents } from '@/core/events/domain-events';
-import { emailTemplate } from '@/infra/mailing/email-template';
+import { emailTemplate, statusEdit } from '@/infra/mailing/email-template';
 
 @Injectable()
 export class OnChangeOrderStatus implements EventHandler {
@@ -44,15 +44,21 @@ export class OnChangeOrderStatus implements EventHandler {
       await Promise.all([
         this.sendNotification.execute({
           recipientId: currentOrder.recipientId.toString(),
-          title: `O status do seu pedido ${order.title} mudou para ${order.status}`,
+          title: `O status do seu pedido ${currentOrder.title} mudou para ${currentOrder.status}`,
         }),
 
         this.sendEmail.send({
           to: [currentRecipient.email],
-          subject: `O status do seu pedido ${order.title} mudou para ${order.status}`,
+          subject: `O status do seu pedido ${currentOrder.title} mudou para ${statusEdit(currentOrder.status)}`,
           html: emailTemplate({
             recipientName: currentRecipient.name,
-            orderStatus: order.status,
+            recipientAddress: currentRecipient.address,
+            recipientZipcode: currentRecipient.zipcode,
+            recipientNeighborhood: currentRecipient.neighborhood,
+            recipientCity: currentRecipient.city,
+            orderTitle: currentOrder.title,
+            orderStatus: currentOrder.status,
+            orderTrackingCode: currentOrder.trackingCode,
           }),
         }),
       ]);
