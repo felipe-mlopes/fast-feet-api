@@ -28,10 +28,18 @@ export class InMemoryOrdersRepository implements OrdersRepository {
 
   async findManyRecentByCityAndOrdersWaitingAndPicknUp(
     city: string,
+    deliverymanId: string,
     { page }: PaginationParams,
   ) {
     const orders = this.items
-      .filter((item) => item.status !== Status.DONE && item.city === city)
+      .filter((item) => {
+        return (
+          (item.status === Status.WAITING && item.city === city) ||
+          (item.status === Status.PICKN_UP &&
+            item.deliverymanId?.toString() === deliverymanId &&
+            item.city === city)
+        );
+      })
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice((page - 1) * 20, page * 20);
 
@@ -40,10 +48,16 @@ export class InMemoryOrdersRepository implements OrdersRepository {
 
   async findManyRecentByCityAndOrdersDone(
     city: string,
+    deliverymanId: string,
     { page }: PaginationParams,
   ) {
     const orders = this.items
-      .filter((item) => item.status === Status.DONE && item.city === city)
+      .filter(
+        (item) =>
+          item.status === Status.DONE &&
+          item.city === city &&
+          item.deliverymanId?.toString() === deliverymanId,
+      )
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice((page - 1) * 20, page * 20);
 
