@@ -6,7 +6,7 @@ import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-deliv
 import { makeOrder } from 'test/factories/make-orders';
 import { makeDeliverymen } from 'test/factories/make-deliverymen';
 
-import { Role, Status } from '@/domain/delivery/enterprise/entities/order';
+import { Status } from '@/domain/delivery/enterprise/entities/order';
 
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 
@@ -18,7 +18,10 @@ describe('Fetch Nearby Orders Done', () => {
   beforeEach(() => {
     inMemoryOrdersRepository = new InMemoryOrdersRepository();
     inMemoryDeliverymenRepository = new InMemoryDeliveryMenRepository();
-    sut = new FetchNearbyOrdersDoneUseCase(inMemoryOrdersRepository);
+    sut = new FetchNearbyOrdersDoneUseCase(
+      inMemoryOrdersRepository,
+      inMemoryDeliverymenRepository,
+    );
   });
 
   it('should be able to fetch recent orders with done status', async () => {
@@ -54,7 +57,7 @@ describe('Fetch Nearby Orders Done', () => {
     const result = await sut.execute({
       city: 'Somewhere City',
       page: 1,
-      deliverymanRole: Role.DELIVERYMAN,
+      deliverymanId: newDeliveryman.id.toString(),
     });
 
     expect(result.isRight()).toBe(true);
@@ -64,6 +67,8 @@ describe('Fetch Nearby Orders Done', () => {
   });
 
   it('should not be able to fetch recent orders without a registered delivery person', async () => {
+    const newDeliveryman = makeDeliverymen();
+
     const newOrder1 = makeOrder({
       city: 'Somewhere City',
     });
@@ -80,7 +85,7 @@ describe('Fetch Nearby Orders Done', () => {
     const result = await sut.execute({
       city: 'Somewhere City',
       page: 1,
-      deliverymanRole: Role.ADMIN,
+      deliverymanId: newDeliveryman.id.toString(),
     });
 
     expect(result.isLeft()).toBe(true);
@@ -111,7 +116,7 @@ describe('Fetch Nearby Orders Done', () => {
     const result = await sut.execute({
       city: 'Somewhere City',
       page: 1,
-      deliverymanRole: Role.DELIVERYMAN,
+      deliverymanId: newDeliveryman.id.toString(),
     });
 
     if (result.isRight()) {
