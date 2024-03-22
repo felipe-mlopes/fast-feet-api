@@ -37,26 +37,14 @@ describe('Fetch Nearby Orders Done (E2E)', () => {
   });
 
   test('[GET] /orders/done', async () => {
-    const anotherDeliveryman = await deliveryFactory.makePrismaDeliveryman();
-
-    const recipient = await recipientFactory.makePrismaRecipient();
-
-    const order01 = await orderFactory.makePrismaOrder({
-      recipientId: recipient.id,
-      deliverymanId: anotherDeliveryman.id,
+    const recipient = await recipientFactory.makePrismaRecipient({
       city: 'somewhere',
-      title: 'order-01',
+    });
+    const anotherRecipient = await recipientFactory.makePrismaRecipient({
+      city: 'anywhere',
     });
 
-    await prisma.order.update({
-      where: {
-        id: order01.id.toString(),
-      },
-      data: {
-        status: 'DONE',
-      },
-    });
-
+    const anotherDeliveryman = await deliveryFactory.makePrismaDeliveryman();
     const deliveryman = await deliveryFactory.makePrismaDeliveryman();
 
     const accessToken = jwt.sign({
@@ -64,11 +52,58 @@ describe('Fetch Nearby Orders Done (E2E)', () => {
       role: deliveryman.role,
     });
 
+    await Promise.all([
+      orderFactory.makePrismaOrder({
+        recipientId: anotherRecipient.id,
+        title: 'order-03',
+      }),
+      orderFactory.makePrismaOrder({
+        recipientId: anotherRecipient.id,
+        title: 'order-04',
+      }),
+      orderFactory.makePrismaOrder({
+        recipientId: recipient.id,
+        title: 'order-05',
+      }),
+    ]);
+
+    const order01 = await orderFactory.makePrismaOrder({
+      recipientId: recipient.id,
+      title: 'order-01',
+    });
+
+    const order02 = await orderFactory.makePrismaOrder({
+      recipientId: recipient.id,
+      title: 'order-02',
+    });
+
+    await Promise.all([
+      prisma.order.update({
+        where: {
+          id: order01.id.toString(),
+        },
+        data: {
+          status: 'DONE',
+          deliverymanId: deliveryman.id.toString(),
+        },
+      }),
+      prisma.order.update({
+        where: {
+          id: order02.id.toString(),
+        },
+        data: {
+          status: 'DONE',
+          deliverymanId: anotherDeliveryman.id.toString(),
+        },
+      }),
+    ]);
+
+    const city = 'somewhere';
+
     const response = await request(app.getHttpServer())
-      .get('/orders/done')
+      .get(`/orders/done?city=${city}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        city: 'somewhere',
         page: 1,
       });
 

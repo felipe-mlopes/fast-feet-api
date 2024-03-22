@@ -5,6 +5,7 @@ import request from 'supertest';
 
 import { AppModule } from '@/infra/app.module';
 import { DatabaseModule } from '@/infra/database/database.module';
+import { PrismaService } from '@/infra/database/prisma/prisma.service';
 
 import { DeliverymenFactory } from 'test/factories/make-deliverymen';
 import { RecipientFactory } from 'test/factories/make-recipient';
@@ -15,6 +16,7 @@ describe('Fetch Nearby Orders Waiting and Pickn Up (E2E)', () => {
   let recipientFactory: RecipientFactory;
   let orderFactory: OrderFactory;
   let deliverymenFactory: DeliverymenFactory;
+  let prisma: PrismaService;
   let jwt: JwtService;
 
   beforeAll(async () => {
@@ -28,24 +30,37 @@ describe('Fetch Nearby Orders Waiting and Pickn Up (E2E)', () => {
     recipientFactory = moduleRef.get(RecipientFactory);
     orderFactory = moduleRef.get(OrderFactory);
     deliverymenFactory = moduleRef.get(DeliverymenFactory);
+    prisma = moduleRef.get(PrismaService);
     jwt = moduleRef.get(JwtService);
 
     await app.init();
   });
 
   test('[GET] /orders/pending', async () => {
-    const recipient = await recipientFactory.makePrismaRecipient();
+    const recipient = await recipientFactory.makePrismaRecipient({
+      city: 'somewhere',
+    });
+    const anotherRecipient = await recipientFactory.makePrismaRecipient({
+      city: 'anywhere',
+    });
+
+    const order01 = await orderFactory.makePrismaOrder({
+      recipientId: recipient.id,
+      title: 'order-01',
+    });
 
     await Promise.all([
       orderFactory.makePrismaOrder({
         recipientId: recipient.id,
-        city: 'somewhere',
-        title: 'order-01',
+        title: 'order-02',
       }),
       orderFactory.makePrismaOrder({
-        recipientId: recipient.id,
-        city: 'somewhere',
-        title: 'order-02',
+        recipientId: anotherRecipient.id,
+        title: 'order-03',
+      }),
+      orderFactory.makePrismaOrder({
+        recipientId: anotherRecipient.id,
+        title: 'order-04',
       }),
     ]);
 
@@ -56,11 +71,22 @@ describe('Fetch Nearby Orders Waiting and Pickn Up (E2E)', () => {
       role: deliveryman.role,
     });
 
+    await prisma.order.update({
+      where: {
+        id: order01.id.toString(),
+      },
+      data: {
+        status: 'PICKN_UP',
+        deliverymanId: deliveryman.id.toString(),
+      },
+    });
+
+    const city = 'somewhere';
+
     const response = await request(app.getHttpServer())
-      .get('/orders/pending')
+      .get(`/orders/pending?city=${city}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        city: 'somewhere',
         page: 1,
       });
 
