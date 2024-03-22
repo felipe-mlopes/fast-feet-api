@@ -34,12 +34,12 @@ export class FecthNearbyOrdersWaitingAndPicknUpController {
     page: PageQueryParamsSchema,
     @CurrentUser() user: UserPayload,
   ) {
-    const deliverymanRole = user.role;
+    const deliverymanId = user.sub;
 
     const result = await this.fetchNearbyOrdersWaitingOrPicknUp.execute({
       city,
       page,
-      deliverymanRole,
+      deliverymanId,
     });
 
     if (result.isLeft()) {

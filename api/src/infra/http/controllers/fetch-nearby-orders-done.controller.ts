@@ -33,12 +33,12 @@ export class FecthNearbyOrdersDoneController {
     @CurrentUser()
     user: UserPayload,
   ) {
-    const deliverymanRole = user.role;
+    const deliverymanId = user.sub;
 
     const result = await this.fetchNearbyOrdersDone.execute({
       city,
       page,
-      deliverymanRole,
+      deliverymanId,
     });
 
     if (result.isLeft()) {
