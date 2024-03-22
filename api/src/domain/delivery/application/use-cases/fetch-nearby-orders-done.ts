@@ -2,16 +2,17 @@ import { Injectable } from '@nestjs/common';
 
 import { OrdersRepository } from '../repositories/orders-repository';
 
-import { Order, Role } from '@/domain/delivery/enterprise/entities/order';
+import { Order } from '@/domain/delivery/enterprise/entities/order';
 
 import { Either, left, right } from '@/core/either';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
+import { DeliveryMenRepository } from '../repositories/deliverymen-repository';
 
 interface FetchNearbyOrdersDoneUseCaseRequest {
   city: string;
   page: number;
-  deliverymanRole: Role;
+  deliverymanId: string;
 }
 
 type FetchNearbyOrdersDoneUseCaseResponse = Either<
@@ -23,21 +24,31 @@ type FetchNearbyOrdersDoneUseCaseResponse = Either<
 
 @Injectable()
 export class FetchNearbyOrdersDoneUseCase {
-  constructor(private ordersRepository: OrdersRepository) {}
+  constructor(
+    private ordersRepository: OrdersRepository,
+    private deliverymenRepository: DeliveryMenRepository,
+  ) {}
 
   async execute({
     city,
     page,
-    deliverymanRole,
+    deliverymanId,
   }: FetchNearbyOrdersDoneUseCaseRequest): Promise<FetchNearbyOrdersDoneUseCaseResponse> {
-    if (deliverymanRole !== Role.DELIVERYMAN) {
+    const deliveryman =
+      await this.deliverymenRepository.findById(deliverymanId);
+
+    if (!deliveryman) {
       return left(new NotAllowedError());
     }
 
     const orders =
-      await this.ordersRepository.findManyRecentByCityAndOrdersDone(city, {
-        page,
-      });
+      await this.ordersRepository.findManyRecentByCityAndOrdersDone(
+        city,
+        deliverymanId,
+        {
+          page,
+        },
+      );
 
     if (!orders) {
       return left(new ResourceNotFoundError());
