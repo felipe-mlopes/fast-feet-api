@@ -6,10 +6,12 @@ export abstract class OrdersRepository {
   abstract findByTrackingCode(trackingCode: string): Promise<Order | null>;
   abstract findManyRecentByCityAndOrdersWaitingAndPicknUp(
     city: string,
+    deliverymanId: string,
     params: PaginationParams,
   ): Promise<Order[] | null>;
   abstract findManyRecentByCityAndOrdersDone(
     city: string,
+    deliverymanId: string,
     params: PaginationParams,
   ): Promise<Order[] | null>;
   abstract create(order: Order): Promise<void>;
