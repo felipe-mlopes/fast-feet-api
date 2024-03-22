@@ -12,8 +12,6 @@ import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipi
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders-repository';
 import { InMemoryNotificationsRepository } from 'test/repositories/in-memory-notifications-repository';
 
-import { FakeSendEmail } from 'test/mailing/fake-send-mail';
-
 import { makeRecipient } from 'test/factories/make-recipient';
 import { makeOrder } from 'test/factories/make-orders';
 
@@ -21,6 +19,10 @@ import { waitFor } from 'test/utils/wait-for';
 
 import { Status } from '@/domain/delivery/enterprise/entities/order';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
+
+import { FakeSendEmail } from 'test/mailing/fake-send-mail';
+import { SendEmailParams } from '../mailing/sendEmail';
+import { emailTemplate, statusEdit } from '@/infra/mailing/email-template';
 
 let inMemoryRecipientsRepository: InMemoryRecipientsRepository;
 let inMemoryOrdersRepository: InMemoryOrdersRepository;
@@ -33,21 +35,28 @@ let sendNotificationExecuteSpy: MockInstance<
   Promise<SendNotificationUseCaseResponse>
 >;
 
+let sendEmailExecuteSpy: MockInstance<[SendEmailParams], Promise<void>>;
+
 describe('On Change Order Status', () => {
   beforeEach(() => {
     inMemoryRecipientsRepository = new InMemoryRecipientsRepository();
     inMemoryOrdersRepository = new InMemoryOrdersRepository();
     inMemoryNotificationsRepository = new InMemoryNotificationsRepository();
-    fakeSendEmail = new FakeSendEmail();
     sendNotificationUseCase = new SendNotificationUseCase(
       inMemoryNotificationsRepository,
       inMemoryRecipientsRepository,
-      fakeSendEmail,
     );
+    fakeSendEmail = new FakeSendEmail();
 
     sendNotificationExecuteSpy = vi.spyOn(sendNotificationUseCase, 'execute');
+    sendEmailExecuteSpy = vi.spyOn(fakeSendEmail, 'send');
 
-    new OnChangeOrderStatus(inMemoryOrdersRepository, sendNotificationUseCase);
+    new OnChangeOrderStatus(
+      inMemoryOrdersRepository,
+      inMemoryRecipientsRepository,
+      sendNotificationUseCase,
+      fakeSendEmail,
+    );
   });
 
   it('should be able to send a notification when order status is change', async () => {
@@ -56,6 +65,7 @@ describe('On Change Order Status', () => {
 
     const order = makeOrder({
       recipientId: recipient.id,
+      title: 'Order-01',
     });
     inMemoryOrdersRepository.create(order);
 
@@ -69,6 +79,21 @@ describe('On Change Order Status', () => {
 
     await waitFor(() => {
       expect(sendNotificationExecuteSpy).toHaveBeenCalled();
+      expect(sendEmailExecuteSpy).toHaveBeenCalled();
+      expect(sendEmailExecuteSpy).toHaveBeenCalledWith({
+        to: [recipient.email],
+        subject: `O status do seu pedido ${order.title} mudou para ${statusEdit(order.status)}`,
+        html: emailTemplate({
+          recipientName: recipient.name,
+          recipientAddress: recipient.address,
+          recipientZipcode: recipient.zipcode,
+          recipientNeighborhood: recipient.neighborhood,
+          recipientCity: recipient.city,
+          orderTitle: order.title,
+          orderStatus: order.status,
+          orderTrackingCode: order.trackingCode,
+        }),
+      });
     });
   });
 });
