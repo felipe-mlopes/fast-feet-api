@@ -12,6 +12,7 @@ import { FormStateTypes } from "@/types";
 
 import LoginInput from "./LoginInput";
 import { Modal } from "./Modal";
+import { revalidatePath } from "next/cache";
 
 type HTMLFormProps = DetailedHTMLProps<
   FormHTMLAttributes<HTMLFormElement>,
@@ -37,14 +38,6 @@ export function LoginForm({ children, action, ...props }: FormProps) {
     setIsOpen(!isOpen);
   };
 
-  const cpfError = state.error?.find(
-    (err) => err.path?.join(".") === "cpf"
-  )?.message;
-
-  const passwordError = state.error?.find(
-    (err) => err.path?.join(".") === "password"
-  )?.message;
-
   return (
     <form
       action={formAction}
@@ -59,10 +52,11 @@ export function LoginForm({ children, action, ...props }: FormProps) {
           name="cpf"
           maxLength={14}
           placeholder="CPF"
-          error={cpfError}
         />
-        {state.error ? (
-          <span className="pt-1 text-xs text-red-400">{cpfError}</span>
+        {!!state.error && state.error.length == 2 ? (
+          <span className="pt-1 text-xs text-red-400">
+            O CPF deve conter 11 números válidos.
+          </span>
         ) : null}
         <LoginInput
           inputType="password"
@@ -70,20 +64,16 @@ export function LoginForm({ children, action, ...props }: FormProps) {
           name="password"
           minLength={6}
           placeholder="Senha"
-          error={passwordError}
         />
-        {state.error ? (
-          <span className="pt-1 text-xs text-red-400">{passwordError}</span>
-        ) : null}
       </div>
-      {state.error ? (
+      {state.error && state.error === "Unauthorized" && (
         <Modal
           type="error"
           content="Senha ou CPF incorretos."
           isOpen={isOpen}
           onClose={handleClose}
         />
-      ) : null}
+      )}
       {children}
     </form>
   );
