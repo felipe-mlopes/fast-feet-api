@@ -2,11 +2,21 @@
 
 import { useEffect, useState } from "react";
 
-export function StatusSteps() {
+interface StatusStepsProps {
+  currentStatus: string;
+}
+
+export function StatusSteps({ currentStatus }: StatusStepsProps) {
   const steps = ["aguardando", "retirado", "entregue"];
-  const status = ["waiting", "pickn_up", "done"];
 
   const [currentStep, setCurrentStep] = useState(0);
+
+  useEffect(() => {
+    const status = ["WAITING", "PICKN_UP", "DONE"];
+    const whichStep = status.findIndex((item) => item === currentStatus);
+
+    setCurrentStep(whichStep);
+  }, [currentStatus]);
 
   return (
     <div className="flex justify-between">
