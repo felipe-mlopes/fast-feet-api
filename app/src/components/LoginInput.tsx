@@ -15,7 +15,7 @@ import { cpfMask } from "@/utils/cpfMask";
 
 interface LoginInputProps extends InputHTMLAttributes<HTMLInputElement> {
   inputType: "text" | "password";
-  error: string | undefined;
+  error?: string | undefined;
 }
 
 const LoginInput: React.ForwardRefRenderFunction<
