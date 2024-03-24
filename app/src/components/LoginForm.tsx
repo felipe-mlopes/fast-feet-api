@@ -4,13 +4,14 @@ import {
   DetailedHTMLProps,
   FormHTMLAttributes,
   PropsWithChildren,
+  useState,
 } from "react";
 import { useFormState } from "react-dom";
 
 import { FormStateTypes } from "@/types";
 
 import LoginInput from "./LoginInput";
-import { ModalError } from "./ModalError";
+import { Modal } from "./Modal";
 
 type HTMLFormProps = DetailedHTMLProps<
   FormHTMLAttributes<HTMLFormElement>,
@@ -29,6 +30,12 @@ export function LoginForm({ children, action, ...props }: FormProps) {
     data: null,
     error: null,
   });
+
+  const [isOpen, setIsOpen] = useState(true);
+
+  const handleClose = () => {
+    setIsOpen(!isOpen);
+  };
 
   const cpfError = state.error?.find(
     (err) => err.path?.join(".") === "cpf"
@@ -69,7 +76,14 @@ export function LoginForm({ children, action, ...props }: FormProps) {
           <span className="pt-1 text-xs text-red-400">{passwordError}</span>
         ) : null}
       </div>
-      {state.error ? <ModalError /> : null}
+      {state.error ? (
+        <Modal
+          type="error"
+          content="Senha ou CPF incorretos."
+          isOpen={isOpen}
+          onClose={handleClose}
+        />
+      ) : null}
       {children}
     </form>
   );
