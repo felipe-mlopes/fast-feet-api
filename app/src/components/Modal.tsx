@@ -32,11 +32,12 @@ export function Modal({ type, content, isDone, isOpen, onClose }: ModalProps) {
             <h3 className="px-28 text-center font-medium text-2xl text-gray-light">
               {content}
             </h3>
-            {type === "package" && isDone ? (
+            {type === "package" && isDone == false && (
               <h4 className="text-center font-normal text-xs text-gray-light">
                 Só falta entregar :)
               </h4>
-            ) : (
+            )}
+            {type === "package" && isDone == true && (
               <h4 className="text-center font-normal text-xs text-gray-light">
                 Pacote entregue.
               </h4>
