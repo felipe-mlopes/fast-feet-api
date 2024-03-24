@@ -19,7 +19,6 @@ export function Action({
   const [isModalOpen, setIsModalOpen] = useState(true);
 
   const handleModalClose = () => {
-    console.log("clicou");
     setIsModalOpen(!isModalOpen);
   };
 
