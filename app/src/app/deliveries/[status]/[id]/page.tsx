@@ -1,19 +1,31 @@
 import Link from "next/link";
 
+import { Action } from "@/components/Action";
+import {
+  getOrderByDetails,
+  OrdersProps,
+  RecipientProps,
+} from "@/actions/orders";
+
 import { ArrowIcon } from "@/components/icons/ArrowIcon";
 import { FolderIcon } from "@/components/icons/FolderIcon";
 import { InfoIcon } from "@/components/icons/InfoIcon";
-import { Action } from "@/components/Action";
 
-export default function DeliveryDetails({
+export default async function DeliveryDetails({
   params,
 }: {
-  params: { orderId: string };
+  params: { status: string; id: string };
 }) {
+  const { order, recipient } = await getOrderByDetails(params.id);
+
+  const { status, city, neighborhood, createdAt, picknUpAt, deliveryAt } =
+    order as OrdersProps;
+  const { name, address, zipcode } = recipient as RecipientProps;
+
   return (
     <div className="h-screen overflow-hidden bg-gray-light">
       <header className="flex items-center justify-start gap-24 pl-5 pt-14 pb-12 relative bg-indigo-blue">
-        <Link href={"/deliveries"}>
+        <Link href={`/deliveries/${params.status}`}>
           <ArrowIcon side="left" className="fill-white" />
         </Link>
         <h2 className="text-[1.625rem] text-white">Detalhes</h2>
@@ -29,18 +41,16 @@ export default function DeliveryDetails({
               <strong className="uppercase text-[0.625rem] text-purple-darki">
                 Destinatátio
               </strong>
-              <p className="text-lavender-gray">Diego Fernandes</p>
+              <p className="text-lavender-gray">{name}</p>
             </div>
             <div className="space-y-2">
               <strong className="uppercase text-[0.625rem] text-purple-darki">
                 Endereço
               </strong>
               <div>
-                <p className="text-lavender-gray">
-                  Rua Guilherme Gemballa, 260
-                </p>
-                <p className="text-lavender-gray">Jardim América, SC</p>
-                <p className="text-lavender-gray">89 168-000</p>
+                <p className="text-lavender-gray">{address}</p>
+                <p className="text-lavender-gray">{city}, SC</p>
+                <p className="text-lavender-gray">{zipcode}</p>
               </div>
             </div>
           </section>
@@ -55,13 +65,15 @@ export default function DeliveryDetails({
                   <strong className="uppercase text-[0.625rem] text-purple-darki">
                     Status
                   </strong>
-                  <p className="m-0 text-lavender-gray">Aguardando</p>
+                  <p className="m-0 text-lavender-gray">{status}</p>
                 </div>
                 <div className="pr-8">
                   <strong className="uppercase text-[0.625rem] text-purple-darki">
                     Data de Retirada
                   </strong>
-                  <p className="text-lavender-gray">--/--/----</p>
+                  <p className="text-lavender-gray">
+                    {!!order ? picknUpAt : "--/--/----"}
+                  </p>
                 </div>
               </div>
               <div className="space-y-1.5">
@@ -69,13 +81,18 @@ export default function DeliveryDetails({
                   <strong className="uppercase text-[0.625rem] text-purple-darki">
                     Postado em
                   </strong>
-                  <p className="text-lavender-gray">01/07/2020</p>
+                  <p className="text-lavender-gray">
+                    {" "}
+                    {!!order ? createdAt : "--/--/----"}
+                  </p>
                 </div>
                 <div className="pr-8">
                   <strong className="uppercase text-[0.625rem] text-purple-darki">
                     Data de Entrega
                   </strong>
-                  <p className="text-lavender-gray">--/--/----</p>
+                  <p className="text-lavender-gray">
+                    {!!order ? deliveryAt : "--/--/----"}
+                  </p>
                 </div>
               </div>
             </div>
