@@ -24,40 +24,54 @@ describe('Fetch Nearby Orders Done', () => {
     );
   });
 
-  it('should be able to fetch recent orders with done status', async () => {
-    const newDeliveryman = makeDeliverymen();
+  it('should be able to fetch recent orders done by logged in deliveryman from the same city', async () => {
+    const deliveryman = makeDeliverymen();
+    await inMemoryDeliverymenRepository.create(deliveryman);
 
-    await inMemoryDeliverymenRepository.create(newDeliveryman);
+    const anotherDeliveryman = makeDeliverymen();
+    await inMemoryDeliverymenRepository.create(anotherDeliveryman);
 
-    const newOrder1 = makeOrder({
+    const order1 = makeOrder({
       city: 'Somewhere City',
     });
-    const newOrder2 = makeOrder({
+    const order2 = makeOrder({
       city: 'Somewhere City',
     });
-    const newOrder3 = makeOrder({
+    const order3 = makeOrder({
+      city: 'Somewhere City',
+    });
+    const order4 = makeOrder({
+      city: 'Anywhere City',
+    });
+    const order5 = makeOrder({
       city: 'Somewhere City',
     });
 
-    await inMemoryOrdersRepository.create(newOrder1);
-    await inMemoryOrdersRepository.create(newOrder2);
-    await inMemoryOrdersRepository.create(newOrder3);
+    await inMemoryOrdersRepository.create(order1);
+    await inMemoryOrdersRepository.create(order2);
+    await inMemoryOrdersRepository.create(order3);
+    await inMemoryOrdersRepository.create(order4);
+    await inMemoryOrdersRepository.create(order5);
 
-    newOrder1.status = Status.DONE;
-    newOrder2.status = Status.DONE;
-    newOrder3.status = Status.WAITING;
+    order1.status = Status.DONE;
+    order2.status = Status.DONE;
+    order4.status = Status.DONE;
+    order5.status = Status.DONE;
 
-    newOrder1.deliverymanId = newDeliveryman.id;
-    newOrder2.deliverymanId = newDeliveryman.id;
+    order1.deliverymanId = deliveryman.id;
+    order2.deliverymanId = deliveryman.id;
+    order4.deliverymanId = deliveryman.id;
+    order5.deliverymanId = anotherDeliveryman.id;
 
-    await inMemoryOrdersRepository.save(newOrder1);
-    await inMemoryOrdersRepository.save(newOrder2);
-    await inMemoryOrdersRepository.save(newOrder3);
+    await inMemoryOrdersRepository.save(order1);
+    await inMemoryOrdersRepository.save(order2);
+    await inMemoryOrdersRepository.save(order4);
+    await inMemoryOrdersRepository.save(order5);
 
     const result = await sut.execute({
       city: 'Somewhere City',
       page: 1,
-      deliverymanId: newDeliveryman.id.toString(),
+      deliverymanId: deliveryman.id.toString(),
     });
 
     expect(result.isRight()).toBe(true);
@@ -66,8 +80,8 @@ describe('Fetch Nearby Orders Done', () => {
     }
   });
 
-  it('should not be able to fetch recent orders without a registered delivery person', async () => {
-    const newDeliveryman = makeDeliverymen();
+  it('should not be able to fetch recent orders done without the deliveryman being logged in', async () => {
+    const deliveryman = makeDeliverymen();
 
     const newOrder1 = makeOrder({
       city: 'Somewhere City',
@@ -85,38 +99,54 @@ describe('Fetch Nearby Orders Done', () => {
     const result = await sut.execute({
       city: 'Somewhere City',
       page: 1,
-      deliverymanId: newDeliveryman.id.toString(),
+      deliverymanId: deliveryman.id.toString(),
     });
 
     expect(result.isLeft()).toBe(true);
     expect(result.value).toBeInstanceOf(NotAllowedError);
   });
 
-  it('should not be able to fetch recent orders other than done status', async () => {
-    const newDeliveryman = makeDeliverymen();
+  it('should not be able to fetch recent orders that have not been done from the same city or for others that have been delivered', async () => {
+    const deliveryman = makeDeliverymen();
+    await inMemoryDeliverymenRepository.create(deliveryman);
 
-    await inMemoryDeliverymenRepository.create(newDeliveryman);
+    const anotherDeliveryman = makeDeliverymen();
+    await inMemoryDeliverymenRepository.create(anotherDeliveryman);
 
-    const newOrder1 = makeOrder({
+    const order1 = makeOrder({
       city: 'Somewhere City',
     });
-    const newOrder2 = makeOrder({
+    const order2 = makeOrder({
       city: 'Somewhere City',
     });
+    const order3 = makeOrder({
+      city: 'Somewhere City',
+    });
+    const order4 = makeOrder({
+      city: 'Anywhere City',
+    });
 
-    await inMemoryOrdersRepository.create(newOrder1);
-    await inMemoryOrdersRepository.create(newOrder2);
+    await inMemoryOrdersRepository.create(order1);
+    await inMemoryOrdersRepository.create(order2);
+    await inMemoryOrdersRepository.create(order3);
+    await inMemoryOrdersRepository.create(order4);
 
-    newOrder1.deliverymanId = newDeliveryman.id;
-    newOrder2.deliverymanId = newDeliveryman.id;
+    order2.deliverymanId = deliveryman.id;
+    order3.deliverymanId = anotherDeliveryman.id;
+    order4.deliverymanId = deliveryman.id;
 
-    await inMemoryOrdersRepository.save(newOrder1);
-    await inMemoryOrdersRepository.save(newOrder2);
+    order2.status = Status.PICKN_UP;
+    order3.status = Status.DONE;
+    order4.status = Status.DONE;
+
+    await inMemoryOrdersRepository.save(order2);
+    await inMemoryOrdersRepository.save(order3);
+    await inMemoryOrdersRepository.save(order4);
 
     const result = await sut.execute({
       city: 'Somewhere City',
       page: 1,
-      deliverymanId: newDeliveryman.id.toString(),
+      deliverymanId: deliveryman.id.toString(),
     });
 
     if (result.isRight()) {
