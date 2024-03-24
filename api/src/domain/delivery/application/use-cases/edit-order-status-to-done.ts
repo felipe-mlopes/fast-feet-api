@@ -34,6 +34,13 @@ export class EditOrderStatusToDoneUseCase {
     orderId,
     deliverymanId,
   }: EditOrderStatusToDoneUseCaseRequest): Promise<EditOrderStatusToDoneUseCaseResponse> {
+    const deliveryman =
+      await this.deliveryMenRepository.findById(deliverymanId);
+
+    if (!deliveryman) {
+      return left(new NotAllowedError());
+    }
+
     const order = await this.ordersRepository.findById(orderId);
 
     if (!order) {
@@ -44,10 +51,7 @@ export class EditOrderStatusToDoneUseCase {
       return left(new NotAllowedError());
     }
 
-    const deliveryman =
-      await this.deliveryMenRepository.findById(deliverymanId);
-
-    if (!deliveryman) {
+    if (order.deliverymanId !== deliveryman.id) {
       return left(new NotAllowedError());
     }
 
