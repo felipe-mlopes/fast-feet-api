@@ -33,6 +33,13 @@ export class EditOrderStatusToPicknUpUseCase {
     orderId,
     deliverymanId,
   }: EditOrderStatusToPicknUpUseCaseRequest): Promise<EditOrderStatusToPicknUpUseCaseResponse> {
+    const deliveryman =
+      await this.deliverymenRepository.findById(deliverymanId);
+
+    if (!deliveryman) {
+      return left(new ResourceNotFoundError());
+    }
+
     const order = await this.ordersRepository.findById(orderId);
 
     if (!order) {
@@ -41,13 +48,6 @@ export class EditOrderStatusToPicknUpUseCase {
 
     if (order.status !== Status.WAITING) {
       return left(new NotAllowedError());
-    }
-
-    const deliveryman =
-      await this.deliverymenRepository.findById(deliverymanId);
-
-    if (!deliveryman) {
-      return left(new ResourceNotFoundError());
     }
 
     order.deliverymanId = new UniqueEntityID(deliverymanId);
