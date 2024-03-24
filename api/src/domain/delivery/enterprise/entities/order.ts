@@ -143,7 +143,7 @@ export class Order extends AggregateRoot<OrderProps> {
     const order = new Order(
       {
         ...props,
-        trackingCode: new UniqueEntityID().toString().substring(24, 36),
+        trackingCode: id?.toString().substring(24, 36) ?? '',
         status: props.status ?? Status.WAITING,
         isReturned: props.isReturned ?? false,
         attachmentId: props.attachmentId ?? '',
