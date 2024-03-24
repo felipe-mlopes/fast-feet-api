@@ -1,10 +1,9 @@
 import Link from "next/link";
 
-import { Button } from "@/components/Button";
-
 import { ArrowIcon } from "@/components/icons/ArrowIcon";
 import { FolderIcon } from "@/components/icons/FolderIcon";
 import { InfoIcon } from "@/components/icons/InfoIcon";
+import { Action } from "@/components/Action";
 
 export default function DeliveryDetails({
   params,
@@ -83,9 +82,11 @@ export default function DeliveryDetails({
           </section>
         </div>
         <span />
-        <div className="pt-40">
-          <Button content="Retirar pacote" />
-        </div>
+        <Action
+          className="pt-40"
+          buttonContent="Retirar pacote"
+          modalContent="Pacote retirado."
+        />
       </main>
     </div>
   );
