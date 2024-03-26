@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Roboto_Condensed } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const roboto = Roboto_Condensed({
   subsets: ["latin"],
   weight: ["700"],
@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br" className="bg-indigo-blue">
-      <body className={(inter.className, roboto.variable)}>{children}</body>
+      <body className={(inter.variable, roboto.variable)}>{children}</body>
     </html>
   );
 }
