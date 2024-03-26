@@ -17,7 +17,7 @@ export default async function Deliveries({
   const { ordersDone } = await getOrdersDone("farway");
 
   return (
-    <div className="flex flex-col justify-between items-center mt-20 relative h-screen lg:grid lg:grid-col-2 lg:grid-row-3 lg:justify-normal">
+    <div className="flex flex-col justify-between items-center mt-20 relative min-h-screen lg:grid lg:grid-col-2 lg:grid-row-3 lg:justify-normal">
       <header className="space-y-8 w-full px-6 pb-16">
         <div className="flex justify-between items-center">
           <div className="flex flex-col text-lilac-smooth">
@@ -52,7 +52,7 @@ export default async function Deliveries({
           </button>
         </div>
       </section>
-      <main className="px-6 pt-[3.25rem] pb-8 w-full h-screen bg-gray-light">
+      <main className="px-6 pt-[3.25rem] pb-8 w-full min-h-screen bg-gray-light">
         {params.status === "pending" && (
           <>
             <div className="flex items-center gap-5 text-ligth-slate-gray">
