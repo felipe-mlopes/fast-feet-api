@@ -10,6 +10,7 @@ import { CacheRepository } from '@/infra/cache/cache-repository';
 
 import { PaginationParams } from '@/core/repositories/pagination-params';
 import { DomainEvents } from '@/core/events/domain-events';
+import { PrismaOrderDetailsMapper } from '../mappers/prisma-order-details-mapper';
 
 @Injectable()
 export class PrismaOrdersRepository implements OrdersRepository {
@@ -19,6 +20,22 @@ export class PrismaOrdersRepository implements OrdersRepository {
   ) {}
 
   async findById(id: string): Promise<Order | null> {
+    const order = await this.prisma.order.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!order) {
+      return null;
+    }
+
+    const questionDetails = PrismaOrderMapper.toDomain(order);
+
+    return questionDetails;
+  }
+
+  async findDetailsById(id: string): Promise<Order | null> {
     const cacheHit = await this.cacheRepository.get(`order:${id}:details`);
 
     if (cacheHit) {
@@ -31,30 +48,28 @@ export class PrismaOrdersRepository implements OrdersRepository {
       where: {
         id,
       },
+      include: {
+        shipping: true,
+        attachment: true,
+      },
     });
 
     if (!order) {
       return null;
     }
 
-    const client = await this.prisma.shipping.findUnique({
-      where: {
-        id: order.clientId,
-      },
-    });
-
-    if (!client) {
-      return null;
+    if (!order.clientId) {
+      throw new Error('Order is missing recipient information');
     }
 
-    const questionDetails = PrismaOrderMapper.toDomain(order, client);
+    const orderDetails = PrismaOrderDetailsMapper.toDomain(order);
 
     await this.cacheRepository.set(
       `order:${id}:details`,
-      JSON.stringify(questionDetails),
+      JSON.stringify(orderDetails),
     );
 
-    return questionDetails;
+    return orderDetails;
   }
 
   async findByTrackingCode(trackingCode: string): Promise<Order | null> {
@@ -68,17 +83,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
       return null;
     }
 
-    const client = await this.prisma.shipping.findUnique({
-      where: {
-        id: order.clientId,
-      },
-    });
-
-    if (!client) {
-      return null;
-    }
-
-    return PrismaOrderMapper.toDomain(order, client);
+    return PrismaOrderMapper.toDomain(order);
   }
 
   async findManyRecentByCityAndOrdersWaitingAndPicknUp(
@@ -110,23 +115,11 @@ export class PrismaOrdersRepository implements OrdersRepository {
       take: 20,
       skip: (page - 1) * 20,
       include: {
-        shipping: {
-          select: {
-            id: true,
-            clientName: true,
-            clientEmail: true,
-            clientCity: true,
-            clientNeighborhood: true,
-            clientAddress: true,
-            clientZipcode: true,
-          },
-        },
+        shipping: true,
       },
     });
 
-    return orders.map((order) =>
-      PrismaOrderMapper.toDomain(order, order.shipping),
-    );
+    return orders.map((order) => PrismaOrderMapper.toDomain(order));
   }
 
   async findManyRecentByCityAndOrdersDone(
@@ -150,23 +143,11 @@ export class PrismaOrdersRepository implements OrdersRepository {
       take: 20,
       skip: (page - 1) * 20,
       include: {
-        shipping: {
-          select: {
-            id: true,
-            clientName: true,
-            clientEmail: true,
-            clientCity: true,
-            clientNeighborhood: true,
-            clientAddress: true,
-            clientZipcode: true,
-          },
-        },
+        shipping: true,
       },
     });
 
-    return orders.map((order) =>
-      PrismaOrderMapper.toDomain(order, order.shipping),
-    );
+    return orders.map((order) => PrismaOrderMapper.toDomain(order));
   }
 
   async create(order: Order): Promise<void> {
