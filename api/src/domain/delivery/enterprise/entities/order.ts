@@ -19,8 +19,6 @@ export interface OrderProps {
   trackingCode: string;
   title: string;
   recipientId: UniqueEntityID;
-  city: string;
-  neighborhood: string;
   status: Status;
   isReturned: boolean;
   deliverymanId?: UniqueEntityID | null;
@@ -47,14 +45,6 @@ export class Order extends AggregateRoot<OrderProps> {
 
   get recipientId() {
     return this.props.recipientId;
-  }
-
-  get city() {
-    return this.props.city;
-  }
-
-  get neighborhood() {
-    return this.props.neighborhood;
   }
 
   get status() {
