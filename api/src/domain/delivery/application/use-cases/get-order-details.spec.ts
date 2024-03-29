@@ -15,28 +15,18 @@ let sut: GetOrderDetailsUseCase;
 
 describe('Get Order Details', () => {
   beforeEach(() => {
-    inMemoryOrdersRepository = new InMemoryOrdersRepository();
     inMemoryRecipientsRepository = new InMemoryRecipientsRepository();
-    sut = new GetOrderDetailsUseCase(
-      inMemoryOrdersRepository,
-      inMemoryRecipientsRepository,
-    );
+    sut = new GetOrderDetailsUseCase(inMemoryOrdersRepository);
   });
 
   it('should be able to get order details', async () => {
-    const recipient = makeRecipient({
-      name: 'John Doe',
-    });
+    const recipient = makeRecipient();
     await inMemoryRecipientsRepository.create(recipient);
 
     const order = makeOrder({
       recipientId: recipient.id,
     });
     await inMemoryOrdersRepository.create(order);
-
-    recipient.orderIds.push(order.id.toString());
-
-    await inMemoryRecipientsRepository.save(recipient);
 
     const result = await sut.execute({
       orderId: order.id.toString(),
@@ -45,7 +35,6 @@ describe('Get Order Details', () => {
     expect(result.isRight()).toBe(true);
 
     if (result.isRight()) {
-      expect(result.value.recipient.name).toEqual('John Doe');
       expect(result.value.order.status).toEqual('WAITING');
     }
   });
@@ -60,32 +49,8 @@ describe('Get Order Details', () => {
 
     await inMemoryOrdersRepository.create(order);
 
-    recipient.orderIds.push(order.id.toString());
-
-    await inMemoryRecipientsRepository.save(recipient);
-
     const result = await sut.execute({
       orderId: new UniqueEntityID().toString(),
-    });
-
-    expect(result.isLeft()).toBe(true);
-    expect(result.value).toBeInstanceOf(ResourceNotFoundError);
-  });
-
-  it('should not be able to get order details when an order id not belong to the recipient', async () => {
-    const recipient = makeRecipient();
-    await inMemoryRecipientsRepository.create(recipient);
-
-    const order = makeOrder();
-
-    await inMemoryOrdersRepository.create(order);
-
-    recipient.orderIds.push(new UniqueEntityID().toString());
-
-    await inMemoryRecipientsRepository.save(recipient);
-
-    const result = await sut.execute({
-      orderId: order.id.toString(),
     });
 
     expect(result.isLeft()).toBe(true);
