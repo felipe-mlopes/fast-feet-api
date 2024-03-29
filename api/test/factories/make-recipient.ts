@@ -23,6 +23,7 @@ export function makeRecipient(
       address: faker.location.streetAddress(),
       neighborhood: faker.location.county(),
       city: faker.location.city(),
+      state: faker.location.state(),
       ...override,
     },
     id,
