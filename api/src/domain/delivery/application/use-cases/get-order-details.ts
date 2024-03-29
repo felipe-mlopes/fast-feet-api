@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
 import { OrdersRepository } from '../repositories/orders-repository';
-import { RecipentsRepository } from '../repositories/recipients-repository';
 
 import { Order } from '@/domain/delivery/enterprise/entities/order';
-import { Recipient } from '@/domain/delivery/enterprise/entities/recipient';
 
 import { Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
@@ -17,37 +15,24 @@ type GetOrderDetailsUseCaseResponse = Either<
   ResourceNotFoundError,
   {
     order: Order;
-    recipient: Recipient;
   }
 >;
 
 @Injectable()
 export class GetOrderDetailsUseCase {
-  constructor(
-    private ordersRepository: OrdersRepository,
-    private recipientsRepository: RecipentsRepository,
-  ) {}
+  constructor(private ordersRepository: OrdersRepository) {}
 
   async execute({
     orderId,
   }: GetOrderDetailsUseCaseRequest): Promise<GetOrderDetailsUseCaseResponse> {
-    const order = await this.ordersRepository.findById(orderId);
+    const order = await this.ordersRepository.findDetailsById(orderId);
 
     if (!order) {
       return left(new ResourceNotFoundError());
     }
 
-    const recipient = await this.recipientsRepository.findById(
-      order.recipientId.toString(),
-    );
-
-    if (!recipient) {
-      return left(new ResourceNotFoundError());
-    }
-
     return right({
       order,
-      recipient,
     });
   }
 }
