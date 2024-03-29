@@ -13,9 +13,6 @@ export function makeOrder(
   const order = Order.create(
     {
       recipientId: new UniqueEntityID(),
-      city: faker.location.city(),
-      neighborhood: faker.location.county(),
-      deliverymanId: null,
       title: faker.lorem.sentence(),
       ...override,
     },
