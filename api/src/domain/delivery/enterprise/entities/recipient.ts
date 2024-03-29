@@ -7,6 +7,7 @@ export interface RecipientProps {
   email: string;
   zipcode: number;
   address: string;
+  state: string;
   city: string;
   neighborhood: string;
   orderIds: string[];
@@ -43,6 +44,14 @@ export class Recipient extends Entity<RecipientProps> {
 
   set address(address: string) {
     this.props.address = address;
+  }
+
+  get state() {
+    return this.props.state;
+  }
+
+  set state(state: string) {
+    this.props.state = state;
   }
 
   get city() {
