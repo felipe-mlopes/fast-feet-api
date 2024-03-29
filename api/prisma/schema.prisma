@@ -44,6 +44,7 @@ model Shipping {
   id                 String @id @default(uuid())
   clientName         String @map("client_name")
   clientEmail        String @unique @map("client_email")
+  clientState        String @map("client_state")
   clientCity         String @map("client_city")
   clientNeighborhood String @map("client_neighborhood")
   clientAddress      String @map("client_address")
