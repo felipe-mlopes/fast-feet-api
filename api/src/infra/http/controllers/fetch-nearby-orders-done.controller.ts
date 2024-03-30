@@ -7,7 +7,7 @@ import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 
 import { CurrentUser } from '@/infra/auth/current-user.decorator';
 import { UserPayload } from '@/infra/auth/jwt.strategy';
-import { OrderPresenter } from '@/infra/presenters/order-presenter';
+import { OrderWithNeighborhoodPresenter } from '@/infra/presenters/order-with-neighborhood-presenter';
 
 const pageQueryParamsSchema = z
   .string()
@@ -48,7 +48,7 @@ export class FecthNearbyOrdersDoneController {
     const { orders } = result.value;
 
     return {
-      orders: orders.map(OrderPresenter.toHTTP),
+      orders: orders.map(OrderWithNeighborhoodPresenter.toHTTP),
     };
   }
 }
