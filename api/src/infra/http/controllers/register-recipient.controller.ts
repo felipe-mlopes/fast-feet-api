@@ -23,6 +23,11 @@ const registerRecipientBodySchema = z.object({
   zipcode: z.number(),
   address: z.string().transform((str) => str.toLowerCase()),
   city: z.string().transform((str) => str.toLowerCase()),
+  state: z
+    .string()
+    .regex(/^[a-zA-Z]+$/)
+    .refine((str) => str.length === 2)
+    .transform((str) => str.toUpperCase()),
   neighborhood: z.string().transform((str) => str.toLowerCase()),
 });
 
@@ -40,7 +45,7 @@ export class RegisterRecipientController {
     @Body(bodyValidationProps) body: RegisterRecipientBodySchema,
     @CurrentUser() user: UserPayload,
   ) {
-    const { name, email, address, zipcode, neighborhood, city } = body;
+    const { name, email, address, zipcode, neighborhood, city, state } = body;
     const userId = user.sub;
 
     const result = await this.registerRecipient.execute({
@@ -51,6 +56,7 @@ export class RegisterRecipientController {
       zipcode,
       neighborhood,
       city,
+      state,
     });
 
     if (result.isLeft()) {
