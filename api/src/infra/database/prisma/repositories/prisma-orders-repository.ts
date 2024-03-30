@@ -64,7 +64,10 @@ export class PrismaOrdersRepository implements OrdersRepository {
       throw new Error('Order is missing recipient information');
     }
 
-    const orderDetails = PrismaOrderDetailsMapper.toDomain(order);
+    const orderDetails = PrismaOrderDetailsMapper.toDomain(
+      order,
+      order.shipping,
+    );
 
     await this.cacheRepository.set(
       `order:${id}:details`,
@@ -114,19 +117,15 @@ export class PrismaOrdersRepository implements OrdersRepository {
       orderBy: {
         createdAt: 'desc',
       },
+      include: {
+        shipping: true,
+      },
       take: 20,
       skip: (page - 1) * 20,
-      include: {
-        shipping: {
-          select: {
-            clientNeighborhood: true,
-          },
-        },
-      },
     });
 
     return orders.map((order) =>
-      PrismaOrderWithNeighborhoodMapper.toDomain(order),
+      PrismaOrderWithNeighborhoodMapper.toDomain(order, order.shipping),
     );
   }
 
@@ -151,16 +150,12 @@ export class PrismaOrdersRepository implements OrdersRepository {
       take: 20,
       skip: (page - 1) * 20,
       include: {
-        shipping: {
-          select: {
-            clientNeighborhood: true,
-          },
-        },
+        shipping: true,
       },
     });
 
     return orders.map((order) =>
-      PrismaOrderWithNeighborhoodMapper.toDomain(order),
+      PrismaOrderWithNeighborhoodMapper.toDomain(order, order.shipping),
     );
   }
 
