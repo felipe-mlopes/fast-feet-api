@@ -2,8 +2,7 @@ import { BadRequestException, Controller, Get, Param } from '@nestjs/common';
 
 import { GetOrderDetailsUseCase } from '@/domain/delivery/application/use-cases/get-order-details';
 
-import { OrderPresenter } from '@/infra/presenters/order-presenter';
-import { RecipientPresenter } from '@/infra/presenters/recipient-presenter';
+import { OrderDetailsPresenter } from '@/infra/presenters/order-details-presenter';
 
 @Controller('/orders/:orderId')
 export class GetOrderDetailsController {
@@ -19,11 +18,10 @@ export class GetOrderDetailsController {
       throw new BadRequestException();
     }
 
-    const { order, recipient } = result.value;
+    const { order } = result.value;
 
     return {
-      order: OrderPresenter.toHTTP(order),
-      recipient: RecipientPresenter.toHTTP(recipient),
+      order: OrderDetailsPresenter.toHTTP(order),
     };
   }
 }
