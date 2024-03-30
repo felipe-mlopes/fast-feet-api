@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { OrdersRepository } from '../repositories/orders-repository';
 
-import { Order } from '@/domain/delivery/enterprise/entities/order';
+import { OrderDetails } from '../../enterprise/entities/value-objects/order-details';
 
 import { Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
@@ -14,7 +14,7 @@ interface GetOrderDetailsUseCaseRequest {
 type GetOrderDetailsUseCaseResponse = Either<
   ResourceNotFoundError,
   {
-    order: Order;
+    order: OrderDetails;
   }
 >;
 
