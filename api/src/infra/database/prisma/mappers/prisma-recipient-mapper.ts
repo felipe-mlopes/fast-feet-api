@@ -12,6 +12,7 @@ export class PrismaRecipientMapper {
         address: raw.clientAddress,
         neighborhood: raw.clientNeighborhood,
         city: raw.clientCity,
+        state: raw.clientState,
       },
       new UniqueEntityID(raw.id),
     );
@@ -26,6 +27,7 @@ export class PrismaRecipientMapper {
       clientAddress: recipient.address,
       clientNeighborhood: recipient.neighborhood,
       clientCity: recipient.city,
+      clientState: recipient.state,
     };
   }
 }
