@@ -8,6 +8,9 @@ export class RecipientPresenter {
       email: recipient.email,
       zipcode: recipient.zipcode,
       address: recipient.address,
+      neighborhood: recipient.neighborhood,
+      city: recipient.city,
+      state: recipient.state,
     };
   }
 }
