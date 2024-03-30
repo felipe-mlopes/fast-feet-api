@@ -6,32 +6,28 @@ import {
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { OrderDetails } from '@/domain/delivery/enterprise/entities/value-objects/order-details';
 
-type PrismaOrderDetails = PrismaOrder & {
-  recipient: PrismaShipping;
-};
-
 export class PrismaOrderDetailsMapper {
-  static toDomain(raw: PrismaOrderDetails): OrderDetails {
+  static toDomain(order: PrismaOrder, shipping: PrismaShipping): OrderDetails {
     return OrderDetails.create({
-      orderId: new UniqueEntityID(raw.id),
-      trackingCode: raw.trackingCode,
-      title: raw.title,
-      status: raw.status,
-      isReturned: raw.isReturned,
-      recipientId: new UniqueEntityID(raw.clientId),
-      recipientName: raw.recipient.clientName,
-      recipientAddress: raw.recipient.clientAddress,
-      recipientZipcode: raw.recipient.clientZipcode,
-      recipientState: raw.recipient.clientState,
-      recipientCity: raw.recipient.clientCity,
-      recipientNeighborhood: raw.recipient.clientNeighborhood,
-      createdAt: raw.createdAt,
-      deliverymanId: raw.deliverymanId
-        ? new UniqueEntityID(raw.deliverymanId)
+      orderId: new UniqueEntityID(order.id),
+      trackingCode: order.trackingCode,
+      title: order.title,
+      status: order.status,
+      isReturned: order.isReturned,
+      recipientId: new UniqueEntityID(order.clientId),
+      recipientName: shipping.clientName,
+      recipientAddress: shipping.clientAddress,
+      recipientZipcode: shipping.clientZipcode,
+      recipientState: shipping.clientState,
+      recipientCity: shipping.clientCity,
+      recipientNeighborhood: shipping.clientNeighborhood,
+      createdAt: order.createdAt,
+      deliverymanId: order.deliverymanId
+        ? new UniqueEntityID(order.deliverymanId)
         : null,
-      updatedAt: raw.updatedAt,
-      picknUpAt: raw.picknUpAt,
-      deliveryAt: raw.deliveryAt,
+      updatedAt: order.updatedAt,
+      picknUpAt: order.picknUpAt,
+      deliveryAt: order.deliveryAt,
     });
   }
 }
