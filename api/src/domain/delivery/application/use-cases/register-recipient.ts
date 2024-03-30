@@ -17,6 +17,7 @@ interface RegisterRecipientUseCaseRequest {
   address: string;
   neighborhood: string;
   city: string;
+  state: string;
 }
 
 type RegisterRecipientUseCaseResponse = Either<
@@ -41,6 +42,7 @@ export class RegisterRecipientUseCase {
     address,
     neighborhood,
     city,
+    state,
   }: RegisterRecipientUseCaseRequest): Promise<RegisterRecipientUseCaseResponse> {
     const admin = await this.adminRepository.findById(adminId);
 
@@ -59,6 +61,7 @@ export class RegisterRecipientUseCase {
       zipcode,
       neighborhood,
       city,
+      state,
     });
 
     await this.recipientRepository.create(recipient);
