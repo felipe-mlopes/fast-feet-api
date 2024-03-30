@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { OrdersRepository } from '../repositories/orders-repository';
 
-import { Order } from '@/domain/delivery/enterprise/entities/order';
+import { OrderWithNeighborhood } from '../../enterprise/entities/value-objects/order-with-neighborhood';
 
 import { Either, left, right } from '@/core/either';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
@@ -18,7 +18,7 @@ interface FetchNearbyOrdersWaitingAndPicknUpUseCaseRequest {
 type FetchNearbyOrdersWaitingAndPicknUpUseCaseResponse = Either<
   NotAllowedError | ResourceNotFoundError,
   {
-    orders: Order[];
+    orders: OrderWithNeighborhood[];
   }
 >;
 
