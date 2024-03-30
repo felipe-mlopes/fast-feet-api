@@ -16,6 +16,9 @@ let sut: GetOrderDetailsUseCase;
 describe('Get Order Details', () => {
   beforeEach(() => {
     inMemoryRecipientsRepository = new InMemoryRecipientsRepository();
+    inMemoryOrdersRepository = new InMemoryOrdersRepository(
+      inMemoryRecipientsRepository,
+    );
     sut = new GetOrderDetailsUseCase(inMemoryOrdersRepository);
   });
 
@@ -36,6 +39,7 @@ describe('Get Order Details', () => {
 
     if (result.isRight()) {
       expect(result.value.order.status).toEqual('WAITING');
+      expect(result.value.order.recipientCity).toEqual(recipient.city);
     }
   });
 
