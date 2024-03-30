@@ -9,8 +9,6 @@ export class OrderPresenter {
       recipientId: order.recipientId.toString(),
       status: order.status,
       isReturn: order.isReturned,
-      city: order.city,
-      neighborhood: order.neighborhood,
       deliverymanId: order.deliverymanId?.toString(),
       createdAt: order.createdAt,
       picknUpAt: order.picknUpAt,
