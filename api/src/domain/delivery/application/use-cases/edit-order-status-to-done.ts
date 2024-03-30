@@ -51,7 +51,7 @@ export class EditOrderStatusToDoneUseCase {
       return left(new NotAllowedError());
     }
 
-    if (order.deliverymanId !== deliveryman.id) {
+    if (order.deliverymanId?.toString() !== deliverymanId) {
       return left(new NotAllowedError());
     }
 
