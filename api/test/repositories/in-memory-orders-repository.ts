@@ -6,13 +6,14 @@ import { InMemoryRecipientsRepository } from './in-memory-recipients-repository'
 import { PaginationParams } from '@/core/repositories/pagination-params';
 import { DomainEvents } from '@/core/events/domain-events';
 import { OrderDetails } from '@/domain/delivery/enterprise/entities/value-objects/order-details';
+import { OrderWithNeighborhood } from '@/domain/delivery/enterprise/entities/value-objects/order-with-neighborhood';
 
 export class InMemoryOrdersRepository implements OrdersRepository {
   public items: Order[] = [];
 
   constructor(private recipientsRepository: InMemoryRecipientsRepository) {}
 
-  async findById(id: string) {
+  async findById(id: string): Promise<Order | null> {
     const order = this.items.find((item) => item.id.toString() === id);
 
     if (!order) {
@@ -22,7 +23,7 @@ export class InMemoryOrdersRepository implements OrdersRepository {
     return order;
   }
 
-  async findDetailsById(id: string): Promise<Order | null> {
+  async findDetailsById(id: string): Promise<OrderDetails | null> {
     const order = this.items.find((item) => item.id.toString() === id);
 
     if (!order) {
@@ -52,8 +53,10 @@ export class InMemoryOrdersRepository implements OrdersRepository {
       recipientState: recipient.state,
       recipientCity: recipient.city,
       recipientNeighborhood: recipient.neighborhood,
-      createdAt: order.createdAt,
       deliverymanId: order.deliverymanId,
+      attachmentId: order.attachmentId,
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt,
       picknUpAt: order.picknUpAt,
       deliveryAt: order.deliveryAt,
     });
@@ -73,7 +76,7 @@ export class InMemoryOrdersRepository implements OrdersRepository {
     city: string,
     deliverymanId: string,
     { page }: PaginationParams,
-  ): Promise<Order[] | null> {
+  ): Promise<OrderWithNeighborhood[] | null> {
     const recipient = this.recipientsRepository.items.filter(
       (shipping) => shipping.city === city,
     );
@@ -95,14 +98,29 @@ export class InMemoryOrdersRepository implements OrdersRepository {
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice((page - 1) * 20, page * 20);
 
-    return orders;
+    return orders.map((item) =>
+      OrderWithNeighborhood.create({
+        orderId: item.id,
+        trackingCode: item.trackingCode,
+        title: item.title,
+        status: item.status,
+        recipientId: item.recipientId,
+        recipientNeighborhood:
+          recipient[
+            recipient.findIndex((shipping) => shipping.id === item.recipientId)
+          ].neighborhood,
+        isReturned: item.isReturned,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+      }),
+    );
   }
 
   async findManyRecentByCityAndOrdersDone(
     city: string,
     deliverymanId: string,
     { page }: PaginationParams,
-  ) {
+  ): Promise<OrderWithNeighborhood[] | null> {
     const recipient = this.recipientsRepository.items.filter(
       (shipping) => shipping.city === city,
     );
@@ -123,14 +141,29 @@ export class InMemoryOrdersRepository implements OrdersRepository {
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice((page - 1) * 20, page * 20);
 
-    return orders;
+    return orders.map((item) =>
+      OrderWithNeighborhood.create({
+        orderId: item.id,
+        trackingCode: item.trackingCode,
+        title: item.title,
+        status: item.status,
+        recipientId: item.recipientId,
+        recipientNeighborhood:
+          recipient[
+            recipient.findIndex((shipping) => shipping.id === item.recipientId)
+          ].neighborhood,
+        isReturned: item.isReturned,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+      }),
+    );
   }
 
-  async create(order: Order) {
+  async create(order: Order): Promise<void> {
     this.items.push(order);
   }
 
-  async save(order: Order) {
+  async save(order: Order): Promise<void> {
     const itemIndex = this.items.findIndex((item) => item.id === order.id);
 
     this.items[itemIndex] = order;
