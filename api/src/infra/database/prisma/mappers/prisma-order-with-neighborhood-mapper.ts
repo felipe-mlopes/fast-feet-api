@@ -6,23 +6,21 @@ import {
 import { OrderWithNeighborhood } from '@/domain/delivery/enterprise/entities/value-objects/order-with-neighborhood';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 
-type PrismaOrderWithNeighborhoodProps = PrismaOrder &
-  Pick<PrismaShipping, 'clientNeighborhood'>;
-
 export class PrismaOrderWithNeighborhoodMapper {
   static toDomain(
-    raw: PrismaOrderWithNeighborhoodProps,
+    order: PrismaOrder,
+    shipping: PrismaShipping,
   ): OrderWithNeighborhood {
     return OrderWithNeighborhood.create({
-      orderId: new UniqueEntityID(raw.id),
-      trackingCode: raw.trackingCode,
-      title: raw.title,
-      status: raw.status,
-      isReturned: raw.isReturned,
-      recipientId: new UniqueEntityID(raw.clientId),
-      recipientNeighborhood: raw.shipping.clientNeighborhood,
-      createdAt: raw.createdAt,
-      updatedAt: raw.updatedAt,
+      orderId: new UniqueEntityID(order.id),
+      trackingCode: order.trackingCode,
+      title: order.title,
+      status: order.status,
+      isReturned: order.isReturned,
+      recipientId: new UniqueEntityID(order.clientId),
+      recipientNeighborhood: shipping.clientNeighborhood,
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt,
     });
   }
 }
