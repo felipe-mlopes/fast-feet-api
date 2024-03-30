@@ -5,12 +5,15 @@ import { PrismaOrderMapper } from '../mappers/prisma-order-mapper';
 
 import { OrdersRepository } from '@/domain/delivery/application/repositories/orders-repository';
 import { Order } from '@/domain/delivery/enterprise/entities/order';
+import { OrderDetails } from '@/domain/delivery/enterprise/entities/value-objects/order-details';
 
 import { CacheRepository } from '@/infra/cache/cache-repository';
 
 import { PaginationParams } from '@/core/repositories/pagination-params';
 import { DomainEvents } from '@/core/events/domain-events';
 import { PrismaOrderDetailsMapper } from '../mappers/prisma-order-details-mapper';
+import { OrderWithNeighborhood } from '@/domain/delivery/enterprise/entities/value-objects/order-with-neighborhood';
+import { PrismaOrderWithNeighborhoodMapper } from '../mappers/prisma-order-with-neighborhood-mapper';
 
 @Injectable()
 export class PrismaOrdersRepository implements OrdersRepository {
@@ -35,7 +38,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
     return questionDetails;
   }
 
-  async findDetailsById(id: string): Promise<Order | null> {
+  async findDetailsById(id: string): Promise<OrderDetails | null> {
     const cacheHit = await this.cacheRepository.get(`order:${id}:details`);
 
     if (cacheHit) {
@@ -50,7 +53,6 @@ export class PrismaOrdersRepository implements OrdersRepository {
       },
       include: {
         shipping: true,
-        attachment: true,
       },
     });
 
@@ -90,7 +92,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
     city: string,
     deliverymanId: string,
     { page }: PaginationParams,
-  ): Promise<Order[] | null> {
+  ): Promise<OrderWithNeighborhood[] | null> {
     const orders = await this.prisma.order.findMany({
       where: {
         OR: [
@@ -115,18 +117,24 @@ export class PrismaOrdersRepository implements OrdersRepository {
       take: 20,
       skip: (page - 1) * 20,
       include: {
-        shipping: true,
+        shipping: {
+          select: {
+            clientNeighborhood: true,
+          },
+        },
       },
     });
 
-    return orders.map((order) => PrismaOrderMapper.toDomain(order));
+    return orders.map((order) =>
+      PrismaOrderWithNeighborhoodMapper.toDomain(order),
+    );
   }
 
   async findManyRecentByCityAndOrdersDone(
     city: string,
     deliverymanId: string,
     { page }: PaginationParams,
-  ): Promise<Order[] | null> {
+  ): Promise<OrderWithNeighborhood[] | null> {
     const orders = await this.prisma.order.findMany({
       where: {
         status: {
@@ -143,11 +151,17 @@ export class PrismaOrdersRepository implements OrdersRepository {
       take: 20,
       skip: (page - 1) * 20,
       include: {
-        shipping: true,
+        shipping: {
+          select: {
+            clientNeighborhood: true,
+          },
+        },
       },
     });
 
-    return orders.map((order) => PrismaOrderMapper.toDomain(order));
+    return orders.map((order) =>
+      PrismaOrderWithNeighborhoodMapper.toDomain(order),
+    );
   }
 
   async create(order: Order): Promise<void> {
