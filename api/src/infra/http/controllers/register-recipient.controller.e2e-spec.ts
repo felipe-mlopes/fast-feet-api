@@ -48,6 +48,7 @@ describe('Register Recipient (E2E)', () => {
         zipcode: 12345678,
         neighborhood: 'Downtown',
         city: 'Somewhere city',
+        state: 'RJ',
       });
 
     expect(response.statusCode).toBe(201);
