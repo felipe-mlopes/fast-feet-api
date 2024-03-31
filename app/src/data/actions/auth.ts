@@ -1,5 +1,7 @@
-import { SessionOptions, getIronSession } from "iron-session"
 import { cookies } from "next/headers"
+import { SessionOptions, getIronSession } from "iron-session"
+
+import { env } from "@/env"
 
 export interface SessionData {
     token?: string
@@ -13,7 +15,7 @@ export const defaultSession: SessionData = {
 }
 
 export const sessionOptions: SessionOptions = {
-    password: process.env.SESSION_SECRET!,
+    password: env.NEXT_PUBLIC_SESSION_SECRET,
     cookieName: 'auth',
     cookieOptions: {
         httpOnly: true,
