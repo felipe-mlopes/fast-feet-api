@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 
 import { Action } from "@/components/Action";
 
@@ -33,6 +32,7 @@ export default function Upload({ params }: { params: { orderId: string } }) {
             buttonContent="Enviar foto"
             modalContent="Foto enviada!"
             isDisable={isUpload}
+            isDone={false}
           />
         </div>
       </main>
