@@ -1,15 +1,15 @@
 import Link from "next/link";
 import dayjs from "dayjs";
 
-import { Action } from "@/components/Action";
-import {
-  getOrderByDetails,
-  OrdersProps,
-  RecipientProps,
-} from "@/actions/orders";
+import { getOrderByDetails } from "@/data/actions/orders";
 
-import { statusEdit } from "@/utils/transformStatus";
-import { zipcodeMask } from "@/utils/zipcodeMask";
+import { OrdersProps } from "@/data/types/orders";
+import { RecipientsProps } from "@/data/types/recipients";
+
+import { statusEdit } from "@/utils/transform-status";
+import { zipcodeMask } from "@/utils/zipcode-mask";
+
+import { Action } from "@/components/Action";
 
 import { ArrowIcon } from "@/components/icons/ArrowIcon";
 import { FolderIcon } from "@/components/icons/FolderIcon";
@@ -24,7 +24,7 @@ export default async function DeliveryDetails({
 
   const { status, city, createdAt, picknUpAt, deliveryAt } =
     order as OrdersProps;
-  const { name, address, zipcode } = recipient as RecipientProps;
+  const { name, address, zipcode } = recipient as RecipientsProps;
 
   const transformedStatus = statusEdit(status);
   const transformedZipcode = zipcodeMask(zipcode);
