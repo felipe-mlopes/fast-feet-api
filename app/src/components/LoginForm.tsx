@@ -12,7 +12,6 @@ import { FormStateTypes } from "@/types";
 
 import LoginInput from "./LoginInput";
 import { Modal } from "./Modal";
-import { revalidatePath } from "next/cache";
 
 type HTMLFormProps = DetailedHTMLProps<
   FormHTMLAttributes<HTMLFormElement>,
