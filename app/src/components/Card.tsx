@@ -1,8 +1,9 @@
 import Link from "next/link";
 import dayjs from "dayjs";
 
-import { OrdersProps } from "@/actions/orders";
-import { transformStatus } from "@/utils/transformStatus";
+import { OrdersProps } from "@/data/types/orders";
+
+import { transformStatus } from "@/utils/transform-status";
 
 import { StatusSteps } from "./StatusSteps";
 
