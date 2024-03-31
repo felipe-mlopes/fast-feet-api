@@ -9,3 +9,13 @@ export const formSchemaLogin = z.object({
         .string()
         .min(6, { message: "A senha deve conter no mínimo 6 caracteres." })
 })
+
+export const formSchemaRegisterRecipient = z.object({
+    clientName: z.string(),
+    clientEmail: z.string().email(),
+    zipcode: z.coerce.number().refine((cep) => String(cep).length === 8, "CEP deve ter 8 dígitos"),
+    address: z.string(),
+    neighborhood: z.string(),
+    city: z.string(),
+    state: z.string(),
+})
