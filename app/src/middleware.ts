@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 import { getIronSession } from "iron-session";
 
-import { SessionData, sessionOptions } from "./actions/auth";
+import { SessionData, sessionOptions } from "./data/actions/auth";
 
 export async function middleware(request: NextRequest) {
 
