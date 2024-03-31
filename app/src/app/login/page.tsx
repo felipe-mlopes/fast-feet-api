@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { loginAction } from "@/actions/login";
+import { loginAction } from "@/data/actions/login";
 
 import { Header } from "@/components/Header";
 import { Cover } from "@/components/Cover";
