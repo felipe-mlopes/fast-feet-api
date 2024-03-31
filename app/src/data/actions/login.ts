@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation"
 
+import { api } from "../api"
 import { getAuthData, getSession, setAuthData } from "./auth"
 
 import { formSchemaLogin } from "@/utils/validation"
@@ -15,14 +16,14 @@ export async function loginAction(
 
     const rawFormData = Object.fromEntries(formData.entries())
     const result = formSchemaLogin.safeParse(rawFormData)
-
+    
     if (!result.success) {
         return { error: result.error.issues }
     }
     
     const { cpf, password } = result.data
 
-    const response = await fetch('http://localhost:3333/deliveryman/sessions', { 
+    const response = await api('/deliveryman/sessions', { 
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -49,7 +50,7 @@ export async function loginAction(
         session.isLoggedIn = true
 
         await session.save()
-        redirect("/deliveries")
+        redirect("/deliveries/pending")
 
      } else {
         const data = await response.json()
