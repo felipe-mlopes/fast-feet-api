@@ -1,20 +1,22 @@
+import { getOrdersDone, getOrdersPending } from "@/data/actions/orders";
+import { logoutAction } from "@/data/actions/login";
+
+import { OrdersProps } from "@/data/types/orders";
+
 import { Card } from "@/components/Card";
 import { ButtonStatus } from "@/components/ButtonStatus";
-
-import { OrdersProps, getOrdersDone, getOrdersPending } from "@/actions/orders";
 
 import { ExistIcon } from "@/components/icons/ExistIcon";
 import { PinIcon } from "@/components/icons/PinIcon";
 import { SearchIcon } from "@/components/icons/SearchIcon";
-import { logoutAction } from "@/actions/login";
 
 export default async function Deliveries({
   params,
 }: {
   params: { status: "pending" | "done" };
 }) {
-  const { ordersPending } = await getOrdersPending("farway");
-  const { ordersDone } = await getOrdersDone("farway");
+  const { ordersPending } = await getOrdersPending("cidadela");
+  const { ordersDone } = await getOrdersDone("cidadela");
 
   return (
     <div className="flex flex-col justify-between items-center mt-20 relative min-h-screen lg:grid lg:grid-col-2 lg:grid-row-3 lg:justify-normal">
