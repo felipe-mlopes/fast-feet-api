@@ -1,5 +1,6 @@
 import { EditOrderStatusToDoneUseCase } from './edit-order-status-to-done';
 
+import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipients-repository';
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders-repository';
 import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-deliverymen-repository';
 import { InMemoryAttachmentRepository } from 'test/repositories/in-memory-attachment-repository';
@@ -14,6 +15,7 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 
+let inMemoryRecipientsRepository: InMemoryRecipientsRepository;
 let inMemoryOrdersRepository: InMemoryOrdersRepository;
 let inMemoryDeliveryMenRepository: InMemoryDeliveryMenRepository;
 let inMemoryAttachmentRespository: InMemoryAttachmentRepository;
@@ -21,7 +23,10 @@ let sut: EditOrderStatusToDoneUseCase;
 
 describe('Edit Order Status to Done', () => {
   beforeEach(() => {
-    inMemoryOrdersRepository = new InMemoryOrdersRepository();
+    inMemoryRecipientsRepository = new InMemoryRecipientsRepository();
+    inMemoryOrdersRepository = new InMemoryOrdersRepository(
+      inMemoryRecipientsRepository,
+    );
     inMemoryDeliveryMenRepository = new InMemoryDeliveryMenRepository();
     inMemoryAttachmentRespository = new InMemoryAttachmentRepository();
     sut = new EditOrderStatusToDoneUseCase(

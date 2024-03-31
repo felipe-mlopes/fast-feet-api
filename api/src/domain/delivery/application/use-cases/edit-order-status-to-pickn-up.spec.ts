@@ -1,5 +1,6 @@
 import { EditOrderStatusToPicknUpUseCase } from './edit-order-status-to-pickn-up';
 
+import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipients-repository';
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders-repository';
 import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-deliverymen-repository';
 
@@ -11,13 +12,17 @@ import { Status } from '@/domain/delivery/enterprise/entities/order';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 
+let inMemoryRecipientsRepository: InMemoryRecipientsRepository;
 let inMemoryOrdersRepository: InMemoryOrdersRepository;
 let inMemoryDeliveryMenRepository: InMemoryDeliveryMenRepository;
 let sut: EditOrderStatusToPicknUpUseCase;
 
 describe("Edit Order Status to Pick'n Up", () => {
   beforeEach(() => {
-    inMemoryOrdersRepository = new InMemoryOrdersRepository();
+    inMemoryRecipientsRepository = new InMemoryRecipientsRepository();
+    inMemoryOrdersRepository = new InMemoryOrdersRepository(
+      inMemoryRecipientsRepository,
+    );
     inMemoryDeliveryMenRepository = new InMemoryDeliveryMenRepository();
     sut = new EditOrderStatusToPicknUpUseCase(
       inMemoryOrdersRepository,

@@ -1,5 +1,6 @@
 import { EditOrderStatusToReturnUseCase } from './edit-order-status-to-return';
 
+import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipients-repository';
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders-repository';
 import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-deliverymen-repository';
 
@@ -10,13 +11,17 @@ import { Status } from '@/domain/delivery/enterprise/entities/order';
 
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 
+let inMemoryRecipientsRepository: InMemoryRecipientsRepository;
 let inMemoryOrdersRepository: InMemoryOrdersRepository;
 let inMemoryDeliveryMenRepository: InMemoryDeliveryMenRepository;
 let sut: EditOrderStatusToReturnUseCase;
 
 describe('Edit Order Status to Returned', () => {
   beforeEach(() => {
-    inMemoryOrdersRepository = new InMemoryOrdersRepository();
+    inMemoryRecipientsRepository = new InMemoryRecipientsRepository();
+    inMemoryOrdersRepository = new InMemoryOrdersRepository(
+      inMemoryRecipientsRepository,
+    );
     inMemoryDeliveryMenRepository = new InMemoryDeliveryMenRepository();
     sut = new EditOrderStatusToReturnUseCase(
       inMemoryOrdersRepository,

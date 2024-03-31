@@ -1,13 +1,20 @@
-import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders-repository';
 import { GetOrderByTrackingCodeUseCase } from './get-order-by-tracking-code';
+
+import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipients-repository';
+import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders-repository';
+
 import { makeOrder } from 'test/factories/make-orders';
 
+let inMemoryRecipientsRepository: InMemoryRecipientsRepository;
 let inMemoryOrdersRepository: InMemoryOrdersRepository;
 let sut: GetOrderByTrackingCodeUseCase;
 
 describe('Get Order by Tracking Code', () => {
   beforeEach(() => {
-    inMemoryOrdersRepository = new InMemoryOrdersRepository();
+    inMemoryRecipientsRepository = new InMemoryRecipientsRepository();
+    inMemoryOrdersRepository = new InMemoryOrdersRepository(
+      inMemoryRecipientsRepository,
+    );
     sut = new GetOrderByTrackingCodeUseCase(inMemoryOrdersRepository);
   });
 
