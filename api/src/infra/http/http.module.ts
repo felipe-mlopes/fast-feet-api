@@ -18,6 +18,8 @@ import { FecthNearbyOrdersWaitingAndPicknUpController } from './controllers/fetc
 import { FecthNearbyOrdersDoneController } from './controllers/fetch-nearby-orders-done.controller';
 import { GetOrderDetailsController } from './controllers/get-order-details.controller';
 import { GetOrderByTrackingCodeController } from './controllers/get-order-by-tracking-code.controller';
+import { GetRecipientByEmailController } from './controllers/get-recipient-by-email.controller';
+import { GetDeliverymanByIdController } from './controllers/get-deliveryman-by-id.controller';
 
 import { RegisterAdminUseCase } from '@/domain/delivery/application/use-cases/register-admin';
 import { CreateOrderUseCase } from '@/domain/delivery/application/use-cases/create-order';
@@ -33,6 +35,8 @@ import { FetchNearbyOrdersWaitingAndPicknUpUseCase } from '@/domain/delivery/app
 import { FetchNearbyOrdersDoneUseCase } from '@/domain/delivery/application/use-cases/fetch-nearby-orders-done';
 import { GetOrderDetailsUseCase } from '@/domain/delivery/application/use-cases/get-order-details';
 import { GetOrderByTrackingCodeUseCase } from '@/domain/delivery/application/use-cases/get-order-by-tracking-code';
+import { GetRecipientByEmailUseCase } from '@/domain/delivery/application/use-cases/get-recipient-by-email';
+import { GetDeliverymanByIdUseCase } from '@/domain/delivery/application/use-cases/get-deliveryman-by-id';
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -51,6 +55,8 @@ import { GetOrderByTrackingCodeUseCase } from '@/domain/delivery/application/use
     FecthNearbyOrdersDoneController,
     GetOrderDetailsController,
     GetOrderByTrackingCodeController,
+    GetRecipientByEmailController,
+    GetDeliverymanByIdController,
   ],
   providers: [
     RegisterAdminUseCase,
@@ -67,6 +73,8 @@ import { GetOrderByTrackingCodeUseCase } from '@/domain/delivery/application/use
     FetchNearbyOrdersDoneUseCase,
     GetOrderDetailsUseCase,
     GetOrderByTrackingCodeUseCase,
+    GetRecipientByEmailUseCase,
+    GetDeliverymanByIdUseCase,
   ],
 })
 export class HttpModule {}
