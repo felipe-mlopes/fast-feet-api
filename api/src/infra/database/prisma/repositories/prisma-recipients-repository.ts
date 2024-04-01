@@ -41,6 +41,20 @@ export class PrismaRecipientsRepository implements RecipentsRepository {
     return PrismaRecipientMapper.toDomain(recipient);
   }
 
+  async findByEmail(email: string): Promise<Recipient | null> {
+    const recipient = await this.prisma.shipping.findUnique({
+      where: {
+        clientEmail: email,
+      },
+    });
+
+    if (!recipient) {
+      return null;
+    }
+
+    return PrismaRecipientMapper.toDomain(recipient);
+  }
+
   async create(recipient: Recipient) {
     const data = PrismaRecipientMapper.toPrisma(recipient);
 
