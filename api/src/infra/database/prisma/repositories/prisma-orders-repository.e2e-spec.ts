@@ -44,7 +44,7 @@ describe('Prisma Orders Repository (E2E)', () => {
 
     const orderId = order.id.toString();
 
-    const orderDetails = await ordersRepository.findById(orderId);
+    const orderDetails = await ordersRepository.findDetailsById(orderId);
 
     const cached = await cacheRepository.get(`order:${orderId}:details`);
 
@@ -65,7 +65,7 @@ describe('Prisma Orders Repository (E2E)', () => {
       JSON.stringify({ empty: true }),
     );
 
-    const orderDetails = await ordersRepository.findById(orderId);
+    const orderDetails = await ordersRepository.findDetailsById(orderId);
 
     expect(orderDetails).toEqual({ empty: true });
   });
