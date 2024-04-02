@@ -1,0 +1,42 @@
+name: Run E2E Tests
+
+on: [pull_request]
+
+jobs:
+  run-e2e-tests:
+    name: Run E2E Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: docker
+          POSTGRES_DB: fast-feet
+          PGDATA: /data/postgres
+
+      cache:
+        image: redis
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - run: npm ci
+
+      - run: npm run test:e2e
+        env:
+          JWT_PRIVATE_KEY: private-esting
+          JWT_PUBLIC_KEY: public-testing
+          DATABASE_URL: 'postgresql://postgres:docker@localhost:5432/fast-feet?schema=public'
+          AWS_BUCKET_NAME: 'fast-feet-api-test'
+          REDIS_DB: 1
