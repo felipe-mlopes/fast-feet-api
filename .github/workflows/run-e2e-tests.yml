@@ -41,7 +41,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: '73a02a25be9d38dd57837fe2b0264124'
           AWS_BUCKET_NAME: 'fast-feet-api-test'
           AWS_ACCESS_KEY_ID: '7455633cc0e0a67511e0a09fec30dab8'
-          AWS_SECRET_ACCESS_KEY: 'e83dfcb438c5dd22fc44c24c1f10cc5012d439b3e23dc578844036157ac669e4'
+          AWS_SECRET_ACCESS_KEY: 'c85d851f5259cfcc7b5d021cd8d4ee9fccad4708ae137993fdcf2214b62c4243'
           MAIL_USER: 'c6a9926bc7977e'
           MAIL_PASS: '1117668b317d50'
           MAIL_FROM: 'test@example.com'
