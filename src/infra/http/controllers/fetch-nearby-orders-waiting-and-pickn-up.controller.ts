@@ -1,25 +1,15 @@
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common';
-import { z } from 'zod';
-
-import { FetchNearbyOrdersWaitingAndPicknUpUseCase } from '@/domain/delivery/application/use-cases/fetch-nearby-orders-waiting-and-pickn-up';
-
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
+import { ApiTags } from '@nestjs/swagger';
 
 import { CurrentUser } from '@/infra/auth/current-user.decorator';
 import { UserPayload } from '@/infra/auth/jwt.strategy';
 import { OrderWithNeighborhoodPresenter } from '@/infra/presenters/order-with-neighborhood-presenter';
 
-const pageQueryParamsSchema = z
-  .string()
-  .optional()
-  .default('1')
-  .transform(Number)
-  .pipe(z.number().min(1));
+import { PageQueryParamsDto } from '../dto/page-query-params.dto';
 
-const pageQueryValidationPipe = new ZodValidationPipe(pageQueryParamsSchema);
+import { FetchNearbyOrdersWaitingAndPicknUpUseCase } from '@/domain/delivery/application/use-cases/fetch-nearby-orders-waiting-and-pickn-up';
 
-type PageQueryParamsSchema = z.infer<typeof pageQueryParamsSchema>;
-
+@ApiTags('orders')
 @Controller('/orders/pending')
 export class FecthNearbyOrdersWaitingAndPicknUpController {
   constructor(
@@ -30,8 +20,8 @@ export class FecthNearbyOrdersWaitingAndPicknUpController {
   async handle(
     @Query('city')
     city: string,
-    @Query('page', pageQueryValidationPipe)
-    page: PageQueryParamsSchema,
+    @Query('page')
+    page: PageQueryParamsDto,
     @CurrentUser() user: UserPayload,
   ) {
     const deliverymanId = user.sub;

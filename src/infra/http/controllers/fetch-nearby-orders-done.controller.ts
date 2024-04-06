@@ -1,33 +1,23 @@
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common';
-import { z } from 'zod';
-
-import { FetchNearbyOrdersDoneUseCase } from '@/domain/delivery/application/use-cases/fetch-nearby-orders-done';
-
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
+import { ApiTags } from '@nestjs/swagger';
 
 import { CurrentUser } from '@/infra/auth/current-user.decorator';
 import { UserPayload } from '@/infra/auth/jwt.strategy';
 import { OrderWithNeighborhoodPresenter } from '@/infra/presenters/order-with-neighborhood-presenter';
 
-const pageQueryParamsSchema = z
-  .string()
-  .optional()
-  .default('1')
-  .transform(Number)
-  .pipe(z.number().min(1));
+import { PageQueryParamsDto } from '../dto/page-query-params.dto';
 
-const pageQueryValidationPipe = new ZodValidationPipe(pageQueryParamsSchema);
+import { FetchNearbyOrdersDoneUseCase } from '@/domain/delivery/application/use-cases/fetch-nearby-orders-done';
 
-type PageQueryParamsSchema = z.infer<typeof pageQueryParamsSchema>;
-
+@ApiTags('orders')
 @Controller('/orders/done')
 export class FecthNearbyOrdersDoneController {
   constructor(private fetchNearbyOrdersDone: FetchNearbyOrdersDoneUseCase) {}
 
   @Get()
   async handle(
-    @Query('page', pageQueryValidationPipe)
-    page: PageQueryParamsSchema,
+    @Query('page')
+    page: PageQueryParamsDto,
     @Query('city')
     city: string,
     @CurrentUser()
