@@ -5,27 +5,16 @@ import {
   Controller,
   HttpCode,
   Post,
-  UsePipes,
 } from '@nestjs/common';
-import { z } from 'zod';
+import { ApiTags } from '@nestjs/swagger';
 
 import { Public } from '@/infra/auth/public';
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
+
 import { RegisterAdminUseCase } from '@/domain/delivery/application/use-cases/register-admin';
+import { CreateAccountDto } from '@/infra/http/dto/create-account.dto';
 import { AdminAlreadyExistsError } from '@/domain/delivery/application/use-cases/errors/admin-already-exists-error';
 
-const createAccountBodySchema = z.object({
-  name: z.string().transform((str) => str.toLowerCase()),
-  email: z
-    .string()
-    .email()
-    .transform((str) => str.toLowerCase()),
-  cpf: z.string(),
-  password: z.string(),
-});
-
-type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>;
-
+@ApiTags('admin')
 @Controller('/account')
 @Public()
 export class CreateAccountController {
@@ -33,8 +22,7 @@ export class CreateAccountController {
 
   @Post()
   @HttpCode(201)
-  @UsePipes(new ZodValidationPipe(createAccountBodySchema))
-  async handle(@Body() body: CreateAccountBodySchema) {
+  async handle(@Body() body: CreateAccountDto) {
     const { name, email, cpf, password } = body;
 
     const result = await this.registerAdmin.execute({
