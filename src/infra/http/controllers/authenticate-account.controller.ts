@@ -4,32 +4,23 @@ import {
   Controller,
   Post,
   UnauthorizedException,
-  UsePipes,
 } from '@nestjs/common';
-import { z } from 'zod';
+import { ApiTags } from '@nestjs/swagger';
 
 import { Public } from '@/infra/auth/public';
 
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
-
 import { AuthenticateAdminUseCase } from '@/domain/delivery/application/use-cases/authenticate-admin';
 import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error';
+import { AuthenticateAccountDto } from '@/infra/http/dto/authenticate-account.dto';
 
-const authenticateBodySchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
-});
-
-type AuthenticateBodySchema = z.infer<typeof authenticateBodySchema>;
-
+@ApiTags('admin')
 @Controller('/account/sessions')
 @Public()
-@UsePipes(new ZodValidationPipe(authenticateBodySchema))
 export class AuthenticateAccountController {
   constructor(private authenticateAdmin: AuthenticateAdminUseCase) {}
 
   @Post()
-  async handle(@Body() body: AuthenticateBodySchema) {
+  async handle(@Body() body: AuthenticateAccountDto) {
     const { email, password } = body;
 
     const result = await this.authenticateAdmin.execute({
