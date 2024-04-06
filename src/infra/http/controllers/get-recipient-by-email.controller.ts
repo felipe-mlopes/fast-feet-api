@@ -1,11 +1,13 @@
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common';
-
-import { GetRecipientByEmailUseCase } from '@/domain/delivery/application/use-cases/get-recipient-by-email';
+import { ApiTags } from '@nestjs/swagger';
 
 import { CurrentUser } from '@/infra/auth/current-user.decorator';
 import { UserPayload } from '@/infra/auth/jwt.strategy';
 import { RecipientPresenter } from '@/infra/presenters/recipient-presenter';
 
+import { GetRecipientByEmailUseCase } from '@/domain/delivery/application/use-cases/get-recipient-by-email';
+
+@ApiTags('recipient')
 @Controller('/recipient')
 export class GetRecipientByEmailController {
   constructor(private getRecipientByEmail: GetRecipientByEmailUseCase) {}
