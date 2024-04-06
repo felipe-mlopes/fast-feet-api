@@ -5,12 +5,14 @@ import {
   Param,
   Patch,
 } from '@nestjs/common';
-
-import { EditOrderStatusToPicknUpUseCase } from '@/domain/delivery/application/use-cases/edit-order-status-to-pickn-up';
+import { ApiTags } from '@nestjs/swagger';
 
 import { CurrentUser } from '@/infra/auth/current-user.decorator';
 import { UserPayload } from '@/infra/auth/jwt.strategy';
 
+import { EditOrderStatusToPicknUpUseCase } from '@/domain/delivery/application/use-cases/edit-order-status-to-pickn-up';
+
+@ApiTags('orders')
 @Controller('/orders/:orderId/picknup')
 export class EditOrderStatusToPicknUpController {
   constructor(

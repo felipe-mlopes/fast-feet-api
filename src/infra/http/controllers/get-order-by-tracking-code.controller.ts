@@ -1,10 +1,12 @@
 import { Controller, Get, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
 import { GetOrderByTrackingCodeUseCase } from '@/domain/delivery/application/use-cases/get-order-by-tracking-code';
 
 import { Public } from '@/infra/auth/public';
 import { OrderPresenter } from '@/infra/presenters/order-presenter';
 
+@ApiTags('orders')
 @Controller('/recipient-query')
 @Public()
 export class GetOrderByTrackingCodeController {
