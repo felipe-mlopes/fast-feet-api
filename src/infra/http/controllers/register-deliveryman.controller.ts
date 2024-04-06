@@ -5,26 +5,16 @@ import {
   Controller,
   HttpCode,
   Post,
-  UsePipes,
 } from '@nestjs/common';
-import { z } from 'zod';
+import { ApiTags } from '@nestjs/swagger';
 
 import { Public } from '@/infra/auth/public';
+
 import { RegisterDeliverymanUseCase } from '@/domain/delivery/application/use-cases/register-deliveryman';
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
+import { RegisterDeliverymanDto } from '@/infra/http/dto/register-deliveryman.dto';
 import { DeliveryManAlreadyExistsError } from '@/domain/delivery/application/use-cases/errors/deliveryman-already-exists-error';
 
-const registerDeliverymanBodySchema = z.object({
-  name: z.string().transform((str) => str.toLowerCase()),
-  cpf: z.string(),
-  email: z.string().transform((str) => str.toLowerCase()),
-  password: z.string(),
-});
-
-type RegisterDeliverymanBodySchema = z.infer<
-  typeof registerDeliverymanBodySchema
->;
-
+@ApiTags('deliveryman')
 @Controller('/deliveryman')
 @Public()
 export class RegisterDeliveryManController {
@@ -32,8 +22,7 @@ export class RegisterDeliveryManController {
 
   @Post()
   @HttpCode(201)
-  @UsePipes(new ZodValidationPipe(registerDeliverymanBodySchema))
-  async handle(@Body() body: RegisterDeliverymanBodySchema) {
+  async handle(@Body() body: RegisterDeliverymanDto) {
     const { name, cpf, email, password } = body;
 
     const result = await this.registerDeliveryman.execute({
