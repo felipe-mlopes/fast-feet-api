@@ -5,36 +5,31 @@ import {
   Controller,
   HttpCode,
   Post,
-  UsePipes,
 } from '@nestjs/common';
-import { z } from 'zod';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { Public } from '@/infra/auth/public';
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
+import { CreateAccountDto } from '@/infra/http/dto/create-account.dto';
+
 import { RegisterAdminUseCase } from '@/domain/delivery/application/use-cases/register-admin';
 import { AdminAlreadyExistsError } from '@/domain/delivery/application/use-cases/errors/admin-already-exists-error';
 
-const createAccountBodySchema = z.object({
-  name: z.string().transform((str) => str.toLowerCase()),
-  email: z
-    .string()
-    .email()
-    .transform((str) => str.toLowerCase()),
-  cpf: z.string(),
-  password: z.string(),
-});
-
-type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>;
-
+@ApiTags('admin')
 @Controller('/account')
 @Public()
 export class CreateAccountController {
   constructor(private registerAdmin: RegisterAdminUseCase) {}
 
+  @ApiOperation({
+    summary: 'Create admin account',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The admin account has been successfully created',
+  })
   @Post()
   @HttpCode(201)
-  @UsePipes(new ZodValidationPipe(createAccountBodySchema))
-  async handle(@Body() body: CreateAccountBodySchema) {
+  async handle(@Body() body: CreateAccountDto) {
     const { name, email, cpf, password } = body;
 
     const result = await this.registerAdmin.execute({
@@ -54,5 +49,9 @@ export class CreateAccountController {
           throw new BadRequestException(error.message);
       }
     }
+
+    return {
+      message: 'The admin account has been successfully created.',
+    };
   }
 }

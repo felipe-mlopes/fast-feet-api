@@ -1,38 +1,47 @@
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common';
-import { z } from 'zod';
-
-import { FetchNearbyOrdersDoneUseCase } from '@/domain/delivery/application/use-cases/fetch-nearby-orders-done';
-
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { CurrentUser } from '@/infra/auth/current-user.decorator';
 import { UserPayload } from '@/infra/auth/jwt.strategy';
-import { OrderWithNeighborhoodPresenter } from '@/infra/presenters/order-with-neighborhood-presenter';
+import {
+  OrderWithNeighborhoodPresenter,
+  OrderWithNeighborhoodResponseDto,
+} from '@/infra/presenters/order-with-neighborhood-presenter';
 
-const pageQueryParamsSchema = z
-  .string()
-  .optional()
-  .default('1')
-  .transform(Number)
-  .pipe(z.number().min(1));
+import { PageQueryParamsDto } from '../dto/page-query-params.dto';
 
-const pageQueryValidationPipe = new ZodValidationPipe(pageQueryParamsSchema);
+import { FetchNearbyOrdersDoneUseCase } from '@/domain/delivery/application/use-cases/fetch-nearby-orders-done';
 
-type PageQueryParamsSchema = z.infer<typeof pageQueryParamsSchema>;
-
+@ApiTags('orders')
+@ApiBearerAuth('deliverymanToken')
 @Controller('/orders/done')
 export class FecthNearbyOrdersDoneController {
   constructor(private fetchNearbyOrdersDone: FetchNearbyOrdersDoneUseCase) {}
 
+  @ApiOperation({
+    summary: 'Fetch recent orders done',
+    description:
+      'Fetch recent orders done by logged in deliveryman from the same city',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Orders with done status',
+    type: OrderWithNeighborhoodResponseDto,
+  })
   @Get()
   async handle(
-    @Query('page', pageQueryValidationPipe)
-    page: PageQueryParamsSchema,
     @Query('city')
     city: string,
+    @Query('page')
+    page: PageQueryParamsDto,
     @CurrentUser()
     user: UserPayload,
-  ) {
+  ): Promise<OrderWithNeighborhoodPresenter> {
     const deliverymanId = user.sub;
 
     const result = await this.fetchNearbyOrdersDone.execute({

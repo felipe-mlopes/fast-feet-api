@@ -27,7 +27,7 @@ describe('Create Account (E2E)', () => {
     const response = await request(app.getHttpServer()).post('/account').send({
       name: 'John Doe',
       email: 'john@example.com',
-      cpf: '12345678900',
+      cpf: '123.456.789-00',
       password: '123456',
     });
 

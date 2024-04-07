@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
 import { OrdersRepository } from '../repositories/orders-repository';
+import { DeliveryMenRepository } from '../repositories/deliverymen-repository';
 
 import { OrderWithNeighborhood } from '../../enterprise/entities/value-objects/order-with-neighborhood';
 
 import { Either, left, right } from '@/core/either';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
-import { DeliveryMenRepository } from '../repositories/deliverymen-repository';
 
 interface FetchNearbyOrdersWaitingAndPicknUpUseCaseRequest {
   city: string;

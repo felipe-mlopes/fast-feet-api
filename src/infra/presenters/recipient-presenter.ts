@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { Recipient } from '@/domain/delivery/enterprise/entities/recipient';
 
 export class RecipientPresenter {
@@ -8,9 +10,40 @@ export class RecipientPresenter {
       email: recipient.email,
       zipcode: recipient.zipcode,
       address: recipient.address,
-      neighborhood: recipient.neighborhood,
-      city: recipient.city,
       state: recipient.state,
+      city: recipient.city,
+      neighborhood: recipient.neighborhood,
     };
   }
+}
+
+class RecipientResponse {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  email: string;
+
+  @ApiProperty()
+  zipcode: number;
+
+  @ApiProperty()
+  address: string;
+
+  @ApiProperty()
+  state: string;
+
+  @ApiProperty()
+  city: string;
+
+  @ApiProperty()
+  neighborhood: string;
+}
+
+export class RecipientResponseDto {
+  @ApiProperty({ type: RecipientResponse })
+  recipient: RecipientResponse[];
 }

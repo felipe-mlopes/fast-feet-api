@@ -16,7 +16,7 @@ export class Mailer implements SendEmail {
     this.transport = nodemailer.createTransport({
       host: envService.get('MAIL_HOST'),
       port: envService.get('MAIL_PORT'),
-      secure: false,
+      secure: true,
       auth: {
         user: envService.get('MAIL_USER'),
         pass: envService.get('MAIL_PASS'),

@@ -5,34 +5,35 @@ import {
   HttpCode,
   Post,
 } from '@nestjs/common';
-import { z } from 'zod';
-
-import { CreateOrderUseCase } from '@/domain/delivery/application/use-cases/create-order';
-
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { CurrentUser } from '@/infra/auth/current-user.decorator';
 import { UserPayload } from '@/infra/auth/jwt.strategy';
+import { CreateOrderDto } from '@/infra/http/dto/create-order.dto';
 
-const createOrderBodySchema = z.object({
-  title: z.string().transform((str) => str.toLowerCase()),
-  recipientId: z.string().uuid(),
-});
+import { CreateOrderUseCase } from '@/domain/delivery/application/use-cases/create-order';
 
-const bodyValidationProps = new ZodValidationPipe(createOrderBodySchema);
-
-type CreateOrderBodySchema = z.infer<typeof createOrderBodySchema>;
-
+@ApiTags('orders')
+@ApiBearerAuth('adminToken')
 @Controller('/orders')
 export class CreateOrderController {
   constructor(private createOrder: CreateOrderUseCase) {}
 
+  @ApiOperation({
+    summary: 'Create a order',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The order has been successfully created',
+  })
   @Post()
   @HttpCode(201)
-  async handle(
-    @Body(bodyValidationProps) body: CreateOrderBodySchema,
-    @CurrentUser() user: UserPayload,
-  ) {
+  async handle(@Body() body: CreateOrderDto, @CurrentUser() user: UserPayload) {
     const { title, recipientId } = body;
     const userRole = user.role;
 
@@ -45,5 +46,9 @@ export class CreateOrderController {
     if (result.isLeft()) {
       throw new BadRequestException();
     }
+
+    return {
+      message: 'The order has been successfully created.',
+    };
   }
 }

@@ -4,34 +4,43 @@ import {
   Controller,
   Post,
   UnauthorizedException,
-  UsePipes,
 } from '@nestjs/common';
-import { z } from 'zod';
+import {
+  ApiOperation,
+  ApiProperty,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { Public } from '@/infra/auth/public';
-
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
+import { AuthetincateDeliverymanDto } from '@/infra/http/dto/authenticate-deliveryman.dto';
 
 import { AuthenticateDeliverymenUseCase } from '@/domain/delivery/application/use-cases/authenticate-deliveryman';
 import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error';
 
-const authenticateBodySchema = z.object({
-  cpf: z.string(),
-  password: z.string(),
-});
+class DeliverymanTokenResponseDto {
+  @ApiProperty()
+  access_token: string;
+}
 
-type AuthenticateBodySchema = z.infer<typeof authenticateBodySchema>;
-
+@ApiTags('deliveryman')
 @Controller('/deliveryman/sessions')
 @Public()
-@UsePipes(new ZodValidationPipe(authenticateBodySchema))
 export class AuthenticateDeliverymanController {
   constructor(
     private authenticateDeliveryman: AuthenticateDeliverymenUseCase,
   ) {}
 
+  @ApiOperation({
+    summary: 'Authenticate deliveryman account',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Deliveryman token',
+    type: DeliverymanTokenResponseDto,
+  })
   @Post()
-  async handle(@Body() body: AuthenticateBodySchema) {
+  async handle(@Body() body: AuthetincateDeliverymanDto) {
     const { cpf, password } = body;
 
     const result = await this.authenticateDeliveryman.execute({

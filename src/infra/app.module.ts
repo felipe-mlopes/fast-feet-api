@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { HttpModule } from './http/http.module';
 import { EnvModule } from './env/env.module';
 import { EventsModule } from './events/events.module';
+import { APP_PIPE } from '@nestjs/core';
+import { ZodValidationPipe } from 'nestjs-zod';
 
 @Module({
   imports: [
@@ -18,6 +20,12 @@ import { EventsModule } from './events/events.module';
     HttpModule,
     EnvModule,
     EventsModule,
+  ],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useClass: ZodValidationPipe,
+    },
   ],
 })
 export class AppModule {}

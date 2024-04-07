@@ -28,7 +28,7 @@ describe('Register Deliveryman (E2E)', () => {
       .post('/deliveryman')
       .send({
         name: 'John Doe',
-        cpf: '12345678900',
+        cpf: '123.456.789-00',
         email: 'johndoe@example.com',
         password: '123456',
       });
