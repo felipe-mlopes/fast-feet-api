@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { OrderWithNeighborhood } from '@/domain/delivery/enterprise/entities/value-objects/order-with-neighborhood';
 
 export class OrderWithNeighborhoodPresenter {
@@ -13,4 +15,38 @@ export class OrderWithNeighborhoodPresenter {
       createdAt: order.createdAt,
     };
   }
+}
+
+class OrderWithNeighborhoodResponse {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  trackingCode: string;
+
+  @ApiProperty()
+  title: string;
+
+  @ApiProperty()
+  status: string;
+
+  @ApiProperty()
+  isReturn: boolean;
+
+  @ApiProperty()
+  recipientId: string;
+
+  @ApiProperty()
+  recipientNeighborhood: string;
+
+  @ApiProperty()
+  createdAt: string;
+}
+
+export class OrderWithNeighborhoodResponseDto {
+  @ApiProperty({
+    type: OrderWithNeighborhoodResponse,
+    isArray: true,
+  })
+  orders: OrderWithNeighborhoodResponse[];
 }
