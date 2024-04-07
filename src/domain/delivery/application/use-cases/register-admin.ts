@@ -42,6 +42,12 @@ export class RegisterAdminUseCase {
       return left(new AdminAlreadyExistsError(email));
     }
 
+    const adminSameWithCpf = await this.adminRepository.findByCPF(cpf);
+
+    if (adminSameWithCpf) {
+      return left(new AdminAlreadyExistsError(cpf));
+    }
+
     const hashedPassword = await this.hashGenerator.hash(password);
 
     const admin = AdminUser.create({
