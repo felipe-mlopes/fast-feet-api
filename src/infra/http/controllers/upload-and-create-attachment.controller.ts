@@ -10,18 +10,54 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiProperty,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { UploadAndCreateAttachmentUseCase } from '@/domain/delivery/application/use-cases/upload-and-create-attachment';
 import { InvalidAttachmentTypeError } from '@/domain/delivery/application/use-cases/errors/invalid-attachment-type-error';
 
+class AttachmentResponseDto {
+  @ApiProperty()
+  attachmentId: string;
+}
+
 @ApiTags('orders')
+@ApiBearerAuth('deliverymanToken')
 @Controller('/orders/:orderId/attachment')
 export class UploadAndCreateAttachmentController {
   constructor(
     private uploadAndCreateAttachment: UploadAndCreateAttachmentUseCase,
   ) {}
 
+  @ApiOperation({
+    summary: 'Upload and create an order attachment',
+    description:
+      'Upload and create an order attachment when the courier carries out the delivery.',
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Attachment id',
+    type: AttachmentResponseDto,
+  })
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   async handle(
