@@ -5,13 +5,23 @@ import {
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiProperty,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { Public } from '@/infra/auth/public';
+import { AuthenticateAccountDto } from '@/infra/http/dto/authenticate-account.dto';
 
 import { AuthenticateAdminUseCase } from '@/domain/delivery/application/use-cases/authenticate-admin';
 import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error';
-import { AuthenticateAccountDto } from '@/infra/http/dto/authenticate-account.dto';
+
+class AdminTokenResponseDto {
+  @ApiProperty()
+  access_token: string;
+}
 
 @ApiTags('admin')
 @Controller('/account/sessions')
@@ -19,6 +29,14 @@ import { AuthenticateAccountDto } from '@/infra/http/dto/authenticate-account.dt
 export class AuthenticateAccountController {
   constructor(private authenticateAdmin: AuthenticateAdminUseCase) {}
 
+  @ApiOperation({
+    summary: 'Authenticate admin account',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Admin token',
+    type: AdminTokenResponseDto,
+  })
   @Post()
   async handle(@Body() body: AuthenticateAccountDto) {
     const { email, password } = body;
