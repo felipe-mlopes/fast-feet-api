@@ -10,7 +10,7 @@ async function bootstrap() {
   patchNestJsSwagger();
 
   const config = new DocumentBuilder()
-    .setTitle('Documentação - Fast Feet API')
+    .setTitle('Fast Feet API - Documentation')
     .setDescription('Descrição aqui.')
     .setVersion('1.0')
     .addTag('admin')
@@ -20,8 +20,20 @@ async function bootstrap() {
     .addBearerAuth(
       {
         type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        in: 'header',
       },
       'adminToken',
+    )
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        in: 'header',
+      },
+      'deliverymanToken',
     )
     .build();
 
