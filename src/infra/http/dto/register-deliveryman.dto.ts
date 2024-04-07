@@ -7,8 +7,12 @@ export const registerDeliverymanSchema = z.object({
     .string()
     .email()
     .transform((str) => str.toLowerCase()),
-  cpf: z.string(),
-  password: z.string(),
+  cpf: z.string().refine((str) => str.length === 14, {
+    message: 'CPF must have 14 characters.',
+  }),
+  password: z.string().refine((str) => str.length > 5, {
+    message: 'Password needs at least 6 characters.',
+  }),
 });
 
 zodToOpenAPI(registerDeliverymanSchema);
