@@ -5,19 +5,32 @@ import {
   HttpCode,
   Post,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { CurrentUser } from '@/infra/auth/current-user.decorator';
 import { UserPayload } from '@/infra/auth/jwt.strategy';
-
-import { RegisterRecipientUseCase } from '@/domain/delivery/application/use-cases/register-recipient';
 import { RegisterRecipientDto } from '@/infra/http/dto/register-recipient.dto';
 
+import { RegisterRecipientUseCase } from '@/domain/delivery/application/use-cases/register-recipient';
+
 @ApiTags('recipient')
+@ApiBearerAuth('adminToken')
 @Controller('/recipients')
 export class RegisterRecipientController {
   constructor(private registerRecipient: RegisterRecipientUseCase) {}
 
+  @ApiOperation({
+    summary: 'Register a recipient',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The recipient has been successfully created',
+  })
   @Post()
   @HttpCode(201)
   async handle(
@@ -41,5 +54,9 @@ export class RegisterRecipientController {
     if (result.isLeft()) {
       throw new BadRequestException();
     }
+
+    return {
+      message: 'The recipient has been successfully created.',
+    };
   }
 }
