@@ -1,10 +1,13 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-
-import { GetOrderByTrackingCodeUseCase } from '@/domain/delivery/application/use-cases/get-order-by-tracking-code';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { Public } from '@/infra/auth/public';
-import { OrderPresenter } from '@/infra/presenters/order-presenter';
+import {
+  OrderPresenter,
+  OrderResponseDto,
+} from '@/infra/presenters/order-presenter';
+
+import { GetOrderByTrackingCodeUseCase } from '@/domain/delivery/application/use-cases/get-order-by-tracking-code';
 
 @ApiTags('orders')
 @Controller('/recipient-query')
@@ -12,6 +15,14 @@ import { OrderPresenter } from '@/infra/presenters/order-presenter';
 export class GetOrderByTrackingCodeController {
   constructor(private getOrderByTrackingCode: GetOrderByTrackingCodeUseCase) {}
 
+  @ApiOperation({
+    summary: 'Get order by tracking code',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Order',
+    type: OrderResponseDto,
+  })
   @Get()
   async handle(@Query('trackingCode') trackingCode: string) {
     const result = await this.getOrderByTrackingCode.execute({
