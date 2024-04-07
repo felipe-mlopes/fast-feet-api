@@ -6,7 +6,7 @@ import {
   HttpCode,
   Post,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { Public } from '@/infra/auth/public';
 
@@ -20,6 +20,13 @@ import { DeliveryManAlreadyExistsError } from '@/domain/delivery/application/use
 export class RegisterDeliveryManController {
   constructor(private registerDeliveryman: RegisterDeliverymanUseCase) {}
 
+  @ApiOperation({
+    summary: 'Create deliveryman account',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The deliveryman account has been successfully created',
+  })
   @Post()
   @HttpCode(201)
   async handle(@Body() body: RegisterDeliverymanDto) {
@@ -42,5 +49,9 @@ export class RegisterDeliveryManController {
           throw new BadRequestException(error.message);
       }
     }
+
+    return {
+      message: 'The deliveryman account has been successfully created.',
+    };
   }
 }

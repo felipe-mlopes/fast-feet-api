@@ -6,12 +6,12 @@ import {
   HttpCode,
   Post,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { Public } from '@/infra/auth/public';
+import { CreateAccountDto } from '@/infra/http/dto/create-account.dto';
 
 import { RegisterAdminUseCase } from '@/domain/delivery/application/use-cases/register-admin';
-import { CreateAccountDto } from '@/infra/http/dto/create-account.dto';
 import { AdminAlreadyExistsError } from '@/domain/delivery/application/use-cases/errors/admin-already-exists-error';
 
 @ApiTags('admin')
@@ -20,6 +20,13 @@ import { AdminAlreadyExistsError } from '@/domain/delivery/application/use-cases
 export class CreateAccountController {
   constructor(private registerAdmin: RegisterAdminUseCase) {}
 
+  @ApiOperation({
+    summary: 'Create admin account',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The admin account has been successfully created',
+  })
   @Post()
   @HttpCode(201)
   async handle(@Body() body: CreateAccountDto) {
@@ -42,5 +49,9 @@ export class CreateAccountController {
           throw new BadRequestException(error.message);
       }
     }
+
+    return {
+      message: 'The admin account has been successfully created.',
+    };
   }
 }

@@ -5,13 +5,18 @@ import {
   HttpCode,
   Post,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { CurrentUser } from '@/infra/auth/current-user.decorator';
 import { UserPayload } from '@/infra/auth/jwt.strategy';
+import { CreateOrderDto } from '@/infra/http/dto/create-order.dto';
 
 import { CreateOrderUseCase } from '@/domain/delivery/application/use-cases/create-order';
-import { CreateOrderDto } from '@/infra/http/dto/create-order.dto';
 
 @ApiTags('orders')
 @ApiBearerAuth('adminToken')
@@ -19,6 +24,13 @@ import { CreateOrderDto } from '@/infra/http/dto/create-order.dto';
 export class CreateOrderController {
   constructor(private createOrder: CreateOrderUseCase) {}
 
+  @ApiOperation({
+    summary: 'Create a order',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The order has been successfully created',
+  })
   @Post()
   @HttpCode(201)
   async handle(@Body() body: CreateOrderDto, @CurrentUser() user: UserPayload) {
@@ -34,5 +46,9 @@ export class CreateOrderController {
     if (result.isLeft()) {
       throw new BadRequestException();
     }
+
+    return {
+      message: 'The order has been successfully created.',
+    };
   }
 }
