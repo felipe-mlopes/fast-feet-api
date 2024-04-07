@@ -7,12 +7,16 @@ const registerRecipientSchema = z.object({
     .string()
     .email()
     .transform((str) => str.toLowerCase()),
-  zipcode: z.number(),
+  zipcode: z.number().refine((str) => String(str).length === 8, {
+    message: 'Zipcode must have 8 numbers.',
+  }),
   address: z.string().transform((str) => str.toLowerCase()),
   city: z.string().transform((str) => str.toLowerCase()),
   state: z
     .string()
-    .regex(/^[a-zA-Z]+$/)
+    .min(2)
+    .max(2)
+    .regex(/^[A-Z]+$/)
     .refine((str) => str.length === 2)
     .transform((str) => str.toUpperCase()),
   neighborhood: z.string().transform((str) => str.toLowerCase()),
