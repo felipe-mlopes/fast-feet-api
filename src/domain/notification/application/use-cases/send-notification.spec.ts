@@ -3,23 +3,20 @@ import { SendNotificationUseCase } from './send-notification';
 import { InMemoryNotificationsRepository } from 'test/repositories/in-memory-notifications-repository';
 import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipients-repository';
 import { makeRecipient } from 'test/factories/make-recipient';
+
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
-import { FakeSendEmail } from 'test/mailing/fake-send-mail';
 
 let inMemoryNotificationsRepository: InMemoryNotificationsRepository;
 let inMemoryRecipientsRepository: InMemoryRecipientsRepository;
-let fakeSendEmail: FakeSendEmail;
 let sut: SendNotificationUseCase;
 
 describe('Send Notification', () => {
   beforeEach(() => {
     inMemoryNotificationsRepository = new InMemoryNotificationsRepository();
     inMemoryRecipientsRepository = new InMemoryRecipientsRepository();
-    fakeSendEmail = new FakeSendEmail();
     sut = new SendNotificationUseCase(
       inMemoryNotificationsRepository,
       inMemoryRecipientsRepository,
-      fakeSendEmail,
     );
   });
 
