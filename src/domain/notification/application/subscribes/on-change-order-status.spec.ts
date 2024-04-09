@@ -22,6 +22,7 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 
 import { FakeSendEmail } from 'test/mailing/fake-send-mail';
 import { SendEmailParams } from '../mailing/sendEmail';
+
 import { emailTemplate, statusEdit } from '@/infra/mailing/email-template';
 
 let inMemoryRecipientsRepository: InMemoryRecipientsRepository;
@@ -40,7 +41,9 @@ let sendEmailExecuteSpy: MockInstance<[SendEmailParams], Promise<void>>;
 describe('On Change Order Status', () => {
   beforeEach(() => {
     inMemoryRecipientsRepository = new InMemoryRecipientsRepository();
-    inMemoryOrdersRepository = new InMemoryOrdersRepository();
+    inMemoryOrdersRepository = new InMemoryOrdersRepository(
+      inMemoryRecipientsRepository,
+    );
     inMemoryNotificationsRepository = new InMemoryNotificationsRepository();
     sendNotificationUseCase = new SendNotificationUseCase(
       inMemoryNotificationsRepository,
