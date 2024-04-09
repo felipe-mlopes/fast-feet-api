@@ -2,18 +2,42 @@ import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../prisma.service';
 import { PrismaOrderMapper } from '../mappers/prisma-order-mapper';
-
-import { OrdersRepository } from '@/domain/delivery/application/repositories/orders-repository';
-import { Order } from '@/domain/delivery/enterprise/entities/order';
-import { OrderDetails } from '@/domain/delivery/enterprise/entities/value-objects/order-details';
+import { PrismaOrderDetailsMapper } from '../mappers/prisma-order-details-mapper';
+import { PrismaOrderWithNeighborhoodMapper } from '../mappers/prisma-order-with-neighborhood-mapper';
 
 import { CacheRepository } from '@/infra/cache/cache-repository';
 
+import { OrdersRepository } from '@/domain/delivery/application/repositories/orders-repository';
+import { Order, Status } from '@/domain/delivery/enterprise/entities/order';
+import { OrderDetails } from '@/domain/delivery/enterprise/entities/value-objects/order-details';
+import { OrderWithNeighborhood } from '@/domain/delivery/enterprise/entities/value-objects/order-with-neighborhood';
+
 import { PaginationParams } from '@/core/repositories/pagination-params';
 import { DomainEvents } from '@/core/events/domain-events';
-import { PrismaOrderDetailsMapper } from '../mappers/prisma-order-details-mapper';
-import { OrderWithNeighborhood } from '@/domain/delivery/enterprise/entities/value-objects/order-with-neighborhood';
-import { PrismaOrderWithNeighborhoodMapper } from '../mappers/prisma-order-with-neighborhood-mapper';
+
+interface cachedProps {
+  id: string;
+  deliverymanId: string;
+  clientId: string;
+  trackingCode: string;
+  title: string;
+  status: Status;
+  isReturned: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  picknUpAt: Date;
+  deliveryAt: Date;
+  shipping: {
+    id: string;
+    clientName: string;
+    clientEmail: string;
+    clientState: string;
+    clientCity: string;
+    clientNeighborhood: string;
+    clientAddress: string;
+    clientZipcode: number;
+  };
+}
 
 @Injectable()
 export class PrismaOrdersRepository implements OrdersRepository {
@@ -42,9 +66,14 @@ export class PrismaOrdersRepository implements OrdersRepository {
     const cacheHit = await this.cacheRepository.get(`order:${id}:details`);
 
     if (cacheHit) {
-      const cachedData = JSON.parse(cacheHit);
+      const cachedData: cachedProps = JSON.parse(cacheHit);
 
-      return cachedData;
+      const cachedDomain = PrismaOrderDetailsMapper.toDomain(
+        cachedData,
+        cachedData.shipping,
+      );
+
+      return cachedDomain;
     }
 
     const order = await this.prisma.order.findUnique({
@@ -71,7 +100,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
 
     await this.cacheRepository.set(
       `order:${id}:details`,
-      JSON.stringify(orderDetails),
+      JSON.stringify(order),
     );
 
     return orderDetails;
