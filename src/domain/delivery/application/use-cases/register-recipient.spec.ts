@@ -28,7 +28,9 @@ describe('Register Recipient', () => {
     const result = await sut.execute({
       adminId: admin.id.toString(),
       name: 'John Doe',
+      email: 'john-doe@example.com',
       address: 'Somewhere st',
+      state: 'DC',
       city: 'Somewhere city',
       neighborhood: 'downtown',
       zipcode: 12345678,
@@ -39,12 +41,14 @@ describe('Register Recipient', () => {
 
   it('should not be possible to register a new recipient without being an administrator', async () => {
     const result = await sut.execute({
+      adminId: 'user-01',
       name: 'John Doe',
+      email: 'john-doe@example.com',
       address: 'Somewhere st',
+      state: 'DC',
       city: 'Somewhere city',
       neighborhood: 'downtown',
       zipcode: 12345678,
-      adminId: 'user-01',
     });
 
     expect(result.isLeft()).toBe(true);
