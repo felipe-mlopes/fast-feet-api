@@ -40,15 +40,15 @@ export class FecthNearbyOrdersWaitingAndPicknUpController {
   async handle(
     @Query('city')
     city: string,
-    @Query('page')
-    page: PageQueryParamsDto,
+    @Query()
+    query: PageQueryParamsDto,
     @CurrentUser() user: UserPayload,
   ): Promise<OrderWithNeighborhoodPresenter> {
     const deliverymanId = user.sub;
 
     const result = await this.fetchNearbyOrdersWaitingOrPicknUp.execute({
       city,
-      page,
+      page: query.page,
       deliverymanId,
     });
 

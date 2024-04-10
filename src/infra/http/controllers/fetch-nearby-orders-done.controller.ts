@@ -37,8 +37,8 @@ export class FecthNearbyOrdersDoneController {
   async handle(
     @Query('city')
     city: string,
-    @Query('page')
-    page: PageQueryParamsDto,
+    @Query()
+    query: PageQueryParamsDto,
     @CurrentUser()
     user: UserPayload,
   ): Promise<OrderWithNeighborhoodPresenter> {
@@ -46,7 +46,7 @@ export class FecthNearbyOrdersDoneController {
 
     const result = await this.fetchNearbyOrdersDone.execute({
       city,
-      page,
+      page: query.page,
       deliverymanId,
     });
 
