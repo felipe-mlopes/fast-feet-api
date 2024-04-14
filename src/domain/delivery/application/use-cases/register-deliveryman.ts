@@ -44,6 +44,13 @@ export class RegisterDeliverymanUseCase {
       return left(new DeliveryManAlreadyExistsError(cpf));
     }
 
+    const deliverymanSameWithEmail =
+      await this.deliverymanRepository.findByEmail(email);
+
+    if (deliverymanSameWithEmail) {
+      return left(new DeliveryManAlreadyExistsError(email));
+    }
+
     const hashedPassword = await this.hashGenerator.hash(password);
 
     const deliveryman = DeliveryManUser.create({
