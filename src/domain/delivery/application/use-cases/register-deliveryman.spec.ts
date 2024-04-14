@@ -61,6 +61,25 @@ describe('Register Deliveryman', () => {
     const result = await sut.execute({
       name: 'Max',
       cpf: '99999999999',
+      email: 'john-doe@example.com',
+      password: '123456',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.value).toBeInstanceOf(DeliveryManAlreadyExistsError);
+  });
+
+  it('should not be able to register a new deliveryman with email exists', async () => {
+    await sut.execute({
+      name: 'John Doe',
+      cpf: '99999999999',
+      email: 'johndoe@example.com',
+      password: '123456',
+    });
+
+    const result = await sut.execute({
+      name: 'Max',
+      cpf: '11111111111',
       email: 'johndoe@example.com',
       password: '123456',
     });
