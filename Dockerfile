@@ -7,9 +7,13 @@ RUN mkdir -p /home/node/app
 WORKDIR /home/node/app
 
 COPY --chown=node:node package.json package-lock.json ./
+
 RUN npm ci
 
+COPY prisma ./prisma/
 COPY --chown=node:node . .
+
+RUN npx prisma generate
 
 RUN npm run build
 
