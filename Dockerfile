@@ -17,7 +17,6 @@ RUN npx prisma generate
 
 RUN npm run build
 
-ENV NODE_ENV=prod
 CMD [ "npm", "run", "start:prod" ]
 
 
@@ -36,5 +35,4 @@ COPY --from=testing --chown=node:node /home/node/app .
 
 EXPOSE 3333
 
-ENV NODE_ENV=prod
 CMD [ "npm", "run", "start:prod" ]
