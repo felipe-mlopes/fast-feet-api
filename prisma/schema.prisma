@@ -17,7 +17,7 @@ model User {
 
   orders Order[]
 
-  @@map("User")
+  @@map("user")
 }
 
 model Order {

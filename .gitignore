@@ -47,3 +47,5 @@ client.http
 # Storage
 /test/e2e/*
 !/test/e2e/sample-upload.jpg
+
+/.github/workflows/ci-cd.yml
