@@ -1,5 +1,6 @@
 import { RecipentsRepository } from '@/domain/delivery/application/repositories/recipients-repository';
 import { Recipient } from '@/domain/delivery/enterprise/entities/recipient';
+import { RecipientEmail } from '@/domain/delivery/enterprise/entities/value-objects/recipient-email';
 
 export class InMemoryRecipientsRepository implements RecipentsRepository {
   public items: Recipient[] = [];
@@ -26,7 +27,7 @@ export class InMemoryRecipientsRepository implements RecipentsRepository {
     return recipient;
   }
 
-  async findByEmail(email: string) {
+  async findByEmail(email: string): Promise<Recipient | null> {
     const recipient = this.items.find((item) => item.email === email);
 
     if (!recipient) {
@@ -34,6 +35,24 @@ export class InMemoryRecipientsRepository implements RecipentsRepository {
     }
 
     return recipient;
+  }
+
+  async findManyRecipientEmailBySearch(
+    search: string,
+  ): Promise<RecipientEmail[] | null> {
+    const recipientEmails = this.items
+      .filter((item) => item.email.includes(search))
+      .map((item) => ({ email: item.email }));
+
+    if (!recipientEmails) {
+      return null;
+    }
+
+    return recipientEmails.map((recipient) =>
+      RecipientEmail.create({
+        email: recipient.email,
+      }),
+    );
   }
 
   async create(recipient: Recipient) {

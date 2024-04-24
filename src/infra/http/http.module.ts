@@ -16,6 +16,7 @@ import { EditOrderStatusToReturnController } from './controllers/edit-order-stat
 import { UploadAndCreateAttachmentController } from './controllers/upload-and-create-attachment.controller';
 import { FecthNearbyOrdersWaitingAndPicknUpController } from './controllers/fetch-nearby-orders-waiting-and-pickn-up.controller';
 import { FecthNearbyOrdersDoneController } from './controllers/fetch-nearby-orders-done.controller';
+import { FecthRecipientEmailsBySearchController } from './controllers/fetch-recipient-emails-by-search.controller';
 import { GetOrderDetailsController } from './controllers/get-order-details.controller';
 import { GetOrderByTrackingCodeController } from './controllers/get-order-by-tracking-code.controller';
 import { GetRecipientByEmailController } from './controllers/get-recipient-by-email.controller';
@@ -33,6 +34,7 @@ import { EditOrderStatusToReturnUseCase } from '@/domain/delivery/application/us
 import { UploadAndCreateAttachmentUseCase } from '@/domain/delivery/application/use-cases/upload-and-create-attachment';
 import { FetchNearbyOrdersWaitingAndPicknUpUseCase } from '@/domain/delivery/application/use-cases/fetch-nearby-orders-waiting-and-pickn-up';
 import { FetchNearbyOrdersDoneUseCase } from '@/domain/delivery/application/use-cases/fetch-nearby-orders-done';
+import { FetchRecipientEmailsBySearchUseCase } from '@/domain/delivery/application/use-cases/fetch-recipient-emails-by-search';
 import { GetOrderDetailsUseCase } from '@/domain/delivery/application/use-cases/get-order-details';
 import { GetOrderByTrackingCodeUseCase } from '@/domain/delivery/application/use-cases/get-order-by-tracking-code';
 import { GetRecipientByEmailUseCase } from '@/domain/delivery/application/use-cases/get-recipient-by-email';
@@ -53,6 +55,7 @@ import { GetDeliverymanByIdUseCase } from '@/domain/delivery/application/use-cas
     UploadAndCreateAttachmentController,
     FecthNearbyOrdersWaitingAndPicknUpController,
     FecthNearbyOrdersDoneController,
+    FecthRecipientEmailsBySearchController,
     GetOrderDetailsController,
     GetOrderByTrackingCodeController,
     GetRecipientByEmailController,
@@ -71,6 +74,7 @@ import { GetDeliverymanByIdUseCase } from '@/domain/delivery/application/use-cas
     UploadAndCreateAttachmentUseCase,
     FetchNearbyOrdersWaitingAndPicknUpUseCase,
     FetchNearbyOrdersDoneUseCase,
+    FetchRecipientEmailsBySearchUseCase,
     GetOrderDetailsUseCase,
     GetOrderByTrackingCodeUseCase,
     GetRecipientByEmailUseCase,
