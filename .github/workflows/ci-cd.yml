@@ -1,0 +1,32 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ['Run Unit Tests', 'Run E2E Tests']
+    types:
+      - completed
+
+  merge_group:
+    branches: ['main']
+    paths:
+      - 'src/**'
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    needs: [unit-tests, e2e-tests]
+    if: ${{ needs.unit-tests.outputs.unit-tests-success == 'true' && needs.e2e-tests.outputs.e2e-tests-success == 'true' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - run: npm ci
+
+      - name: Generate and Apply all pending migrations to the database
+        run: npx prisma generate && npx prisma migrate deploy
+
+      - name: Render Deploy Action
+        uses: bounceapp/render-action@0.6.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          service-id: ${{ secrets.SERVICE_ID }}
