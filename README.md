@@ -24,19 +24,24 @@ Já o administrador consegue criar um registro para destinatários, criar pedido
 
 ### Pré-requisitos:
 - NodeJS
+- NPM
 - Docker
  
 ### Etapas:
-1) Faça o clone do repositório e no terminal navegue até a pasta;
-2) Instale as dependências do projeto com ``npm install``;
-3) Rode o docker compose com ``docker compose up -d ``
-4) Rode o servidor de desenvolvimento com ``npm run start:dev``
+1) Faça o clone do repositório e no terminal navegue até a pasta
+2) Instale as dependências do projeto com ``npm install``
+3) Faça uma conta gratuita no serviço externo R2 Storage na [Cloudflare](https://www.cloudflare.com/pt-br/) 
+4) Preencha as variáveis de ambiente no arquivo ``.env``
+5) Faça o set up do Prisma com ``npx prisma init``
+6) Rode o docker compose com ``docker compose up -d ``
+7) Rode o servidor de desenvolvimento com ``npm run start:dev``
 
 
 ## Instrução de Uso
 
 A API está documentada através do Swagger através da rota:
-localhost:3333/api
+
+http://localhost:3333/api
 
 ## Contribuição
 
@@ -45,4 +50,4 @@ Pull requests são bem-vindos. Para maiores alterações, favor abrir uma issue 
 
 ## Licença
 
-[MIT](https://choosealicense.com/licenses/mit/)
+Esse projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
