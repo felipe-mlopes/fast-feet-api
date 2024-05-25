@@ -1,38 +1,23 @@
-FROM node:20-alpine as testing
+FROM node:20-alpine AS build
 
-USER node
+WORKDIR /usr/src/app
 
-RUN mkdir -p /home/node/app
+COPY package*.json ./
 
-WORKDIR /home/node/app
+RUN npm ci --only=production
 
-COPY --chown=node:node package.json package-lock.json ./
+COPY . .
 
-RUN npm ci
+RUN npm run build && npx prisma generate
 
-COPY prisma ./prisma/
-COPY --chown=node:node . .
+FROM node:20-alpine
 
-RUN npx prisma generate
+WORKDIR /usr/src/app
 
-RUN npm run build
+COPY --from=build /usr/src/app/dist ./dist
+COPY --from=build /usr/src/app/node_modules ./node_modules
+COPY --from=build /usr/src/app/package.json ./package.json
 
-CMD [ "npm", "run", "start:prod" ]
+EXPOSE 3000
 
-
-FROM node:20-alpine as production
-
-USER node
-
-RUN mkdir -p /home/node/app
-
-WORKDIR /home/node/app
-
-COPY --from=testing --chown=node:node /home/node/app/package*.json ./
-RUN npm ci --omit=dev
-
-COPY --from=testing --chown=node:node /home/node/app .
-
-EXPOSE 3333
-
-CMD [ "npm", "run", "start:prod" ]
+CMD ["npm", "run", "start:prod"]

@@ -35,6 +35,7 @@ describe('Register Recipient (E2E)', () => {
 
     const accessToken = jwt.sign({
       sub: admin.id.toString(),
+      name: admin.name,
       role: admin.role,
     });
 

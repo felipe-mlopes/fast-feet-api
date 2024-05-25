@@ -63,6 +63,7 @@ describe('On Change Order Status (E2E)', () => {
 
     const accessToken = jwt.sign({
       sub: deliveryman.id.toString(),
+      name: deliveryman.name,
       role: deliveryman.role,
     });
 
@@ -110,6 +111,7 @@ describe('On Change Order Status (E2E)', () => {
 
     const accessToken = jwt.sign({
       sub: deliveryman.id.toString(),
+      name: deliveryman.name,
       role: deliveryman.role,
     });
 
