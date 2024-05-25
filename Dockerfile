@@ -8,7 +8,7 @@ RUN npm ci --only=production
 
 COPY . .
 
-RUN npm run build && npm run prisma:generate
+RUN npm run build && npx prisma generate
 
 FROM node:20-alpine
 
