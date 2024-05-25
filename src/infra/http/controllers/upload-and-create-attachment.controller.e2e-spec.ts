@@ -61,6 +61,7 @@ describe('Upload Attachment (E2E)', () => {
 
     const accessToken = jwt.sign({
       sub: deliveryman.id.toString(),
+      name: deliveryman.name,
       role: deliveryman.role,
     });
 

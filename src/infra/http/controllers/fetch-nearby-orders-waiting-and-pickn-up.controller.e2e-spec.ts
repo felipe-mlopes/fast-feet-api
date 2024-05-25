@@ -68,6 +68,7 @@ describe('Fetch Nearby Orders Waiting and Pickn Up (E2E)', () => {
 
     const accessToken = jwt.sign({
       sub: deliveryman.id.toString(),
+      name: deliveryman.name,
       role: deliveryman.role,
     });
 

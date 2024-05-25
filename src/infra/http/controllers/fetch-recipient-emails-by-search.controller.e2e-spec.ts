@@ -47,6 +47,7 @@ describe('Fetch Recipient Emails by Search (E2E)', () => {
 
     const accessToken = jwt.sign({
       sub: adminUser.id.toString(),
+      name: adminUser.name,
       role: adminUser.role,
     });
 
