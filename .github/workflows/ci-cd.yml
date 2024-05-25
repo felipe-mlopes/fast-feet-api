@@ -8,22 +8,38 @@ on:
 
   merge_group:
     branches: ['main']
-    paths:
-      - 'src/**'
 
 jobs:
   ci:
     runs-on: ubuntu-latest
-    needs: [unit-tests, e2e-tests]
-    if: ${{ needs.unit-tests.outputs.unit-tests-success == 'true' && needs.e2e-tests.outputs.e2e-tests-success == 'true' }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
       - run: npm ci
 
-      - name: Generate and Apply all pending migrations to the database
-        run: npx prisma generate && npx prisma migrate deploy
+      - name: Generate tag
+        id: generate_tag
+        run: |
+          SHA=$(echo $GITHUB_SHA | head -c7)
+          echo "sha=$SHA" >> $GITHUB_OUTPUT
+
+      - name: Login into the container registry
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: felipemlp/fast-feet-api:${{ steps.generate_tag.outputs.sha }},felipemlp/fast-feet-api:latest
 
       - name: Render Deploy Action
         uses: bounceapp/render-action@0.6.0
