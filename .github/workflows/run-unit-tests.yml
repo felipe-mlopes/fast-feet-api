@@ -1,8 +1,6 @@
 name: Run Unit Tests
 
-on:
-  push:
-    branches: ['feature']
+on: [push]
 
 jobs:
   run-unit-tests:
