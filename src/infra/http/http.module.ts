@@ -21,6 +21,7 @@ import { GetOrderDetailsController } from './controllers/get-order-details.contr
 import { GetOrderByTrackingCodeController } from './controllers/get-order-by-tracking-code.controller';
 import { GetRecipientByEmailController } from './controllers/get-recipient-by-email.controller';
 import { GetDeliverymanByIdController } from './controllers/get-deliveryman-by-id.controller';
+import { HealthController } from './controllers/health.controller';
 
 import { RegisterAdminUseCase } from '@/domain/delivery/application/use-cases/register-admin';
 import { CreateOrderUseCase } from '@/domain/delivery/application/use-cases/create-order';
@@ -49,6 +50,7 @@ import { GetDeliverymanByIdUseCase } from '@/domain/delivery/application/use-cas
     RegisterRecipientController,
     AuthenticateAccountController,
     AuthenticateDeliverymanController,
+    HealthController,
     EditOrderStatusToPicknUpController,
     EditOrderStatusToDoneController,
     EditOrderStatusToReturnController,
