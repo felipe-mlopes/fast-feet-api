@@ -44,8 +44,6 @@ describe('Create Order (E2E)', () => {
       role: admin.role,
     });
 
-    console.log(recipient);
-
     const response = await request(app.getHttpServer())
       .post('/orders')
       .set('Authorization', `Bearer ${accessToken}`)

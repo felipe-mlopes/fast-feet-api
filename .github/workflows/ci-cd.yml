@@ -1,16 +1,17 @@
 name: Deploy
 
 on:
+  push:
+    branches: ['main']
+
   workflow_run:
     workflows: ['Run E2E Tests']
     types:
       - completed
 
-  merge_group:
-    branches: ['main']
-
 jobs:
   ci:
+    if: github.event_name == 'push' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
 
     steps:
