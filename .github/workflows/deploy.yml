@@ -36,11 +36,19 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and Push
+      - name: Build and push Docker Image
         uses: docker/build-push-action@v5
         with:
           push: true
           tags: felipemlp/fast-feet-api:${{ steps.generate_tag.outputs.sha }},felipemlp/fast-feet-api:latest
+
+  cd:
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Render Deploy Action
         uses: bounceapp/render-action@0.6.0
