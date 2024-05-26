@@ -50,8 +50,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Render Deploy Action
-        uses: bounceapp/render-action@0.6.0
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          service-id: ${{ secrets.SERVICE_ID }}
+      - name: Render Deploy
+        if: github.ref == 'refs/heads/main'
+        env:
+          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          curl "$deploy_url"
