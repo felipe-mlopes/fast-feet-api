@@ -1,11 +1,6 @@
 name: Deploy
 
 on:
-  workflow_run:
-    workflows: ['Run E2E Tests']
-    types:
-      - completed
-
   merge_group:
     branches: ['main']
 

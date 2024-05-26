@@ -1,11 +1,6 @@
 name: Run E2E Tests
 
 on:
-  workflow_run:
-    workflows: ['Run Unit Tests']
-    types:
-      - completed
-
   pull_request:
     branches: ['main']
 
