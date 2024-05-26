@@ -8,7 +8,7 @@ RUN npm ci
 
 COPY . .
 
-RUN npm run prisma:generate 
+RUN npm run prisma:generate
 RUN npm run build
 
 FROM node:20-alpine
